@@ -1,0 +1,59 @@
+\documentclass[titlepage]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{listings} %listings for code
+\usepackage{graphicx} % can modify title style
+\usepackage{titling} % can use pretitle to have a picture on title page
+\usepackage{chngcntr} % permits to reset chapter numerization in each part
+\usepackage{hyperref} % makes table of contents and list of figures clickable 
+\usepackage{makecell} % can create newline in a table cell easily
+
+%\hypersetup{colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black}
+
+\counterwithin*{chapter}{part}
+
+\addtolength{\oddsidemargin}{-2cm}
+\addtolength{\evensidemargin}{-2cm}
+\addtolength{\textwidth}{4cm}
+\addtolength{\topmargin}{-2cm}
+\addtolength{\textheight}{4cm}
+
+\setcounter{secnumdepth}{3}
+
+% Title Page
+
+\pretitle{
+	\begin{center}
+		\LARGE
+		\includegraphics[width=\textwidth]{Images/TrailsCommunity_doc.png}\\[\bigskipamount]
+	}
+	
+	\posttitle{\end{center}}
+
+		\title{Rapport de projet - Assitant Offroad}
+		
+		\author{BELLANGER Stéphen \and
+			MONNIER Ysée \and
+			DESHORS Yann}
+		\date{Novembre 2016 - Decembre 2016}
+		
+
+
+\begin{document}
+	
+\maketitle
+
+\tableofcontents
+
+\listoffigures 
+
+\part{Client TrailsCommunity}
+
+\chapter{Introduction}
+
+\section{Introduction}
+Hello
+
+\end{document}          
