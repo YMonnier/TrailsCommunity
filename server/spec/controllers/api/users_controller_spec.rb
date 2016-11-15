@@ -8,6 +8,7 @@ RSpec.describe Api::UsersController, :type => :controller do
 
                 parameters = {
                     nickname: @user.nickname,
+                    email: @user.email,
                     phone_number: @user.phone_number,
                     password: @user.password,
                     password_confirmation: @user.password
@@ -39,6 +40,7 @@ RSpec.describe Api::UsersController, :type => :controller do
 
                 parameters = {
                     nickname: @user.nickname,
+                    email: @user.email,
                     phone_number: @user.phone_number,
                     password: @user.password,
                     password_confirmation: 'ERFERG'
