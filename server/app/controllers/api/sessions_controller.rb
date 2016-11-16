@@ -51,6 +51,20 @@ class Api::SessionsController < ApplicationController
         return not_found r
     end
 
+    def update
+        @session = Session.find params[:id]
+
+        if @session.update(session_params)
+            ok_request @session
+        else
+            bad_request @session.errors
+        end
+
+    rescue ActiveRecord::RecordNotFound
+        r = {session: 'Record Not Found'}
+        return not_found r
+    end
+
     private
     def session_params
         params.permit(:activity,

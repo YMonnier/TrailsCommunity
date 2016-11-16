@@ -21,8 +21,9 @@ ActiveRecord::Schema.define(version: 20161115120328) do
     t.string   "departure_place"
     t.string   "arrival_place"
     t.date     "start_date"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.boolean  "close",           default: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "users", force: :cascade do |t|

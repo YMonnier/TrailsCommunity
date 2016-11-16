@@ -35,6 +35,8 @@ RSpec.describe Api::SessionsController, :type => :controller do
                 expect(@data[:arrival_place]).to eql @session.arrival_place
             end
 
+            it { expect(@data[:close]).to eql false }
+
             it { should respond_with 201 }
         end
 
@@ -58,6 +60,20 @@ RSpec.describe Api::SessionsController, :type => :controller do
             end
 
             it { should respond_with 400 }
+        end
+
+        context 'when is no successfully getting because of authorization' do
+            before do
+                @session = FactoryGirl.create :session
+                parameters = {
+                    departure_place: @session.departure_place,
+                    arrival_place: @session.arrival_place,
+                    start_date: @session.start_date
+                }
+                post :create, params: parameters
+            end
+
+            it { should respond_with 401 }
         end
     end
 
@@ -106,6 +122,168 @@ RSpec.describe Api::SessionsController, :type => :controller do
             end
 
             it { should respond_with 200 }
+        end
+
+        context 'when is no successfully getting because of authorization' do
+            before do
+                get :index
+            end
+
+            it { should respond_with 401 }
+        end
+    end
+
+    describe 'GET #show' do
+        context 'when is successfully got' do
+            before do
+                @user = FactoryGirl.create :user
+                @session = FactoryGirl.create :session
+
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: @session.id
+                }
+                get :show, params: parameters
+
+                @json = json_response
+                @data = @json[:data]
+            end
+
+
+
+            it 'should be the same activity' do
+                expect(@data[:activity]).to eql @session.activity
+            end
+
+            it 'should be the same departure place' do
+                expect(@data[:departure_place]).to eql @session.departure_place
+            end
+
+            it 'should be the same arrival place' do
+                expect(@data[:arrival_place]).to eql @session.arrival_place
+            end
+
+            it { should respond_with 200 }
+        end
+
+        context 'when is not successfully got - not found ' do
+            before do
+                @user = FactoryGirl.create :user
+                @session = FactoryGirl.create :session
+
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: -1234
+                }
+                get :show, params: parameters
+
+                @json = json_response
+                @errors = @json[:errors]
+
+            end
+
+
+
+            it 'should be to have an error' do
+                expect(@errors[:session]).to eql 'Record Not Found'
+            end
+
+            it { should respond_with 404 }
+        end
+
+        context 'when is no successfully getting because of authorization' do
+            before do
+                @session = FactoryGirl.create :session
+
+                parameters = {
+                    id: @session.id
+                }
+                get :show, params: parameters
+            end
+
+            it { should respond_with 401 }
+        end
+    end
+
+    describe 'PUT #update' do
+        before do
+            @user = FactoryGirl.create :user
+            @session = FactoryGirl.create :session
+        end
+
+        context 'when is successfully got' do
+            before(:each) do
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: @session.id,
+                    close: true
+                }
+
+                put :update, params: parameters
+
+                @json = json_response
+                @data = @json[:data]
+            end
+
+            it 'should be the same activity' do
+                expect(@data[:id]).to eql @session.id
+            end
+
+            it 'should be the same activity' do
+                expect(@data[:activity]).to eql @session.activity
+            end
+
+            it 'should be the same departure place' do
+                expect(@data[:departure_place]).to eql @session.departure_place
+            end
+
+            it 'should be the same arrival place' do
+                expect(@data[:arrival_place]).to eql @session.arrival_place
+            end
+
+            it { should respond_with 200 }
+        end
+
+        context 'when is not successfully got - not found ' do
+            before do
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: -1234
+                }
+                put :update, params: parameters
+
+                @json = json_response
+                @errors = @json[:errors]
+            end
+
+            it 'should be to have an error' do
+                expect(@errors[:session]).to eql 'Record Not Found'
+            end
+
+            it { should respond_with 404 }
+        end
+
+        context 'when is no successfully getting because of authorization' do
+            before do
+                parameters = {
+                    id: @session.id
+                }
+                put :update, params: parameters
+            end
+
+            it { should respond_with 401 }
         end
     end
 end

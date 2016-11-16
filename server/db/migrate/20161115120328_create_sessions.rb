@@ -6,6 +6,7 @@ class CreateSessions < ActiveRecord::Migration[5.0]
       t.string :departure_place
       t.string :arrival_place
       t.date :start_date
+      t.boolean :close, default: false
       t.timestamps
     end
   end
