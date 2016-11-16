@@ -342,4 +342,82 @@ RSpec.describe Api::SessionsController, :type => :controller do
             it { should respond_with 401 }
         end
     end
+
+    describe 'POST #waypoint' do
+        context 'when is successfully got' do
+            before do
+                @user = FactoryGirl.create :user
+                @session = FactoryGirl.create :session
+
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: @session.id,
+                    latitude: 43.179363,
+                    longitude: 5.717782
+                }
+                post :waypoint, params: parameters
+            end
+            it { should respond_with 200 }
+        end
+
+        context 'when is not successfully got - bad request' do
+            before do
+                @user = FactoryGirl.create :user
+                @session = FactoryGirl.create :session
+
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: @session.id
+                }
+                post :waypoint, params: parameters
+            end
+
+            it { should respond_with 400 }
+        end
+
+        context 'when is not successfully got - not found ' do
+            before do
+                @user = FactoryGirl.create :user
+                @session = FactoryGirl.create :session
+
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: -1234
+                }
+                post :waypoint, params: parameters
+
+                @json = json_response
+                @errors = @json[:errors]
+
+            end
+
+            it 'should be to have an error' do
+                expect(@errors[:session]).to eql 'Record Not Found'
+            end
+
+            it { should respond_with 404 }
+        end
+
+        context 'when is no successfully getting because of authorization' do
+            before do
+                @session = FactoryGirl.create :session
+
+                parameters = {
+                    id: @session.id
+                }
+                post :waypoint, params: parameters
+            end
+
+            it { should respond_with 401 }
+        end
+    end
 end

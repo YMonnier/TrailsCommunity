@@ -91,6 +91,28 @@ class Api::SessionsController < ApplicationController
         end
     end
 
+    ##
+    #
+    # Add a new waypoint to the current session.
+    #
+    ##
+    def waypoint
+        id = params[:id]
+        if Session.exists?(id)
+            @waypoint = Waypoint.new(waypoint_params)
+            @waypoint.session_id = id
+            if @waypoint.save
+                return ok_request ''
+            else
+                return bad_request @waypoint.errors
+            end
+        else
+            r = {session: 'Record Not Found'}
+            return not_found r
+        end
+    end
+
+
     private
     def session_params
         params.permit(:activity,
@@ -98,4 +120,9 @@ class Api::SessionsController < ApplicationController
         :arrival_place,
         :start_date)
     end
+
+    def waypoint_params
+        params.permit(:latitude, :longitude)
+    end
+
 end

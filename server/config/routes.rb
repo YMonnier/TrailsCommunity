@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       # Sessions
       resources :sessions, :only => [:create, :update, :show, :index] do
           get :join, on: :member
+          post :waypoint, on: :member
       end
       #get 'sessions/:id/join', to: 'sessions#join'
     end
