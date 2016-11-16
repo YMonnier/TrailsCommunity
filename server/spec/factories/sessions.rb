@@ -4,6 +4,8 @@ FactoryGirl.define do
      password { FFaker::Internet.password }
      departure_place { "#{rand(1...70)};#{rand(1...70)}" }
      arrival_place { "#{rand(1...70)};#{rand(1...70)}" }
-     start_date { FFaker::Time.date.to_s }
+     #Time.new.strftime('%Y-%m-%d')
+     #start_date { FFaker::Time.date.to_s }
+     start_date { Time.new.strftime('%Y-%m-%d') }
   end
 end

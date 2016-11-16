@@ -1,0 +1,62 @@
+class Api::SessionsController < ApplicationController
+    before_action :authenticate_user
+
+    ##
+    #
+    # Create a new session.
+    # Header application/json
+    # Header Authorization
+    # {
+    #   "activity": 1,
+    #   "password": "", # optional
+    #   "departure_place": "43.179363;5.717782",
+    #   "arrival_place": "43.191168;5.730819",
+    #   "start_date": "2016-11-20"
+    # }
+    #
+    ##
+    def create
+        @session = Session.new(session_params)
+        if @session.save
+            created_request @session
+        else
+            bad_request @session.errors
+        end
+    end
+
+    ##
+    #
+    # Get all session stored.
+    # Return status 200.
+    #
+    ##
+    def index
+        ok_request Session.all
+    end
+
+    ##
+    #
+    # Get a specific session stored.
+    # Request param: id
+    # Return status 200 if session is found, otherwise,
+    # status 404.
+    #
+    ##
+    def show
+        @session = Session.find params[:id]
+        ok_request @session
+
+    rescue ActiveRecord::RecordNotFound
+        r = {session: 'Record Not Found'}
+        return not_found r
+    end
+
+    private
+    def session_params
+        params.permit(:activity,
+        :password,
+        :departure_place,
+        :arrival_place,
+        :start_date)
+    end
+end
