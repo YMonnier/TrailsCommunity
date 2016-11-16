@@ -286,4 +286,60 @@ RSpec.describe Api::SessionsController, :type => :controller do
             it { should respond_with 401 }
         end
     end
+
+    describe 'GET #join' do
+        before do
+            @user = FactoryGirl.create :user
+            @session = FactoryGirl.create :session
+        end
+
+        context 'when is successfully got' do
+            before(:each) do
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: @session.id
+                }
+
+                get :join, params: parameters
+            end
+
+            it { should respond_with 200 }
+        end
+
+        context 'when is not successfully got - not found ' do
+            before do
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+
+                parameters = {
+                    id: -1234
+                }
+                get :join, params: parameters
+
+                @json = json_response
+                @errors = @json[:errors]
+            end
+
+            it 'should be to have an error' do
+                expect(@errors[:session]).to eql 'Record Not Found'
+            end
+
+            it { should respond_with 404 }
+        end
+
+        context 'when is no successfully getting because of authorization' do
+            before do
+                parameters = {
+                    id: @session.id
+                }
+                get :join, params: parameters
+            end
+
+            it { should respond_with 401 }
+        end
+    end
 end

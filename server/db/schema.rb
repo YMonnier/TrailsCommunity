@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161115120328) do
+ActiveRecord::Schema.define(version: 20161116132343) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "join_sessions", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "session_id"
+    t.index ["session_id"], name: "index_join_sessions_on_session_id", using: :btree
+    t.index ["user_id"], name: "index_join_sessions_on_user_id", using: :btree
+  end
 
   create_table "sessions", force: :cascade do |t|
     t.integer  "activity"
@@ -22,18 +29,24 @@ ActiveRecord::Schema.define(version: 20161115120328) do
     t.string   "arrival_place"
     t.date     "start_date"
     t.boolean  "close",           default: false
+    t.integer  "user_id"
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "nickname",        null: false
-    t.string   "email",           null: false
+    t.string   "nickname",           null: false
+    t.string   "email",              null: false
     t.string   "device"
-    t.string   "phone_number",    null: false
-    t.string   "password_digest", null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.string   "phone_number",       null: false
+    t.string   "password_digest",    null: false
+    t.integer  "current_session_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
+  add_foreign_key "join_sessions", "sessions"
+  add_foreign_key "join_sessions", "users"
+  add_foreign_key "sessions", "users"
 end

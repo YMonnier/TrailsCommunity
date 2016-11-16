@@ -6,6 +6,7 @@ class CreateUsers < ActiveRecord::Migration[5.0]
       t.string :device, null: true
       t.string :phone_number, null: false
       t.string :password_digest, null: false
+      t.integer :current_session_id, null: true
       t.timestamps
     end
   end

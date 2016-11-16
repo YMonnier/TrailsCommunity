@@ -1,3 +1,4 @@
+require 'bcrypt'
 class Api::SessionsController < ApplicationController
     before_action :authenticate_user
 
@@ -17,6 +18,11 @@ class Api::SessionsController < ApplicationController
     ##
     def create
         @session = Session.new(session_params)
+        @session.user_id = current_user.id
+
+        if params[:password]
+            @session.password = BCrypt::Password.create(params[:password])
+        end
         if @session.save
             created_request @session
         else
@@ -65,10 +71,29 @@ class Api::SessionsController < ApplicationController
         return not_found r
     end
 
+    ##
+    #
+    # Join the current session
+    #
+    ##
+    def join
+        id = params[:id]
+        if Session.exists?(id)
+            unless JoinSession.exists?(:user_id => current_user.id, :session_id => id)
+                JoinSession.create(user_id: current_user.id, session_id: id)
+            end
+            current_user.update_columns(current_session_id: id)
+
+            return ok_request ''
+        else
+            r = {session: 'Record Not Found'}
+            return not_found r
+        end
+    end
+
     private
     def session_params
         params.permit(:activity,
-        :password,
         :departure_place,
         :arrival_place,
         :start_date)

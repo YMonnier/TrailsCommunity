@@ -1,3 +1,3 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :nickname, :phone_number
+  attributes :id, :nickname, :phone_number, :current_session_id
 end
