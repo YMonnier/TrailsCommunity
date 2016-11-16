@@ -1,5 +1,6 @@
 # TrailsCommunity
 
+[![CI Status](https://travis-ci.org/YMonnier/TrailsCommunity.svg?branch=master)](https://travis-ci.org/YMonnier/TrailsCommunity)
 [![Android](https://img.shields.io/badge/Android-<4-green.svg?style=flat)](https://android.com)
 [![Rails 5.0.0.1](https://img.shields.io/badge/Rails-5.0.0.1-red.svg?style=flat)](http://rubyonrails.org)
 
