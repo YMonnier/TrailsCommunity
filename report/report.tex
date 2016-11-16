@@ -1,4 +1,4 @@
-\documentclass[titlepage]{report}
+\documentclass[titlepage, 12pt]{report}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -9,6 +9,9 @@
 \usepackage{chngcntr} % permits to reset chapter numerization in each part
 \usepackage{hyperref} % makes table of contents and list of figures clickable 
 \usepackage{makecell} % can create newline in a table cell easily
+\usepackage{scrextend}
+\addtokomafont{labelinglabel}{\sffamily}
+\usepackage{booktabs}
 
 %\hypersetup{colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black}
 
@@ -53,47 +56,7 @@
 
 \chapter{Introduction}
 
-\section{Introduction}
-\par
-L'objectif de ce projet est de réaliser une application Android d'assistant offroad en se focalisant sur sa conception UML. 
-
-\par
-L'application crée devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(randonnées, painball, vélo). De plus, chaque utilisateur pourra visualiser différentes statistiques en rapport avec ses activités réalisées précédemment.
-\par
-Ce rapport présentera la conception et la réalisation de l'application mobile en respectant la chronologie de notre étude : spécifications, étude UML, présentation du résultat puis un retour sur le déroulement du projet.
-\par D'un point de vue technique, l'application mobile sera développée en Java avec l'IDE Android Studio pour le client compatible uniquemment pour Android. Celui-ci communiquera avec un service web en Ruby(framework Ruby On Rails).
-
-\section{Répartition du travail}
-
-\par La majorité de la phase de conception a été réalisée à trois : les spécifications et la modélisation de l'axe fonctionnel ont été faites par le groupe au complet.
-Les diagrammes de séquence et d'activité ont été répartis entre nous, puis nous les avons tous passé en revue et modifié jusqu'à que nous soyons tous d'accord sur l'ensemble des diagrammes et des idées qu'elles véhiculent.
-
-\par Lors de la phase de développement, nous avons réparti les rôles de la manière suivante : \begin{itemize}
-	\item Ysée : Conception UMl, développement du serveur, déveleoppement de l'application mobile
-	\item Stéphen : Conception UML, développement de l'application mobile, rapport
-	\item Yann : Conception UML, rapport
-\end{itemize}
-\par Toutefois, vu l'objectif du projet, nous avons tous participé au développement du client, mais à un niveau d'implication différent en fonction des compétences des membres du groupe.
-
-\chapter{Analyse}
-\section{Dictionnaires}
-\subsection{Termes}
-
-
-\paragraph{Sondage} Un sondage est un tableau regroupant différent composant date/horaire ainsi que les réponses des différents utilisateurs.
-\paragraph{Lien} Un lien est un identifiant unique pour retrouver un sondage.
-\paragraph{Administrateur} Un administrateur est un utilisateur avec des droits supplémentaires. Il peut accéder à la création d’un sondage, à la modification et suppression d’un sondage qu’il a créé.
-\paragraph{Utilisateur} Un utilisateur est une personne qui utilise l’application B00DLE sans compte administrateur.
-\paragraph{Date} Une date correspond à un ensemble date en aaaa-mm-jj et une horaire en hh:mm.
-
-\subsection{Actions}
-\paragraph{Diffuser} Envoyer un e-mail du lien du sondage à l’ensemble des différentes adresses.
-\paragraph{Clôturer} Terminer le droit de répondre à un sondage.
-\paragraph{Sélectionner} Cocher dans une case à cocher une date.
-\paragraph{Générer} Créer un lien unique qui correspond à un sondage.
-
-
-\chapter{Introduction}
+Cette section fournit  une vue d'ensemble de tout ce qui est inclus dans ce document SRS. De plus, l'objectif de ce document est décrit et une liste de définitions est fournie.
 
 \section{Objectifs}
 
@@ -130,10 +93,12 @@ is to have its own priority.$>$
 Ce document est destiné dans un premier temps au correcteur désigné de l'Université de Toulon pour la correction de ce projet.
 Cependant, il sera alors disponible en public dans le dépot GitHub public utilisé durant le développement de l'application.
 L'ensemble de ce rapport est organisé de la manière suivant :
-- la présentation du client, sa la pré-conception et de ca conception UML.
-- puis vient la modélisation du serveur, ses conventions et l'ensemble de ses actions.
-- pour finir  une annexe avec l'ensemble des diagrammes nécessaire au développement de l'ensemble de l'application qui n'on pu être présenté
+\begin{enumerate}
+	\item la présentation du client, sa la pré-conception et de ca conception UML.
+	\item puis vient la modélisation du serveur, ses conventions et l'ensemble de ses actions.
+	\item pour finir  une annexe avec l'ensemble des diagrammes nécessaire au développement de l'ensemble de l'application qui n'on pu être présenté
 dans les partie du client et du serveur.
+\end{enumerate}
 
 $<$Describe the different types of reader that the document is intended for, 
 such as developers, project managers, marketing staff, users, testers, and 
@@ -142,27 +107,55 @@ organized. Suggest a sequence for reading the document, beginning with the
 overview sections and proceeding through the sections that are most pertinent to 
 each reader type.$>$
 
-\section{Project Scope Description du projet}
+\section{Description du projet}
 
 L'objectif de ce projet est de réaliser une application Android d'assistant offroad.
-L'application crée devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(randonnées, painball, vélo). 
+L'application créé devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(randonnées, painball, vélo). 
 De plus, chaque utilisateur pourra visualiser différentes statistiques en rapport avec ses activités réalisées précédemment.
 Il est plus que nécessaire pour ce genre d'application d'avoir un temps de réponse rapide du serveur. C'est pour cela que la stratégie
 principal du groupe est de réalisé un serveur dédié uniquemment pour l'application.
-De plus, les éxigences sur les régles de codage sont appliqué sur le client.
+De plus, les éxigences sur les règles de codage sont appliqué sur le client.
 
 $<$Provide a short description of the software being specified and its purpose, 
 including relevant benefits, objectives, and goals. Relate the software to 
 corporate goals or business strategies. If a separate vision and scope document 
 is available, refer to it rather than duplicating its contents here.$>$
 
-\section{Références}
+\section{Répartition du travail}
 
-//Les références a ajoutés...
-1. Le site du développeur android
-2. La doc oracle java
-3. AndroidHive
-4. Le document que le prof nous a parlé de commentcamarche
+\par La majorité de la phase de conception a été réalisée à trois : les spécifications et la modélisation de l'axe fonctionnel ont été faites par le groupe au complet.
+Les diagrammes de séquence et d'activité ont été répartis entre nous, puis nous les avons tous passé en revue et modifié jusqu'à que nous soyons tous d'accord sur l'ensemble des diagrammes et des idées qu'elles véhiculent.
+
+\par Lors de la phase de développement, nous avons réparti les rôles de la manière suivante : \begin{itemize}
+	\item Ysée : Conception UMl, développement du serveur, déveleoppement de l'application mobile
+	\item Stéphen : Conception UML, développement de l'application mobile, rapport
+	\item Yann : Conception UML, rapport
+\end{itemize}
+\par Toutefois, vu l'objectif du projet, nous avons tous participé au développement du client, mais à un niveau d'implication différent en fonction des compétences des membres du groupe.
+
+\section{Definitions}
+\subsection{Termes}
+
+\begin{labeling}{alligator}
+\item [session] une session est une activité disponible dans l’application
+\item [visiteur] personne n’étant pas identifier
+\item [utilisateur] personne identifié à l’application. Il possède les choix de créer ou de rejoindre une session
+\item [organisateur] utilisateur ayant créé une session et pouvant la gérer
+\item [participant] utilisateur qui a rejoint une session
+\item [waypoint] désigne un point de la route a atteindre ou doit avoir lieu un changement de cap
+\end{labeling}
+
+
+\section{Références}
+\begin{labeling}{alligator}
+	\item [The Institute of Electrical and Electronic Engineer NY USA] IEEE Recommented Practice for SRS, \url{http://www.utdallas.edu/~chung/RE/IEEE830-1993.pdf}
+	\item [Chalmers] IEEE standards - SRS Example, 2010, \url{http://www.cse.chalmers.se/~feldt/courses/reqeng/examples/srs_example_2010_group2.pdf}
+	\item [Droid5 Informatics Pvt Ltd] androidhive, 2016, \url{http://www.androidhive.info}
+	\item [Oracle] Java 8 Documentation, 2016, \url{https://docs.oracle.com/javase/8/docs/api/}
+	\item [Google] Android Documentation, 2016, \url{https://developer.android.com/guide}
+	\item [James Britt] Ruby Doc, 2016, \url{http://ruby-doc.org}
+	\item [Rails Community] Ruby On Rails Documentation, 2016, \url{http://rubyonrails.org}
+\end{labeling}
 
 $<$List any other documents or Web addresses to which this SRS refers. These may 
 include user interface style guides, contracts, standards, system requirements 
