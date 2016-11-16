@@ -95,11 +95,18 @@ class Api::SessionsController < ApplicationController
     #
     # Add a new waypoint to the current session.
     #
+    # Header application/json
+    # Header Authorization token
+    # {
+    #   "latitude": 43.179363,
+    #   "longitude": 5.717782
+    # }
+    #
     ##
     def waypoint
         id = params[:id]
         if Session.exists?(id)
-            @waypoint = Waypoint.new(waypoint_params)
+            @waypoint = Waypoint.new(coords_params)
             @waypoint.session_id = id
             if @waypoint.save
                 return ok_request ''
@@ -112,6 +119,35 @@ class Api::SessionsController < ApplicationController
         end
     end
 
+    ##
+    #
+    # Add a new coordinates to the
+    # current session linked by a user.
+    #
+    # Header application/json
+    # Header Authorization token
+    # {
+    #   "latitude": 43.179363,
+    #   "longitude": 5.717782
+    # }
+    #
+    ##
+    def coordinate
+        id = params[:id]
+        if Session.exists?(id)
+            @waypoint = Coordinate.new(coords_params)
+            @waypoint.session_id = id
+            @waypoint.user_id = current_user.id
+            if @waypoint.save
+                return ok_request ''
+            else
+                return bad_request @waypoint.errors
+            end
+        else
+            r = {session: 'Record Not Found'}
+            return not_found r
+        end
+    end
 
     private
     def session_params
@@ -121,8 +157,7 @@ class Api::SessionsController < ApplicationController
         :start_date)
     end
 
-    def waypoint_params
+    def coords_params
         params.permit(:latitude, :longitude)
     end
-
 end

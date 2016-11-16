@@ -7,7 +7,7 @@ Rails.application.routes.draw do
       resources :sessions, :only => [:create, :update, :show, :index] do
           get :join, on: :member
           post :waypoint, on: :member
+          post :coordinate, on: :member
       end
-      #get 'sessions/:id/join', to: 'sessions#join'
     end
 end
