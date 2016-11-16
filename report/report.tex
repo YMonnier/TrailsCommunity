@@ -58,22 +58,22 @@
 L'objectif de ce projet est de réaliser une application Android d'assistant offroad en se focalisant sur sa conception UML. 
 
 \par
-L'application crée devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(comme les randonnées, painball, ...). De plus, chaque utilisateur pourra visualiser ses statistiques(vitesse moyenne, distance et temps du parcours, ...) 
+L'application crée devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(randonnées, painball, vélo). De plus, chaque utilisateur pourra visualiser différentes statistiques en rapport avec ses activités réalisées précédemment.
 \par
 Ce rapport présentera la conception et la réalisation de l'application mobile en respectant la chronologie de notre étude : spécifications, étude UML, présentation du résultat puis un retour sur le déroulement du projet.
-\par D'un point de vue technique, l'application mobile sera développée sous android qui communiquera avec un service web en Ruby(framework Ruby On Rails).
+\par D'un point de vue technique, l'application mobile sera développée en Java avec l'IDE Android Studio pour le client compatible uniquemment pour Android. Celui-ci communiquera avec un service web en Ruby(framework Ruby On Rails).
 
 \section{Répartition du travail}
 
-\par La grande majorité de la phase de conception a été réalisée à trois : les spécifications et la modélisation de l'axe fonctionnel ont été faites par le groupe au complet.
-Les diagrammes de séquence et d'activité ont été répartis entre nous, puis nous les avons tous passé en revue et modifié jusqu'à que nous soyons tous d'accord.
+\par La majorité de la phase de conception a été réalisée à trois : les spécifications et la modélisation de l'axe fonctionnel ont été faites par le groupe au complet.
+Les diagrammes de séquence et d'activité ont été répartis entre nous, puis nous les avons tous passé en revue et modifié jusqu'à que nous soyons tous d'accord sur l'ensemble des diagrammes et des idées qu'elles véhiculent.
 
 \par Lors de la phase de développement, nous avons réparti les rôles de la manière suivante : \begin{itemize}
-	\item Ysée : XXX
-	\item Stéphen : XXX
-	\item Yann : XXX
+	\item Ysée : Conception UMl, développement du serveur, déveleoppement de l'application mobile
+	\item Stéphen : Conception UML, développement de l'application mobile, rapport
+	\item Yann : Conception UML, rapport
 \end{itemize}
-\par Toutefois, vu l'objectif du projet, nous avons tous participé au développement du client, mais à un niveau d'implication différent.
+\par Toutefois, vu l'objectif du projet, nous avons tous participé au développement du client, mais à un niveau d'implication différent en fonction des compétences des membres du groupe.
 
 \chapter{Analyse}
 \section{Dictionnaires}
@@ -96,12 +96,29 @@ Les diagrammes de séquence et d'activité ont été répartis entre nous, puis 
 \chapter{Introduction}
 
 \section{Objectifs}
+
+//A refaire : mal expliqué
+TrailsCommunity est une application Android développé en Java sous IDE Android Studio. Elle est composé d'un serveur développé en Ruby (Framework Ruby On Rails).
+La porté de l'application est l'ensemble des utilisateurs ayant pour objectifs de réalisé des activités en pleines air. Nous estimons une tranche d'âge entre 18 à 80 ans.
+Toutefois, elle peut aussi être utilisé par des professionelles ou des personnes voulant organisé ou suppervisé des sorties.
+La version sera disponible sur le Google play gratuitement. 
+
 $<$Identify the product whose software requirements are specified in this 
 document, including the revision or release number. Describe the scope of the 
 product that is covered by this SRS, particularly if this SRS describes only 
 part of the system or a single subsystem.$>$
 
 \section{Conventions}
+
+Le logo de l'application souhaite représenter la nature est les activités en pleines airs. 
+La typographie du nom TrailsCommunity est : ...
+
+//Faire une charte graphique -> ajouter a la TODO liste
+
+La liste des fonctionnalités et leurs priorités sont présentés plus tard dans ce rapport. Celle-ci 
+ont été déterminé avec l'ensemble des avis des membres du groupe. Le classement est rélisé par une échelle
+de 3 graduation : bas, moyen, haut.
+
 $<$Describe any standards or typographical conventions that were followed when 
 writing this SRS, such as fonts or highlighting that have special significance.  
 For example, state whether priorities  for higher-level requirements are assumed 
@@ -109,6 +126,15 @@ to be inherited by detailed requirements, or whether every requirement statement
 is to have its own priority.$>$
 
 \section{Intended Audience and Reading Suggestions}
+
+Ce document est destiné dans un premier temps au correcteur désigné de l'Université de Toulon pour la correction de ce projet.
+Cependant, il sera alors disponible en public dans le dépot GitHub public utilisé durant le développement de l'application.
+L'ensemble de ce rapport est organisé de la manière suivant :
+- la présentation du client, sa la pré-conception et de ca conception UML.
+- puis vient la modélisation du serveur, ses conventions et l'ensemble de ses actions.
+- pour finir  une annexe avec l'ensemble des diagrammes nécessaire au développement de l'ensemble de l'application qui n'on pu être présenté
+dans les partie du client et du serveur.
+
 $<$Describe the different types of reader that the document is intended for, 
 such as developers, project managers, marketing staff, users, testers, and 
 documentation writers. Describe what the rest of this SRS contains and how it is 
@@ -117,12 +143,27 @@ overview sections and proceeding through the sections that are most pertinent to
 each reader type.$>$
 
 \section{Project Scope Description du projet}
+
+L'objectif de ce projet est de réaliser une application Android d'assistant offroad.
+L'application crée devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(randonnées, painball, vélo). 
+De plus, chaque utilisateur pourra visualiser différentes statistiques en rapport avec ses activités réalisées précédemment.
+Il est plus que nécessaire pour ce genre d'application d'avoir un temps de réponse rapide du serveur. C'est pour cela que la stratégie
+principal du groupe est de réalisé un serveur dédié uniquemment pour l'application.
+De plus, les éxigences sur les régles de codage sont appliqué sur le client.
+
 $<$Provide a short description of the software being specified and its purpose, 
 including relevant benefits, objectives, and goals. Relate the software to 
 corporate goals or business strategies. If a separate vision and scope document 
 is available, refer to it rather than duplicating its contents here.$>$
 
 \section{Références}
+
+//Les références a ajoutés...
+1. Le site du développeur android
+2. La doc oracle java
+3. AndroidHive
+4. Le document que le prof nous a parlé de commentcamarche
+
 $<$List any other documents or Web addresses to which this SRS refers. These may 
 include user interface style guides, contracts, standards, system requirements 
 specifications, use case documents, or a vision and scope document. Provide 
@@ -133,6 +174,9 @@ including title, author, version number, date, and source or location.$>$
 \chapter{Description générale}
 
 \section{Perspective du produit}
+
+Est ce que c'est pertinent ? On en parle deja dans "Intended Audience and Reading Suggestions" et "Objectifs"
+
 $<$Describe the context and origin of the product being specified in this SRS.  
 For example, state whether this product is a follow-on member of a product 
 family, a replacement for certain existing systems, or a new, self-contained 
@@ -143,6 +187,9 @@ components of the overall system, subsystem interconnections, and external
 interfaces can be helpful.$>$
 
 \section{Fonctions du produit}
+
+Meme chose ici. Voir -> "Project Scope Description du projet"
+
 $<$Summarize the major functions the product must perform or must let the user 
 perform. Details will be provided in Section 3, so only a high level summary 
 (such as a bullet list) is needed here. Organize the functions to make them 
