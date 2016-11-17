@@ -60,54 +60,43 @@ Cette section fournit  une vue d'ensemble de tout ce qui est inclus dans ce docu
 
 \section{Objectifs}
 
-//A refaire : mal expliqué
-TrailsCommunity est une application Android développé en Java sous IDE Android Studio. Elle est composé d'un serveur développé en Ruby (Framework Ruby On Rails).
-La porté de l'application est l'ensemble des utilisateurs ayant pour objectifs de réalisé des activités en pleines air. Nous estimons une tranche d'âge entre 18 à 80 ans.
-Toutefois, elle peut aussi être utilisé par des professionelles ou des personnes voulant organisé ou suppervisé des sorties.
-La version sera disponible sur le Google play gratuitement. 
+L'objectif de ce document est de fournir une description détaillée des conditions requises pour l'application TrailsCommunity.
+Il illustrera le but et la description complète du développement du système.
+Il expliquera également les contraintes du système, l'interface et les intéractions avec les applications externes. Ce document est principalement destiné à être proposé à un client pour son approbation. C'est aussi une référence pour le développement de la première version du système pour l'équipe de développement.
 
-$<$Identify the product whose software requirements are specified in this 
-document, including the revision or release number. Describe the scope of the 
-product that is covered by this SRS, particularly if this SRS describes only 
-part of the system or a single subsystem.$>$
+\section{Portée}
 
-\section{Conventions}
+TrailsCommunity est une application mobile GPS qui permet au utilisateurs de connaitre en temps réel le positionnement des autres participants d'une activité de pleine air en cours. L'ensemble des activités sont regroupés en type qui seront limmité à une liste pré-défini.
+L'application doit être gratuite et simple d'utilisation.
+L'organisateur de l'activités devra fournir deux adresses. Une pour le point de départ de l'application et la deuxième pour le point d'arrivé. La création des sessions se fera directement sur l'application mobile.
+En outre, le logiciel a besoin à la fois d'Internet et de connexion GPS pour récupérer et afficher les résultats. Tous les systèmes d'informations sont conservés dans une base de données, qui se trouve sur un serveur web. Le logiciel intéragit également avec l'API Google Map qui permettra d'afficher et de tracer les différentes parcours des utilisateurs. De plus, le téléphone doit aussi comprendre un GPS pour pouvoir localiser l'utilisateur à tout moment. 
+L'application a également la capacité de représenter à la fois des informations sommaires et détaillées des différentes statistiques de l'utilisateur courant mais aussi des autres participants de la session en cours.
 
-Le logo de l'application souhaite représenter la nature est les activités en pleines airs. 
-La typographie du nom TrailsCommunity est : ...
+\section{Définitions}
+\begin{labeling}{alligator}
+	\item [session] une session est une activité disponible dans l’application
+	\item [visiteur] personne n’étant pas identifier
+	\item [utilisateur] personne identifié à l’application. Il possède les choix de créer ou de rejoindre une session
+	\item [organisateur] utilisateur ayant créé une session et pouvant la gérer
+	\item [participant] utilisateur qui a rejoint une session
+	\item [waypoint] désigne un point de la route a atteindre ou doit avoir lieu un changement de cap
+\end{labeling}
 
-//Faire une charte graphique -> ajouter a la TODO liste
 
-La liste des fonctionnalités et leurs priorités sont présentés plus tard dans ce rapport. Celle-ci 
-ont été déterminé avec l'ensemble des avis des membres du groupe. Le classement est rélisé par une échelle
-de 3 graduation : bas, moyen, haut.
+\section{Références}
+\begin{labeling}{alligator}
+	\item [The Institute of Electrical and Electronic Engineer NY USA] IEEE Recommented Practice for SRS, \url{http://www.utdallas.edu/~chung/RE/IEEE830-1993.pdf}
+	\item [Chalmers] IEEE standards - SRS Example, 2010, \url{http://www.cse.chalmers.se/~feldt/courses/reqeng/examples/srs_example_2010_group2.pdf}
+	\item [Droid5 Informatics Pvt Ltd] androidhive, 2016, \url{http://www.androidhive.info}
+	\item [Oracle] Java 8 Documentation, 2016, \url{https://docs.oracle.com/javase/8/docs/api/}
+	\item [Google] Android Documentation, 2016, \url{https://developer.android.com/guide}
+	\item [James Britt] Ruby Doc, 2016, \url{http://ruby-doc.org}
+	\item [Rails Community] Ruby On Rails Documentation, 2016, \url{http://rubyonrails.org}
+\end{labeling}
 
-$<$Describe any standards or typographical conventions that were followed when 
-writing this SRS, such as fonts or highlighting that have special significance.  
-For example, state whether priorities  for higher-level requirements are assumed 
-to be inherited by detailed requirements, or whether every requirement statement 
-is to have its own priority.$>$
+\section{Aperçu}
 
-\section{Intended Audience and Reading Suggestions}
-
-Ce document est destiné dans un premier temps au correcteur désigné de l'Université de Toulon pour la correction de ce projet.
-Cependant, il sera alors disponible en public dans le dépot GitHub public utilisé durant le développement de l'application.
-L'ensemble de ce rapport est organisé de la manière suivant :
-\begin{enumerate}
-	\item la présentation du client, sa la pré-conception et de ca conception UML.
-	\item puis vient la modélisation du serveur, ses conventions et l'ensemble de ses actions.
-	\item pour finir  une annexe avec l'ensemble des diagrammes nécessaire au développement de l'ensemble de l'application qui n'on pu être présenté
-dans les partie du client et du serveur.
-\end{enumerate}
-
-$<$Describe the different types of reader that the document is intended for, 
-such as developers, project managers, marketing staff, users, testers, and 
-documentation writers. Describe what the rest of this SRS contains and how it is 
-organized. Suggest a sequence for reading the document, beginning with the 
-overview sections and proceeding through the sections that are most pertinent to 
-each reader type.$>$
-
-\section{Description du projet}
+//Reprendre a partir d'ici
 
 L'objectif de ce projet est de réaliser une application Android d'assistant offroad.
 L'application créé devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(randonnées, painball, vélo). 
@@ -136,26 +125,11 @@ Les diagrammes de séquence et d'activité ont été répartis entre nous, puis 
 \section{Definitions}
 \subsection{Termes}
 
-\begin{labeling}{alligator}
-\item [session] une session est une activité disponible dans l’application
-\item [visiteur] personne n’étant pas identifier
-\item [utilisateur] personne identifié à l’application. Il possède les choix de créer ou de rejoindre une session
-\item [organisateur] utilisateur ayant créé une session et pouvant la gérer
-\item [participant] utilisateur qui a rejoint une session
-\item [waypoint] désigne un point de la route a atteindre ou doit avoir lieu un changement de cap
-\end{labeling}
+
 
 
 \section{Références}
-\begin{labeling}{alligator}
-	\item [The Institute of Electrical and Electronic Engineer NY USA] IEEE Recommented Practice for SRS, \url{http://www.utdallas.edu/~chung/RE/IEEE830-1993.pdf}
-	\item [Chalmers] IEEE standards - SRS Example, 2010, \url{http://www.cse.chalmers.se/~feldt/courses/reqeng/examples/srs_example_2010_group2.pdf}
-	\item [Droid5 Informatics Pvt Ltd] androidhive, 2016, \url{http://www.androidhive.info}
-	\item [Oracle] Java 8 Documentation, 2016, \url{https://docs.oracle.com/javase/8/docs/api/}
-	\item [Google] Android Documentation, 2016, \url{https://developer.android.com/guide}
-	\item [James Britt] Ruby Doc, 2016, \url{http://ruby-doc.org}
-	\item [Rails Community] Ruby On Rails Documentation, 2016, \url{http://rubyonrails.org}
-\end{labeling}
+
 
 $<$List any other documents or Web addresses to which this SRS refers. These may 
 include user interface style guides, contracts, standards, system requirements 
