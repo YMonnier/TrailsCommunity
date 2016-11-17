@@ -149,6 +149,14 @@ class Api::SessionsController < ApplicationController
         end
     end
 
+    def test
+        data = {
+            latitude: 12,
+            longitude: 14
+        }
+        ok_request NotificationManager::push_waipoint current_user.current_session_id, data
+    end
+
     private
     def session_params
         params.permit(:activity,

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
           get :join, on: :member
           post :waypoint, on: :member
           post :coordinate, on: :member
+          get :test, on: :member
       end
     end
 end

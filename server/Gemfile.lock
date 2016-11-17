@@ -57,9 +57,15 @@ GEM
       railties (>= 3.0.0)
     ffaker (2.2.0)
     ffi (1.9.14)
+    gcm (0.1.1)
+      httparty
+      json
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    httparty (0.14.0)
+      multi_xml (>= 0.5.2)
     i18n (0.7.0)
+    json (2.0.2)
     jsonapi (0.1.1.beta6)
       jsonapi-parser (= 0.1.1.beta3)
       jsonapi-renderer (= 0.1.1.beta1)
@@ -83,6 +89,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.9.1)
+    multi_xml (0.5.5)
     nio4r (1.2.1)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
@@ -168,6 +175,7 @@ DEPENDENCIES
   byebug
   factory_girl_rails
   ffaker
+  gcm
   knock (~> 1.5)
   listen (~> 3.0.5)
   pg (~> 0.18)
