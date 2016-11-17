@@ -13,6 +13,7 @@ RSpec.describe Session, :type => :model do
     it { should respond_to :arrival_place }
     it { should respond_to :start_date }
     it { should respond_to :user_id }
+    it { should respond_to :lock }
 
     it { should be_valid }
 
