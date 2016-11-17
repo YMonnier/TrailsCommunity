@@ -37,6 +37,35 @@ RSpec.describe Api::SessionsController, :type => :controller do
 
             it { expect(@data[:close]).to eql false }
 
+            it { expect(@data[:lock]).to eql true }
+
+            it { should respond_with 201 }
+        end
+
+        context 'when is successfully created ith unlock session' do
+            before do
+                @user = FactoryGirl.create :user
+                @session = FactoryGirl.create :session
+
+                # Add Authorization
+                token = generate_token @user
+                api_authorization_header token
+                parameters = {
+                    activity: @session.activity,
+                    departure_place: @session.departure_place,
+                    arrival_place: @session.arrival_place,
+                    start_date: @session.start_date
+                }
+                post :create, params: parameters
+
+                @json = json_response
+                @data = @json[:data]
+            end
+
+            it { expect(@data[:close]).to eql false }
+
+            it { expect(@data[:lock]).to eql false }
+
             it { should respond_with 201 }
         end
 

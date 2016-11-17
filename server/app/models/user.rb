@@ -1,6 +1,6 @@
 class User < ApplicationRecord
     has_secure_password
-
+    has_many :sessions
     validates :nickname,
               presence: true,
               uniqueness: true,

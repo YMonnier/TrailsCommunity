@@ -37,7 +37,7 @@ class Api::SessionsController < ApplicationController
     #
     ##
     def index
-        ok_request Session.all
+        ok_request Session.all, %w(session, user)
     end
 
     ##
@@ -50,7 +50,7 @@ class Api::SessionsController < ApplicationController
     ##
     def show
         @session = Session.find params[:id]
-        ok_request @session
+        ok_request @session, %w(user, coordinates)
 
     rescue ActiveRecord::RecordNotFound
         r = {session: 'Record Not Found'}
