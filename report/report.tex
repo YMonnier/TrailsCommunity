@@ -96,241 +96,63 @@ L'application a également la capacité de représenter à la fois des informati
 
 \section{Aperçu}
 
-//Reprendre a partir d'ici
-
-L'objectif de ce projet est de réaliser une application Android d'assistant offroad.
-L'application créé devra permettre d'enregistrer, de visualiser et de partager des positions GPS entre un groupe d'utilisateur. Cette application pourra donc être utilisé dans le cadre d'activité en groupe et en plein air(randonnées, painball, vélo). 
-De plus, chaque utilisateur pourra visualiser différentes statistiques en rapport avec ses activités réalisées précédemment.
-Il est plus que nécessaire pour ce genre d'application d'avoir un temps de réponse rapide du serveur. C'est pour cela que la stratégie
-principal du groupe est de réalisé un serveur dédié uniquemment pour l'application.
-De plus, les éxigences sur les règles de codage sont appliqué sur le client.
-
-$<$Provide a short description of the software being specified and its purpose, 
-including relevant benefits, objectives, and goals. Relate the software to 
-corporate goals or business strategies. If a separate vision and scope document 
-is available, refer to it rather than duplicating its contents here.$>$
-
-\section{Répartition du travail}
-
-\par La majorité de la phase de conception a été réalisée à trois : les spécifications et la modélisation de l'axe fonctionnel ont été faites par le groupe au complet.
-Les diagrammes de séquence et d'activité ont été répartis entre nous, puis nous les avons tous passé en revue et modifié jusqu'à que nous soyons tous d'accord sur l'ensemble des diagrammes et des idées qu'elles véhiculent.
-
-\par Lors de la phase de développement, nous avons réparti les rôles de la manière suivante : \begin{itemize}
-	\item Ysée : Conception UMl, développement du serveur, déveleoppement de l'application mobile
-	\item Stéphen : Conception UML, développement de l'application mobile, rapport
-	\item Yann : Conception UML, rapport
-\end{itemize}
-\par Toutefois, vu l'objectif du projet, nous avons tous participé au développement du client, mais à un niveau d'implication différent en fonction des compétences des membres du groupe.
-
-\section{Definitions}
-\subsection{Termes}
-
-
-
-
-\section{Références}
-
-
-$<$List any other documents or Web addresses to which this SRS refers. These may 
-include user interface style guides, contracts, standards, system requirements 
-specifications, use case documents, or a vision and scope document. Provide 
-enough information so that the reader could access a copy of each reference, 
-including title, author, version number, date, and source or location.$>$
-
+Le reste de ce document comprend quatres chapitres. Le second fournit une vue d'ensemble de la fonctionnalité du système et de l'intéraction du système avec d'autres systèmes. En outre, le chapitre mentionne également les contraintes du systèmes et les hypothèses sur e produit. Le troisième chapitre fournit la conception et la description du serveur.
+Différentes techniques de spécification sont utilisées afin de préciser les exigences plus précisement pour différents publics. Cependant, le lecteur principal sera le correcteur du projet.
+Le quatrième chapitre regroupe l'ensemble des annexes du projet. Ce sont en globalité des diagrammes UML. Ils permettent soit une meilleurs finesse de compréhension du système soit, une meilleurs spécification métier du serveur.
 
 \chapter{Description générale}
 
 \section{Perspective du produit}
 
-Est ce que c'est pertinent ? On en parle deja dans "Intended Audience and Reading Suggestions" et "Objectifs"
-
-$<$Describe the context and origin of the product being specified in this SRS.  
-For example, state whether this product is a follow-on member of a product 
-family, a replacement for certain existing systems, or a new, self-contained 
-product. If the SRS defines a component of a larger system, relate the 
-requirements of the larger system to the functionality of this software and 
-identify interfaces between the two. A simple diagram that shows the major 
-components of the overall system, subsystem interconnections, and external 
-interfaces can be helpful.$>$
+Ce système ce compose de deux parties : une application mobile et un serveur web.
+L'application Android sera utilisé pour la gestion des sessions. Elle permetrta d'afficher en fonction d'une session sélectionner, sur une carte Google map les différentes positions des particiapants.
+Le serveur sera tant qu'à lui capable de gérer la récolte et la gestion des données envoyer par l'application.
+L'application mobile devra communiquer avec un GPS qui se situe au sein du mobile. Le GPS fournira les emplacements de l'utilisateur et des autres participants. Mais aussi des statistiques sur l'utilisateur courant ainsi que chat pour permettre au différents membres de pouvoir communiquer ensemble.
+De manière transparente comme il s'agit d'un produit axé sur la récolte de données, il lui faudra une base de données. La communication avec la base de données se passera via internet.
 
 \section{Fonctions du produit}
 
-Meme chose ici. Voir -> "Project Scope Description du projet"
+Avec l'application mobile, l'utilisateur pourra ce créer un compte utilisateur. Cette première étape va permettre de collecter différentes informations primordiales sur l'utilisateur. 
+Après la réalisation de cette première étape, les utilisateurs pourront sélectionner des sessions. Le résultat sera basé sur les sessions que l'utilisateur sélectionne. Il existe 2 types de sessions. Les sessions actives, elle sont encore réalisable et ne sont pas encore clôturées. Cela veut donc dire que leurs dates de fin ne sont pas dépassées. Dans ces sessions, un chat est disponible en temps réel est disponible permettant de communiquer avec tout les participants.
+Les sessions clôturé dont l'utilisateur à participé. Elle ce classe dans la section historique qui permet à l'utilisateur courant de pouvoir revisualisé ses anciennes statistiques.
+L'application va permet après sélection d'une session, d'afficher une carte Google map ainsi que ensemble de point permetant de décrire le déplacement des différents utilisateurs actif de la session.
+De plus, les sessions pourront être directement créée depuis l'application.
 
-$<$Summarize the major functions the product must perform or must let the user 
-perform. Details will be provided in Section 3, so only a high level summary 
-(such as a bullet list) is needed here. Organize the functions to make them 
-understandable to any reader of the SRS. A picture of the major groups of 
-related requirements and how they relate, such as a top level data flow diagram 
-or object class diagram, is often effective.$>$
+\section{Caractéristique de l'utilisateur}
 
-\section{Classes et caractéristiques des utilisateurs}
-$<$Identify the various user classes that you anticipate will use this product.  
-User classes may be differentiated based on frequency of use, subset of product 
-functions used, technical expertise, security or privilege levels, educational 
-level, or experience. Describe the pertinent characteristics of each user class.  
-Certain requirements may pertain only to certain user classes. Distinguish the 
-most important user classes for this product from those who are less important 
-to satisfy.$>$
+Il existe quatres types d'utilisateurs qui interagissent avec le système : le visiteur, l'utilisateur, le participant et l'organisateur. Chacun de ces trois types d'utilisateurs a une utilisation différente du système affin que chacun ait leurs propres exigences.
 
-\section{Environnement d'exploitation}
-$<$Describe the environment in which the software will operate, including the 
-hardware platform, operating system and versions, and any other software 
-components or applications with which it must peacefully coexist.$>$
+Les visiteurs de l'application mobile ne peuvent utiliser TrailsCommunity si il ne sont pas connecter. Cela signifie que le visiteur doit être en mesure de pouvoir créer un compte utilisateur et ainsi pouvoir se connecter.
 
-\section{Contraintes de conception et d'implémentation}
-$<$Describe any items or issues that will limit the options available to the 
-developers. These might include: corporate or regulatory policies; hardware 
-limitations (timing requirements, memory requirements); interfaces to other 
-applications; specific technologies, tools, and databases to be used; parallel 
-operations; language requirements; communications protocols; security 
-considerations; design conventions or programming standards (for example, if the 
-customer’s organization will be responsible for maintaining the delivered 
-software).$>$
+L'utilisateur qui sont des visiteurs connecter peuvent alors visualiser l'ensemble des sessions actives mais aussi leur historique de session.
+De plus, ils peuvent modifier leurs coordonnées personnelles.
 
-\section{Documentation utilisateur}
-$<$List the user documentation components (such as user manuals, on-line help, 
-and tutorials) that will be delivered along with the software. Identify any 
-known user documentation delivery formats or standards.$>$
+Les participants sont des utilisateurs qui ont rejoint une session active, ils peuvent alors ajouter un waypoint et le partager à l'ensemble des participants. Ils peuvent aussi communiquer via un chat en temps réel. De plus, ils peuvent consulter leurs statistiques en cours.
+
+Enfin, les organisateurs sont des utilisateurs qui ont créée une nouvelle session. En effet, ce sont eux dont l'impulsion est venu pour organiser une activités. Ce sont eux qui vont pouvoir faire partager le mot de passe de la session pour pouvoir la rejoindre.
+
+\section{Contraintes}
+
+L'application mobile est limitées au système de navigation GPS du téléphone portable. Comme il existe plusieurs système de fabricants de GPS, la précision n'est pas la même pour chacun d'entre eux. En outre, il peut y avoir une différences de navigation en fonction des téléphone.
+
+La connexion internet est également une contrainte pour l'application. Puisqu'elle récupère les données de la base de données, il est crucial qu'il existe une connexion. De plus en fonction du réseau, il est possible d'avoir une différence du temps de réception des données plus lente.
+Il existera une fonctionnalité offline qui permettra entre autre de pouvoir basculer sur un nouveau protocole pour que les utilisateurs puissent continuer à communiquer entre eux. L'ensemble des données récoltés sont alors stockées dans une base de données internet du mobile. Lors de la récupération du réseau internet, l'application va alors recevoir l'ensemble des données collectés en dur et va reprendre son état d'envoi naturel.
 
 \section{Hypothèses et dépendances}
 
-$<$List any assumed factors (as opposed to known facts) that could affect the 
-requirements stated in the SRS. These could include third-party or commercial 
-components that you plan to use, issues around the development or operating 
-environment, or constraints. The project could be affected if these assumptions 
-are incorrect, are not shared, or change. Also identify any dependencies the 
-project has on external factors, such as software components that you intend to 
-reuse from another project, unless they are already documented elsewhere (for 
-example, in the vision and scope document or the project plan).$>$
+Le produit sera toujours utilisé sur les téléphones mobiles Android qui ont assez de performances. Si le téléphone ne dispose pas de ressources matérielles suffisantes pour l'application. Elle peut ne pas fonctionner comme prévu ou même pas du tout.
 
+Une autre hypothèse est que les composants GPS de tous les téléphones fonctionnent de la même manière. Si les téléphone on un système GPS qu différent des normes, l'application doit être spécifiquement adaptée à chaque interface.
 
-\chapter{Exigences de l'interface externe}
+\section{Répartition des besoins}
 
-\section{Interfaces des utilisateurs}
-$<$Describe the logical characteristics of each interface between the software 
-product and the users. This may include sample screen images, any GUI standards 
-or product family style guides that are to be followed, screen layout 
-constraints, standard buttons and functions (e.g., help) that will appear on 
-every screen, keyboard shortcuts, error message display standards, and so on.  
-Define the software components for which a user interface is needed. Details of 
-the user interface design should be documented in a separate user interface 
-specification.$>$
+Dans le cas où le projet est retardé, certaines exigences pourraient être transférées au prochaine version de l'application. Les exigences avec une priorités haute doivent être développé lors du rendu de la première version de l'application.
 
-\section{Interfaces logicielles}
-$<$Describe the connections between this product and other specific software 
-components (name and version), including databases, operating systems, tools, 
-libraries, and integrated commercial components. Identify the data items or 
-messages coming into the system and going out and describe the purpose of each.  
-Describe the services needed and the nature of communications. Refer to 
-documents that describe detailed application programming interface protocols.  
-Identify data that will be shared across software components. If the data 
-sharing mechanism must be implemented in a specific way (for example, use of a 
-global data area in a multitasking operating system), specify this as an 
-implementation constraint.$>$
+\chapter{Exigences particulières}
 
-\section{Interfaces de communication}
-$<$Describe the requirements associated with any communications functions 
-required by this product, including e-mail, web browser, network server 
-communications protocols, electronic forms, and so on. Define any pertinent 
-message formatting. Identify any communication standards that will be used, such 
-as FTP or HTTP. Specify any communication security or encryption issues, data 
-transfer rates, and synchronization mechanisms.$>$
+Cette section contient toutes les exigences fonctionnelles et de qualité du système. Il donne une description du système et de toutes ses caractéristiques.
 
+\section{Exigences externe de l'interface}
 
-\chapter{Caractéristiques du système}
-$<$This template illustrates organizing the functional requirements for the 
-product by system features, the major services provided by the product. You may 
-prefer to organize this section by use case, mode of operation, user class, 
-object class, functional hierarchy, or combinations of these, whatever makes the 
-most logical sense for your product.$>$
-
-\section{Fonction système 1}
-$<$Don’t really say “System Feature 1.” State the feature name in just a few 
-words.$>$
-
-\subsection{Description et priorité}
-$<$Provide a short description of the feature and indicate whether it is of 
-High, Medium, or Low priority. You could also include specific priority 
-component ratings, such as benefit, penalty, cost, and risk (each rated on a 
-relative scale from a low of 1 to a high of 9).$>$
-
-\subsection{Séquence de stimulation / réponse}
-$<$List the sequences of user actions and system responses that stimulate the 
-behavior defined for this feature. These will correspond to the dialog elements 
-associated with use cases.$>$
-
-\subsection{Exigences fonctionnelles}
-$<$Itemize the detailed functional requirements associated with this feature.  
-These are the software capabilities that must be present in order for the user 
-to carry out the services provided by the feature, or to execute the use case.  
-Include how the product should respond to anticipated error conditions or 
-invalid inputs. Requirements should be concise, complete, unambiguous, 
-verifiable, and necessary. Use “TBD” as a placeholder to indicate when necessary 
-information is not yet available.$>$
-
-$<$Each requirement should be uniquely identified with a sequence number or a 
-meaningful tag of some kind.$>$
-
-REQ-1:	REQ-2:
-
-\section{System Feature 2 (and so on)}
-
-
-\chapter{Autres exigences non fonctionnelles}
-
-\section{Exigences de performance}
-$<$If there are performance requirements for the product under various 
-circumstances, state them here and explain their rationale, to help the 
-developers understand the intent and make suitable design choices. Specify the 
-timing relationships for real time systems. Make such requirements as specific 
-as possible. You may need to state performance requirements for individual 
-functional requirements or features.$>$
-
-\section{Safety Requirements}
-$<$Specify those requirements that are concerned with possible loss, damage, or 
-harm that could result from the use of the product. Define any safeguards or 
-actions that must be taken, as well as actions that must be prevented. Refer to 
-any external policies or regulations that state safety issues that affect the 
-product’s design or use. Define any safety certifications that must be 
-satisfied.$>$
-
-\section{Exigences de sécurité}
-$<$Specify any requirements regarding security or privacy issues surrounding use 
-of the product or protection of the data used or created by the product. Define 
-any user identity authentication requirements. Refer to any external policies or 
-regulations containing security issues that affect the product. Define any 
-security or privacy certifications that must be satisfied.$>$
-
-\section{Attributs de qualité du logiciel}
-$<$Specify any additional quality characteristics for the product that will be 
-important to either the customers or the developers. Some to consider are: 
-adaptability, availability, correctness, flexibility, interoperability, 
-maintainability, portability, reliability, reusability, robustness, testability, 
-and usability. Write these to be specific, quantitative, and verifiable when 
-possible. At the least, clarify the relative preferences for various attributes, 
-such as ease of use over ease of learning.$>$
-
-\chapter{Autres exigences}
-$<$Define any other requirements not covered elsewhere in the SRS. This might 
-include database requirements, internationalization requirements, legal 
-requirements, reuse objectives for the project, and so on. Add any new sections 
-that are pertinent to the project.$>$
-
-\section{Annexe A: Glossaire}
-%see https://en.wikibooks.org/wiki/LaTeX/Glossary
-$<$Define all the terms necessary to properly interpret the SRS, including 
-acronyms and abbreviations. You may wish to build a separate glossary that spans 
-multiple projects or the entire organization, and just include terms specific to 
-a single project in each SRS.$>$
-
-\section{Annexe B: Modèles d'analyse}
-$<$Optionally, include any pertinent analysis models, such as data flow 
-diagrams, class diagrams, state-transition diagrams, or entity-relationship 
-diagrams.$>$
-
-\section{Annexe C: Liste à déterminer}
-$<$Collect a numbered list of the TBD (to be determined) references that remain 
-in the SRS so they can be tracked to closure.$>$
 
 \end{document}          
