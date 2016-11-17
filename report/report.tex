@@ -154,5 +154,80 @@ Cette section contient toutes les exigences fonctionnelles et de qualité du sys
 
 \section{Exigences externe de l'interface}
 
+Cette section fournit une description détaillée de toutes les entrées et sorties du système. Il donne également une description des interfaces homme machine et fournit des prototypes de base de l'interface pour l'utilisateur.
+
+\section{Les interfaces utilisateurs}
+
+Un visiteur de l'application mobile devrait voir la page d'ouveture de session quand il ouvre l'application. Pour la connexion au compte utilisateur, il lui est absolument nécessaire de posséder un compte utilisateur composé d"'une adresse mail et du mot de passe associé.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour la connexion}
+	\label{login}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/login.png}
+\end{figure}
+
+Pour la création d'un compte utilisateur, il est nécessaire de remplir l'ensemble des champs de l'interface. Toutefois, il sera possible de modifier son pseudonyme ainsi que son numéro de téléphone.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour la création d'un compte utilisateur}
+	\label{create_user_account}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/register.png}
+\end{figure}
+
+Après la connexion à un compte utilisateur, celui-ci peut alors choisir entre des sessions actives ou des sessions clôturer qui sont dans la liste des historiques. De plus, le bouton avec l'icône d'une personne permet d'accéder aux données utilisateurs. L'icône plus permet de créer une nouvelle session.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour l'affichage des différentes sessions}
+	\label{all_sessions}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/session_view.png}
+\end{figure}
+
+Pour la modification des données utilisateurs, seulement le pseudonyme et le numéro de téléphone peut être modifié.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour la modification des données utilisateurs}
+	\label{modify_user_account}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/modify_user_profile.png}
+\end{figure}
+
+La création d'une session possède de nombreux champs texte obligatoire. Le champs du mot de passe ne sera connu que par le créateur de la session.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour la création d'une session}
+	\label{create_session}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/create_session.png}
+\end{figure}
+
+La maquette principal est l'affichage des différentes positions des participants de la session courante. Sur cette maquette nous pouvons aussi voir comment l'utilisateur peut acccepter ou non un waypoint partagé par un autre participant.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour l'affichage des différentes positions des participants et de réponse au partage d'un waypoint.}
+	\label{session_view}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/session_marker.png}
+\end{figure}
+
+La maquette suivante présente le chat d'une session courante.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour le chat d'une session courante}
+	\label{chat}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/chat.png}
+\end{figure}
+
+Cette figure montre l'affichage des statistiques du session courante.
+
+\begin{figure}[h]
+	\caption{Maquette de l'IHM pour l'affichage des statistiques d'une session courante}
+	\label{login}
+	\centering
+	\includegraphics[scale=0.2]{Images/mockups/statistics.png}
+\end{figure}
 
 \end{document}          
