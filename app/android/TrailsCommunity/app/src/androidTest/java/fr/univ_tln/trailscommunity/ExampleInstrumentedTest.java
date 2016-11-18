@@ -6,9 +6,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-
 /**
  * Instrumentation test, which will execute on an Android device.
  *
@@ -21,6 +18,6 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void putTextOnEmailFied() {
-        onView(withId());
+        
     }
 }
