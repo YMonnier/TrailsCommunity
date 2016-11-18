@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity;
+package fr.univ_tln.trailscommunity.features.session;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -6,6 +6,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import fr.univ_tln.trailscommunity.R;
 
 public class SessionActivity extends AppCompatActivity {
 

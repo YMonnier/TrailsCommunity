@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity;
+package fr.univ_tln.trailscommunity.features.root;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.univ_tln.trailscommunity.utils.CustomRequest;
+
+import fr.univ_tln.trailscommunity.R;
 
 public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
 
