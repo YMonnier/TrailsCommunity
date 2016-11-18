@@ -50,7 +50,7 @@ class Api::SessionsController < ApplicationController
     ##
     def show
         @session = Session.find params[:id]
-        ok_request @session, %w(user, coordinates)
+        ok_request @session, %w(user, coordinates, waypoints)
 
     rescue ActiveRecord::RecordNotFound
         r = {session: 'Record Not Found'}
@@ -162,7 +162,8 @@ class Api::SessionsController < ApplicationController
         params.permit(:activity,
         :departure_place,
         :arrival_place,
-        :start_date)
+        :start_date,
+        :close)
     end
 
     def coords_params

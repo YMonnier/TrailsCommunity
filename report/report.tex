@@ -10,8 +10,6 @@
 \usepackage{hyperref} % makes table of contents and list of figures clickable 
 \usepackage{makecell} % can create newline in a table cell easily
 \usepackage{scrextend}
-\addtokomafont{labelinglabel}{\sffamily}
-\usepackage{booktabs}
 
 %\hypersetup{colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black}
 
@@ -52,7 +50,7 @@
 
 \listoffigures 
 
-\part{Client TrailsCommunity}
+\part{Spécification des exigences logicielles}
 
 \chapter{Introduction}
 
@@ -247,12 +245,826 @@ La communication entre la base de données et l'application se compose des opér
 
 Cette section comprend les exigences qui spécifient toutes les actions fondamentales du système logiciel.
 
+
 \section{Visiteur}
 
 \subsection{Exigence fonctionnelle 1.1}
 
-ID : SPEC_FONC_001
-TITRE : Télécharger l'application mobile
-DESCRIPTION : 
+
+\part{Serveur TrailsCommunity}
+
+\chapter{Introduction}
+
+\section{Conventions}
+\begin{itemize}
+	\item \textbf{Client} : Application client.
+	\item \textbf{Statut} : Code réponse de la requête HTTP
+	\item Toutes les réponses possibles sont listés sous la catégorie 'Réponse'
+	\item Toutes les réponses sont du format JSON
+\end{itemize}
+
+
+\section{Codes statut}
+
+\paragraph{} Tous les codes de statut sont des standards HTTP. Cette API utilisera les suivants : 
+\begin{itemize}
+	\item $ 2XX $ - Succès de la requête
+	\item $ 4XX $ - Erreur du côté client
+	\item $ 5XX $ - Erreur du côté serveur		
+\end{itemize}
+
+\paragraph{}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Code statut & Description \\
+		\hline \hline
+		$ 200 $ & Requête traitée avec succès \\
+		\hline 
+		$ 201 $ & Requête traitée avec succès et création d'un document \\	
+		\hline 
+		$ 202 $ & Requête traitée avec succès mais pas d'information à renvoyer \\
+		\hline \hline 
+		$ 400 $ & La syntaxe de la requête est erronée \\	
+		\hline 
+		$ 401 $ & Une authentification est nécessaire pour accéder à la ressource \\	
+		\hline
+		$ 404 $ & Ressource non trouvée \\
+		\hline \hline
+		$ 500 $ & Erreur interne du serveur \\
+		\hline
+		$ 503 $ & Service temporairement indisponible ou en maintenance \\ 	
+		\hline
+	\end{tabular}
+\end{center}
+
+\chapter{Ressources}
+
+%
+% Authentification
+%
+\section{Authentification}
+\subsection{Requête}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Méthode & URL \\
+		\hline
+		$ POST $ 
+		&
+		\begin{lstlisting}
+api/login/auth_token
+		\end{lstlisting} 
+		\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Type & Paramètres & Valeurs \\
+		\hline
+		$ HEADER $ & 
+		\begin{lstlisting}
+Application/json
+		\end{lstlisting} &
+		$ String $ \\ \hline
+		$ JSON $ & 
+		\begin{lstlisting}
+{
+	"auth": {
+		"email": "mail@mail.com",
+		"password": "FZ,f235nDE",
+	}
+}
+		\end{lstlisting} & \makecell{$ String $ \\ $ String $} \\
+		\hline
+		
+	\end{tabular}
+\end{center}
+
+\par $ email $ : correspond à l'adresse mail valide de l'utilisateur
+\par $ password $ : mot de passe de l'utilisateur
+
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \begin{lstlisting}
+{ "jwt": <Authorization> }
+		\end{lstlisting} \\ 
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+\par $ Authorization ( string ) $ - Tous les autres appels nécessitant une
+authentification doivent avoir cette clé dans le header.
+
+%
+% Inscription
+%
+
+\section{Inscription}
+
+\subsection{Requête}
+
+\paragraph{} Enregistrement d'un utilisateur dans le système.
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ POST $ 
+	&
+	\begin{lstlisting}
+api/users/
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\
+	\hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Application/json
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	$ JSON $ & 
+	\begin{lstlisting}
+{
+	"nickname": "Arthur83",
+	"email": "apaul@custom.com",
+	"phone_number": "+33651678908",
+	"password": "myPassword33",
+	"password_confirmation": "myPassword33"
+}
+	\end{lstlisting} & \makecell{$ String $ \\ $ String $ \\ $ String $ \\ $ String $ \\ $ String $} \\ 
+	\hline
+	
+	\end{tabular}
+\end{center}
+
+\par $ nickname $ : pseudonyme de l'utilisateur
+\par $ email $ : email de l'utilisateur non nul et valide
+\par $ password $ : mot de passe d'utilisateur
+\par $ password_confirmation $ : confirmation du mot de passe de l'utilisateur. Il doit être identique à $ password $.
+
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \begin{lstlisting}
+{
+  "data": {
+    "id": 2,
+    "nickname": "Arthur83",
+    "phone_number": "+33651678908",
+    "current_session_id": null
+  }
+}
+\end{lstlisting} \\ 
+\hline
+$ 400 $ & \begin{lstlisting}
+{
+  "errors": {
+    "nickname": [
+      "has already been taken"
+    ],
+    "email": [
+      "is invalid"
+    ]
+  }
+}
+		\end{lstlisting} \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+%
+% Ajout d'une session
+%
+
+\section{Ajout d'une session}
+
+\subsection{Requête}
+
+\paragraph{} Permet d'ajouter une nouvelle session dans le serveur. Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ POST $ 
+	&
+	\begin{lstlisting}
+api/sessions/
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\
+	\hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Application/json
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Authorization
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	$ JSON $ & 
+	\begin{lstlisting}
+{
+	"activity": 1,
+	"password": "lockSessionPsw",
+	"departure_place": "43.179363;5.717782",
+	"arrival_place": "43.191168;5.730819",
+	"start_date": "2016-11-20"
+}
+	\end{lstlisting} & \makecell{$ Integer $ \\ $ String $ \\ $ String $ \\ $ String $ \\ $ Date $} \\ 
+	\hline
+	
+	\end{tabular}
+\end{center}
+
+\par $ activity $ : identifiant de l'activité. (1: randonnée, 2: vélo, ...)
+\par $ password $ : mot de passe de la session, permet de restreindre l'entrée.
+\par $ departure\_place $ : lieu de départ. Couple de position géographique $(latitude;longitude)$
+\par $ arrival\_place $ : lieu d'arrivée. Couple de position géographique $(latitude;longitude)$
+
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \begin{lstlisting}
+{
+  "data": {
+    "id": 5,
+    "activity": 1,
+    "departure_place": "43.179363;5.717782",
+    "arrival_place": "43.191168;5.730819",
+    "start_date": "2016-11-20",
+    "close": false,
+    "lock": true,
+    "user": {
+      "id": 1,
+      "nickname": "Raptor234",
+      "phone_number": "+33623569450",
+      "current_session_id": null
+    },
+    "coordinates": [],
+    "waypoints": []
+  }
+}
+		\end{lstlisting} \\ 
+		\hline
+		$ 400 $ & \begin{lstlisting}
+{
+  "errors": {
+    "activity": [
+      "can't be blank",
+      "is not a number"
+    ]
+  }
+}
+		\end{lstlisting} \\
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+%
+% Liste des session
+%
+
+\section{Liste des sessions}
+
+\subsection{Requête}
+
+\paragraph{} Permet de récupérer la liste des sessions du système. Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ GET $ 
+	&
+	\begin{lstlisting}
+api/sessions/
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\
+	\hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Authorization
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	
+	\end{tabular}
+\end{center}
+
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \begin{lstlisting}
+{
+  "data": [
+    {
+      "id": 1,
+      "activity": 1,
+      "departure_place": "43.179363;5.717782",
+      "arrival_place": "43.191168;5.730819",
+      "start_date": "2016-11-20",
+      "close": false,
+      "lock": true,
+      "user": {
+        "id": 2,
+        "nickname": "Arthur83",
+        "phone_number": "+33651678908",
+        "current_session_id": null
+      }
+    },
+    {
+      "id": 2,
+      "activity": 3,
+      "departure_place": "43.179363;5.717782",
+      "arrival_place": "43.191168;5.730819",
+      "start_date": "2016-11-20",
+      "close": false,
+      "lock": true,
+      "user": {
+        "id": 2,
+        "nickname": "Arthur83",
+        "phone_number": "+33651678908",
+        "current_session_id": null
+      }
+    }
+  ]
+}
+		\end{lstlisting} \\ 
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+%
+% Session Get :id
+%
+
+\section{Session}
+
+\subsection{Requête}
+
+\paragraph{} Permet de récupérer une session spécifique selon son identifiant (ID). Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ GET $ 
+	&
+	\begin{lstlisting}
+api/sessions/:id
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\ \hline
+	$ URL\_PARAM $ & 
+	\begin{lstlisting}
+id
+	\end{lstlisting} &
+	$ Integer $ \\ \hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Authorization
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	
+	\end{tabular}
+\end{center}
+
+\par $ id $ : identifiant de la session voulu
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \begin{lstlisting}
+{
+  "data": {
+    "id": 2,
+    "activity": 3,
+    "departure_place": "43.179363;5.717782",
+    "arrival_place": "43.191168;5.730819",
+    "start_date": "2016-11-20",
+    "close": false,
+    "lock": true,
+    "user": {
+      "id": 2,
+      "nickname": "Arthur83",
+      "phone_number": "+33651678908",
+      "current_session_id": null
+    },
+    "coordinates": [
+      {
+        "latitude": 43.179363,
+        "longitude": 5.717782,
+        "user_id": 1
+      }
+    ],
+    "waypoints": [
+      {
+        "latitude": 43.179363,
+        "longitude": 5.717782
+      }
+    ]
+  }
+}
+		\end{lstlisting} \\ 
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 404 $ & \begin{lstlisting}
+{
+  "errors": {
+    "session": "Record Not Found"
+  }
+}
+		\end{lstlisting} \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+%
+% Mis à jour d'une session
+%
+
+\section{Mis à jour d'une session}
+
+\subsection{Requête}
+
+\paragraph{} Permet de mettre à jour session spécifique selon un identifiant (ID) dans le système. Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ PUT $ 
+	&
+	\begin{lstlisting}
+api/sessions/:id
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\
+	\hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Application/json
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Authorization
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	$ JSON $ & 
+	\begin{lstlisting}
+{
+   "close": true
+}
+	\end{lstlisting} & \makecell{$  boolean $} \\ 
+	\hline
+	
+	\end{tabular}
+\end{center}
+
+\par $ close $ : boolean determinant si la session doit être fermée.
+
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \begin{lstlisting}
+{
+  "data": {
+    "id": 7,
+    "activity": 3,
+    "departure_place": "43.179363;5.717782",
+    "arrival_place": "43.191168;5.730819",
+    "start_date": "2016-11-20",
+    "close": true,
+    "lock": true,
+    "user": {
+      "id": 2,
+      "nickname": "Arthur83",
+      "phone_number": "+33651678908",
+      "current_session_id": 1
+    },
+    "coordinates": [],
+    "waypoints": []
+  }
+}
+		\end{lstlisting} \\ 
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+%
+% Rejoindre une Session
+%
+
+\section{Rejoindre une session}
+
+\subsection{Requête}
+
+\paragraph{} Permet de à l'utilisateur de rejoindre une session spécifique selon son identifiant (ID). Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ GET $ 
+	&
+	\begin{lstlisting}
+api/sessions/:id/join
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\ \hline
+	$ URL\_PARAM $ & 
+	\begin{lstlisting}
+id
+	\end{lstlisting} &
+	$ Integer $ \\ \hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Authorization
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	
+	\end{tabular}
+\end{center}
+
+\par $ id $ : identifiant de la session voulu
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \\ 
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 404 $ & \begin{lstlisting}
+{
+  "errors": {
+    "session": "Record Not Found"
+  }
+}
+		\end{lstlisting} \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+%
+% Ajout d'un waypoint
+%
+
+\section{Ajout d'un waypoint}
+
+\subsection{Requête}
+
+\paragraph{} Permet de à l'utilisateur d'ajouter une nouveau waypoint pour une session spécifique selon son identifiant (ID). Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ POST $ 
+	&
+	\begin{lstlisting}
+api/sessions/:id/waypoint
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\ \hline
+	$ URL\_PARAM $ & 
+	\begin{lstlisting}
+id
+	\end{lstlisting} &
+	$ Integer $ \\ \hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Authorization
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	$ JSON $ & 
+	\begin{lstlisting}
+{
+	"latitude": 43.179363,
+	"longitude": 5.717782 
+}
+	\end{lstlisting} & \makecell{$ Double $ \\ $ Double $} \\  \hline
+	
+	\end{tabular}
+\end{center}
+
+\par $ id $ : identifiant de la session voulu
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \\ 
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 404 $ & \begin{lstlisting}
+{
+  "errors": {
+    "session": "Record Not Found"
+  }
+}
+		\end{lstlisting} \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+
+\end{document}  
+
+%
+% Ajout d'une coordonnée
+%
+
+\section{Ajout d'une coordonnée}
+
+\subsection{Requête}
+
+\paragraph{} Permet de à l'utilisateur d'ajouter une nouvelle coordonnée pour une session spécifique selon son identifiant (ID). Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+	\hline
+	Méthode & URL \\
+	\hline
+	$ POST $ 
+	&
+	\begin{lstlisting}
+api/sessions/:id/waypoint
+	\end{lstlisting} 
+	\\ \hline
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Type & Paramètres & Valeurs \\ \hline
+	$ URL\_PARAM $ & 
+	\begin{lstlisting}
+id
+	\end{lstlisting} &
+	$ Integer $ \\ \hline
+	$ HEADER $ & 
+	\begin{lstlisting}
+Authorization
+	\end{lstlisting} &
+	$ String $ \\ \hline
+	$ JSON $ & 
+	\begin{lstlisting}
+{
+	"latitude": 43.179363,
+	"longitude": 5.717782 
+}
+	\end{lstlisting} & \makecell{$ Double $ \\ $ Double $} \\  \hline
+	
+	\end{tabular}
+\end{center}
+
+\par $ id $ : identifiant de la session voulu
+\subsection{Réponse}
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		Statut & Réponse \\
+		\hline
+		$ 200 $ & \\ 
+		\hline
+		$ 401 $ & \\
+		\hline
+		$ 404 $ & \begin{lstlisting}
+{
+  "errors": {
+    "session": "Record Not Found"
+  }
+}
+		\end{lstlisting} \\
+		\hline
+		$ 500 $ & \\
+		\hline
+	\end{tabular}
+\end{center}
+>>>>>>> 824ffb9003992ca2ca4f37f6d833f672cd891ea2
 
 \end{document}          
