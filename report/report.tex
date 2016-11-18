@@ -250,6 +250,91 @@ Cette section comprend les exigences qui spécifient toutes les actions fondamen
 
 \subsection{Exigence fonctionnelle 1.1}
 
+\textbf{ID : FR1}
+
+TITRE : Télécharger l'application mobile
+
+DESCRIPTION : Un utilisateur doit être en mesure de télécharger l'application mobile via le Google play store. L'application doit être libre de téléchargement.
+
+BUT : Pour qu'un utilisateur puisse télécharger l'application mobile.
+
+DÉPENDANCE : Aucune.
+
+\subsection{Exigence fonctionnelle 1.2}
+
+\textbf{ID : FR2}
+
+TITRE : Télécharger et notifier les utilisateurs des nouvelles versions.
+
+DESCRIPTION : Lorsqu'une nouvelle version/mise à jour est publiée, l'utilisateur doit les vérifier manuellement. Le téléchargement de la nouvelle version devrait se faire via le téléphone mobile de la même manière que le téléchargement de l'application mobile.
+
+BUT : Pour que l'utilisateur puisse télécharger une nouvelle version.
+
+DÉPENDANCE : FR1.
+
+\subsection{Exigence fonctionnelle 1.3}
+
+\textbf{ID : FR3}
+
+TITRE : Enregistrement du visiteur sur l'application mobile.
+
+DESCRIPTION : Étant donné qu'un utilisateur a téléchargé l'application mobile, l'utilisateur devrait pouvoir s'enregistrer via l'application mobile. L'utilisateur doit fournir en premier lieu son surnom puis vient en deuxième, adresse mail ainsi que son mot de passe et pour finir son numéro de téléphone.
+
+BUT : Pour qu'un visiteur puisse s'inscrire sur l'application mobile.
+
+DÉPENDANCE : FR1.
+
+\subsection{Exigence fonctionnelle 1.4}
+
+\textbf{ID : FR4}
+
+TITRE : Connexion du visiteur sur l'application mobile.
+
+DESCRIPTION : Étant donné qu'un visiteur s'est enregistré, il doit pouvoir se connecter à l'application mobile via son adresse mail et son mot de passe. Les informations d'ouverture de session seront stockées dans la base de données.
+
+BUT : Pour qu'un visiteur puisse se connecter sur l'application mobile.
+
+DÉPENDANCE : FR1, FR3.
+
+\section{Utilisateur}
+
+\subsection{Exigence fonctionnelle 1.5}
+
+\textbf{ID : FR5}
+
+TITRE : Un utilisateur peut rejoindre une session.
+
+DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, il doit à le choix entre 3 types de sessions. Le premier type sont les sessions actives. Elle sont soit privé ou publique. Si elle sont privé, l'utilisateur doit connaitre le mot de passe pour les rejoindre. Le deuxième type est les sessions dont il a déjà participé et dont celle-ci sont clôturé. La dernière est les sessions que l'utilisateurs à créées.
+
+BUT : Pour qu'un organisateur puisse rejoindre une session sur l'application mobile.
+
+DÉPENDANCE : FR1, FR3, FR4.
+
+\subsection{Exigence fonctionnelle 1.6}
+
+\textbf{ID : FR6}
+
+TITRE : Un utilisateur peut créer une session.
+
+DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, il doit pouvoir créer une nouvelle session dans l'application. Les informations de la nouvelle session créée seront stockées dans la base de données. L'utilisateur doit fournir en premier lieu le lieu de départ ainsi que le lieu d'arrivé. Le format d'une adresse lui sera demandé. L'application convertira cette adresse en coordonnées GPS. De plus lui seront demandé le type d'activité ainsi que la date de départ. Pour finir, un mot de passe l'organisateur doit choisir un mot de passe qu'il divulguera à l'ensemble des participants pour qu'ils puissent rejoindre la session.
+
+BUT : Pour qu'un organisateur puisse créer une session sur l'application mobile.
+
+DÉPENDANCE : FR1, FR3, FR4.
+
+\section{Organisateur}
+
+\subsection{Exigence fonctionnelle 1.8}
+
+\textbf{ID : FR8}
+
+TITRE : Un organisateur peut gérer ses sessions.
+
+DESCRIPTION : Étant donné qu'un organisateur s'est connecté, il doit pouvoir gérer ses sessions. Touts les champs remplit précédemment lors de la création de la session sont modifiables.  Les informations de la session seront stockées dans la base de données.
+
+BUT : Pour qu'un organisateur puisse gérer une session sur l'application mobile.
+
+DÉPENDANCE : FR1, FR3, FR4, FR5.
 
 \part{Serveur TrailsCommunity}
 
