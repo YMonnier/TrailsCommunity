@@ -17,12 +17,12 @@
     <string name="create_an_account"><u>Create an account</u></string>
     <string name="title_create_account">Create account</string>
     <string name="prompt_confirm_password">Confirm password</string>
-    <string name="prompt_number">Telephon number</string>
+    <string name="prompt_number">Phone number</string>
     <string name="register">Register</string>
     <string name="title_activity_login">Login</string>
     <string name="prompt_email">Email</string>
     <string name="error_invalid_email">Invalid email</string>
     <string name="error_invalid_number">Invalid telephon number</string>
     <string name="error_invalid_code_number_country">Empty code number</string>
-    <string name="error_correspon_password">Password not correspond</string>
+    <string name="error_not_matching_password">Password not the same</string>
 </resources>
