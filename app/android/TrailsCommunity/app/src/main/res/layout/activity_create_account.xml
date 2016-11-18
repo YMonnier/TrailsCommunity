@@ -141,4 +141,19 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/register"/>
 
+    <TextView
+        android:id="@+id/numberCodeCountryError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
 </LinearLayout>

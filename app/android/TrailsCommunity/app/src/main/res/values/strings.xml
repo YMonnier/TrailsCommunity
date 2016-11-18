@@ -22,4 +22,7 @@
     <string name="title_activity_login">Login</string>
     <string name="prompt_email">Email</string>
     <string name="error_invalid_email">Invalid email</string>
+    <string name="error_invalid_number">Invalid telephon number</string>
+    <string name="error_invalid_code_number_country">Empty code number</string>
+    <string name="error_correspon_password">Password not correspond</string>
 </resources>
