@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity;
+package fr.univ_tln.trailscommunity.features.root;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import fr.univ_tln.trailscommunity.R;
 
 public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
 
