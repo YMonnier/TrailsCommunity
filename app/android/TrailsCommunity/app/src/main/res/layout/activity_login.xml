@@ -65,11 +65,11 @@
                 android:id="@+id/createAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/create_an_account"/>
+                android:clickable="true"
+                android:text="@string/create_an_account" />
 
-            <!-- Login progress -->
+            <!-- progress -->
             <ProgressBar
                 android:id="@+id/login_progress"
                 style="?android:attr/progressBarStyleLarge"

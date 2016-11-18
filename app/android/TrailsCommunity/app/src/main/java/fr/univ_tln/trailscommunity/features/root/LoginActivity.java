@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -32,6 +31,11 @@ import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends AppCompatActivity {
 
+    /**
+     * Minimum password length
+     */
+    public static final int MIN_PASSWORD_LENGTH = 8;
+
     @ViewById(R.id.emailField)
     AutoCompleteTextView emailView;
 
@@ -41,33 +45,36 @@ public class LoginActivity extends AppCompatActivity {
     @ViewById(R.id.login_progress)
     View progressView;
 
-
-
     /**
-     * Checking password length.
+     * Check all input data when user
+     * press on next button edit text.
+     *
      * @param textView action source
-     * @param actionId password imActionId
+     * @param actionId type of action(IME_ID)
      * @param keyEvent event
      */
-    @EditorAction(R.id.passwordField)
-    void onEditorActionsOnPasswordTextView(TextView textView, int actionId, KeyEvent keyEvent) {
-        if (actionId == R.id.login || actionId == EditorInfo.IME_NULL) {
+    @EditorAction({R.id.passwordField, R.id.emailField})
+    void onNextActionsEditText(TextView textView, int actionId, KeyEvent keyEvent) {
+        if (actionId == R.id.login || actionId == EditorInfo.IME_ACTION_NEXT) {
             attemptLogin();
         }
     }
 
     /**
-     *
+     * Sign in button action.
      */
     @Click(R.id.email_sign_in_button)
     void onClickOnSigninButton() {
+        assert false;
         attemptLogin();
     }
 
+    /**
+     * Sign up view action
+     */
     @Click(R.id.createAccount)
     void onClickOnSignupLink() {
-        Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, SignupActivity_.class));
     }
 
 
@@ -90,12 +97,10 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
-            //emailView.setError(getString(R.string.error_field_required));
             updateErrorUi(passwordView, getString(R.string.error_field_required));
             focusView = passwordView;
             cancel = true;
         } else if (!isPasswordValid(password)) {
-            //passwordView.setError(getString(R.string.error_invalid_password));
             updateErrorUi(passwordView, getString(R.string.error_invalid_password));
             focusView = passwordView;
             cancel = true;
@@ -103,13 +108,11 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            //emailView.setError(getString(R.string.error_field_required));
             updateErrorUi(emailView, getString(R.string.error_field_required));
             focusView = emailView;
             cancel = true;
         } else if (!isEmailValid(email)) {
             updateErrorUi(emailView, getString(R.string.error_invalid_email));
-            //emailView.setError(getString(R.string.error_invalid_email));
             focusView = emailView;
             cancel = true;
         }
@@ -117,7 +120,9 @@ public class LoginActivity extends AppCompatActivity {
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView.requestFocus();
+            assert focusView != null;
+            if (focusView != null)
+                focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
@@ -131,7 +136,8 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Update the current view by settings error
      * message to the input view.
-     * @param view input view
+     *
+     * @param view  input view
      * @param error error message
      */
     @UiThread
@@ -141,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Update clickable button depending on a status
+     *
      * @param status true if we want to
      *               disable all clickable buttons, otherwise, false
      */
@@ -153,6 +160,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Check if the email is valid.
      * That is to say, check if the pattern is valid: mail@mail.com
+     *
      * @param email string email
      * @return true if valid, otherwise, false
      */
@@ -162,13 +170,12 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Check the password length
+     *
      * @param password password for validation
      * @return true if password length >= 8, otherwise, false
      */
     private boolean isPasswordValid(String password) {
-        boolean test = password.length() >= 8;
-        Log.d("LoginActivity", "isPasswordValid:: " + test);
-        return password.length() >= 8;
+        return password.length() >= MIN_PASSWORD_LENGTH;
     }
 
 
@@ -177,7 +184,8 @@ public class LoginActivity extends AppCompatActivity {
      * to send credential data to the server.
      * If the connexion is succeed, we go to the sessions list.
      * Otherwise, the user put wrong data and should try again...
-     * @param email user email
+     *
+     * @param email    user email
      * @param password password email
      */
     @Background
@@ -202,6 +210,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Shows the progress UI and hides the login form.
+     *
      * @param show progress status, true to set visible progress,
      *             false to set unvisible progress
      */
