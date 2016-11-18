@@ -322,6 +322,32 @@ BUT : Pour qu'un organisateur puisse créer une session sur l'application mobile
 
 DÉPENDANCE : FR1, FR3, FR4.
 
+\subsection{Exigence fonctionnelle 1.5}
+
+\textbf{ID : FR5}
+
+TITRE : Un utilisateur peut se déconnecter de l'application.
+
+DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, il doit avoir le choix, à tout moment de pouvoir se déconnecter de l'application. Il sera alors redirigé vers la page de connexion.
+
+BUT : Pour qu'un organisateur puisse se déconnecter de l'application mobile.
+
+DÉPENDANCE : FR1, FR3.
+
+\section{Participant}
+
+\subsection{Exigence fonctionnelle 1.5}
+
+\textbf{ID : FR5}
+
+TITRE : Un participant peut ajouter un waypoint dans une session active.
+
+DESCRIPTION : Étant donné qu'un participant s'est connecté et à rejoint une session active, il peut ajouter un waypoint. Lorsque l'utilisateur maintient longuement son doigt sur l'écran de son téléphone, un marker est alors ajouté. Le waypoint est alors diffusé à tout les autres participants.
+
+BUT : Pour qu'un participant puisse ajouter un waypoint dans une session active.
+
+DÉPENDANCE : FR1, FR3.
+
 \section{Organisateur}
 
 \subsection{Exigence fonctionnelle 1.8}
@@ -335,6 +361,56 @@ DESCRIPTION : Étant donné qu'un organisateur s'est connecté, il doit pouvoir 
 BUT : Pour qu'un organisateur puisse gérer une session sur l'application mobile.
 
 DÉPENDANCE : FR1, FR3, FR4, FR5.
+
+\subsection{Exigence fonctionnelle 1.9}
+
+\textbf{ID : FR9}
+
+TITRE : Un organisateur peut clôturer ses sessions.
+
+DESCRIPTION : Étant donné qu'un organisateur s'est connectée à sélectionné une de ses session créée précédemment. Il doit pouvoir clôturer la session sélectionné. Celle-ci n'est alors plus présente dans les sessions actives de l'application sauf pour les participants ou la session est alors disponible dans leurs historique.
+
+BUT : Pour qu'un organisateur puisse clôturer une session sur l'application mobile.
+
+DÉPENDANCE : FR1, FR3, FR4, FR5.
+
+\section{Application}
+
+\subsection{Exigence fonctionnelle 1.5}
+
+\textbf{ID : FR5}
+
+TITRE : L'application doit pouvoir enregistrer un parcours effectué sans connexion internet.
+
+DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, à rejoint une session active et qu'il est déconnecté du réseau internet, l'application doit pouvoir gérer le mode hors ligne. Une base de données interne a l'application va alors stockées l'ensemble des données. 
+
+BUT : Pour que l'application puisse pouvoir enregistrer un parcours effectué sans connexion internet. 
+
+DÉPENDANCE : FR1, FR3, FR4.
+
+\subsection{Exigence fonctionnelle 1.5}
+
+\textbf{ID : FR5}
+
+TITRE : Le chat de l'application doit pouvoir fonctionné en mode hors ligne.
+
+DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, à rejoint une session active et qu'il est déconnecté du réseau internet, l'application doit pouvoir gérer le mode hors ligne du chat. L'application va alors basculé sur un le protocole SMS pour que les participants puissent continués de communiquer ensemble.
+
+BUT : Pour que le chat de l'application puisse fonctionner en mode hors ligne.
+
+DÉPENDANCE : FR1, FR3, FR4.
+
+\subsection{Exigence fonctionnelle 1.5}
+
+\textbf{ID : FR5}
+
+TITRE : L'application doit pouvoir fonctionné en mode hors ligne.
+
+DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, à rejoint une session active et qu'il est déconnecté du réseau internet, l'application doit pouvoir gérer le mode hors ligne du chat. L'application va alors basculé sur un le protocole SMS pour que les participants puissent continués de communiquer ensemble.
+
+BUT : Pour que le chat de l'application puisse fonctionner en mode hors ligne.
+
+DÉPENDANCE : FR1, FR3, FR4.
 
 \part{Serveur TrailsCommunity}
 
