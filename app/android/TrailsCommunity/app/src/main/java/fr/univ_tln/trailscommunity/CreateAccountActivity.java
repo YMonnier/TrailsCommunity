@@ -242,6 +242,12 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
 
             Map<String, String> parameters = new HashMap<>();
 
+            parameters.put("email", this.mEmail);
+            parameters.put("nickname", this.mNickname);
+            parameters.put("password", this.mPassword);
+            parameters.put("codeNumberCountry", this.mCodeNumberCountry);
+            parameters.put("number", this.mNumber);
+
             queue = Volley.newRequestQueue(CreateAccountActivity.this);
             request = new CustomRequest(Request.Method.POST, url, parameters, this, this);
             queue.add(request);
