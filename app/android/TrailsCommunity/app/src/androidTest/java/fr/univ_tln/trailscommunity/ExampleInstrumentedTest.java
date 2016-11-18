@@ -18,6 +18,6 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void putTextOnEmailFied() {
-        
+
     }
 }
