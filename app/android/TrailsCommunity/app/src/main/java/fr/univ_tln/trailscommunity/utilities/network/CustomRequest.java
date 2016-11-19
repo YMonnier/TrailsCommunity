@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.utils;
+package fr.univ_tln.trailscommunity.utilities.network;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;

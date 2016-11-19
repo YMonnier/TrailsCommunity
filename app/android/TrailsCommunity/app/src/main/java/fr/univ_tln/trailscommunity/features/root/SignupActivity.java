@@ -32,7 +32,7 @@ import org.json.JSONObject;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
-import fr.univ_tln.trailscommunity.utils.CustomRequest;
+import fr.univ_tln.trailscommunity.utilities.network.CustomRequest;
 
 @EActivity(R.layout.root_signup_activity)
 public class SignupActivity extends AppCompatActivity implements Response.ErrorListener, Response.Listener<JSONObject> {
