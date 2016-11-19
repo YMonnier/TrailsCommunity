@@ -298,7 +298,7 @@ DÉPENDANCE : FR1, FR3.
 
 \section{Utilisateur}
 
-\subsection{Exigence fonctionnelle 1.5}
+\subsection{Exigence fonctionnelle 2.1}
 
 \textbf{ID : FR5}
 
@@ -310,21 +310,21 @@ BUT : Pour qu'un organisateur puisse rejoindre une session sur l'application mob
 
 DÉPENDANCE : FR1, FR3, FR4.
 
-\subsection{Exigence fonctionnelle 1.6}
+\subsection{Exigence fonctionnelle 2.2}
 
 \textbf{ID : FR6}
 
-TITRE : Un utilisateur peut créer une session.
+TITRE : Un utilisateur peut modifier ses données utilisateurs.
 
-DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, il doit pouvoir créer une nouvelle session dans l'application. Les informations de la nouvelle session créée seront stockées dans la base de données du serveur distant. L'utilisateur doit fournir le lieu de départ ainsi que le lieu d'arrivé. Le format d'une adresse lui sera demandé. L'application convertira cette adresse en coordonnées GPS. De plus, il devra indiquer le type d'activité ainsi que la date de départ. Pour finir,  l'organisateur aura la possibilité de verrouiller la session par un mot de passe qu'il divulguera à l'ensemble des participants.
+DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, il peut modifier ses données utilisateurs. Les champs modifiables sont son pseudonyme, son numéro de téléphone et son adresse mail. Les informations des données utilisateur seront stockées dans la base de données.
 
-BUT : Pour qu'un organisateur puisse créer une session sur l'application mobile.
+BUT : Pour qu'un utilisateur puisse modifier ses données utilisateur sur l'application mobile.
 
 DÉPENDANCE : FR1, FR3, FR4.
 
-\subsection{Exigence fonctionnelle 1.5}
+\subsection{Exigence fonctionnelle 2.3}
 
-\textbf{ID : FR5}
+\textbf{ID : FR7}
 
 TITRE : Un utilisateur peut se déconnecter de l'application.
 
@@ -336,9 +336,9 @@ DÉPENDANCE : FR1, FR3.
 
 \section{Participant}
 
-\subsection{Exigence fonctionnelle 1.5}
+\subsection{Exigence fonctionnelle 3.1}
 
-\textbf{ID : FR5}
+\textbf{ID : FR8}
 
 TITRE : Un participant peut ajouter un waypoint dans une session active.
 
@@ -346,13 +346,50 @@ DESCRIPTION : Étant donné qu'un participant s'est connecté et à rejoint une 
 
 BUT : Pour qu'un participant puisse ajouter un waypoint dans une session active.
 
-DÉPENDANCE : FR1, FR3.
+DÉPENDANCE : FR1, FR3, FR4, FR5.
+
+\subsection{Exigence fonctionnelle 3.2}
+
+\textbf{ID : FR9}
+
+TITRE : Un participant peut communiquer via un système de chat en temps réel à la session courante.
+
+DESCRIPTION : Étant donné qu'un participant s'est connecté et à rejoint une session active, il peut alors communiquer avec l'ensemble des utilisateurs participant à la session. Il lui suffit d'entrer son message et de l'envoyer. Il sera alors diffusé aux autres participants.
+
+BUT : Pour qu'un participant puisse communiquer via un système de chat en temps réel à la session courante.
+
+DÉPENDANCE : FR1, FR3, FR4, FR5.
+
+\subsection{Exigence fonctionnelle 3.3}
+
+\textbf{ID : FR10}
+
+TITRE : Un participant peut visualiser ses statistiques de la session active.
+
+DESCRIPTION : Étant donné qu'un participant s'est connecté et à rejoint une session active, il peut alors visualiser l'ensemble de ses statistiques. Celle-ci décrivent différentes données comme la distance total parcouru, la vitesse moyenne du participant ou alors le nombre de waypoint ajoutés. 
+
+BUT : Pour qu'un participant puisse visualiser ses statistiques de la session active
+
+DÉPENDANCE : FR1, FR3, FR4, FR5.
+
 
 \section{Organisateur}
 
-\subsection{Exigence fonctionnelle 1.8}
+\subsection{Exigence fonctionnelle 4.1}
 
-\textbf{ID : FR8}
+\textbf{ID : FR11}
+
+TITRE : Un organisateur peut créer une session.
+
+DESCRIPTION : Étant donné qu'un organisateur s'est connecté, il doit pouvoir créer une nouvelle session dans l'application. Les informations de la nouvelle session créée seront stockées dans la base de données du serveur distant. L'organisateur doit fournir le lieu de départ ainsi que le lieu d'arrivé. Le format d'une adresse lui sera demandé. L'application convertira cette adresse en coordonnées GPS. De plus, il devra indiquer le type d'activité ainsi que la date de départ. Pour finir,  l'organisateur aura la possibilité de verrouiller la session par un mot de passe qu'il divulguera à l'ensemble des participants.
+
+BUT : Pour qu'un organisateur puisse créer une session sur l'application mobile.
+
+DÉPENDANCE : FR1, FR3, FR4.
+
+\subsection{Exigence fonctionnelle 4.2}
+
+\textbf{ID : FR12}
 
 TITRE : Un organisateur peut gérer ses sessions.
 
@@ -362,9 +399,9 @@ BUT : Pour qu'un organisateur puisse gérer une session sur l'application mobile
 
 DÉPENDANCE : FR1, FR3, FR4, FR5.
 
-\subsection{Exigence fonctionnelle 1.9}
+\subsection{Exigence fonctionnelle 4.3}
 
-\textbf{ID : FR9}
+\textbf{ID : FR13}
 
 TITRE : Un organisateur peut clôturer ses sessions.
 
@@ -376,9 +413,9 @@ DÉPENDANCE : FR1, FR3, FR4, FR5.
 
 \section{Application}
 
-\subsection{Exigence fonctionnelle 1.5}
+\subsection{Exigence fonctionnelle 5.1}
 
-\textbf{ID : FR5}
+\textbf{ID : FR14}
 
 TITRE : L'application doit pouvoir enregistrer un parcours effectué sans connexion internet.
 
@@ -386,11 +423,11 @@ DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, à rejoint une se
 
 BUT : Pour que l'application puisse pouvoir enregistrer un parcours effectué sans connexion internet. 
 
-DÉPENDANCE : FR1, FR3, FR4.
+DÉPENDANCE : FR1, FR3, FR4, FR5.
 
-\subsection{Exigence fonctionnelle 1.5}
+\subsection{Exigence fonctionnelle 5.2}
 
-\textbf{ID : FR5}
+\textbf{ID : FR15}
 
 TITRE : Le chat de l'application doit pouvoir fonctionné en mode hors ligne.
 
@@ -398,19 +435,149 @@ DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, à rejoint une se
 
 BUT : Pour que le chat de l'application puisse fonctionner en mode hors ligne.
 
-DÉPENDANCE : FR1, FR3, FR4.
+DÉPENDANCE : FR1, FR3, FR4, FR5.
 
-\subsection{Exigence fonctionnelle 1.5}
+\section{IHM}
 
-\textbf{ID : FR5}
+\subsection{Exigence fonctionnelle 6.1}
 
-TITRE : L'application doit pouvoir fonctionné en mode hors ligne.
+\textbf{ID : FR16}
 
-DESCRIPTION : Étant donné qu'un utilisateur s'est connecté, à rejoint une session active et qu'il est déconnecté du réseau internet, l'application doit pouvoir gérer le mode hors ligne du chat. L'application va alors basculé sur un le protocole SMS pour que les participants puissent continués de communiquer ensemble.
+TITRE : Le système doit pouvoir afficher une carte Google map interactive.
 
-BUT : Pour que le chat de l'application puisse fonctionner en mode hors ligne.
+DESCRIPTION : Le système doit être capable d'afficher une carte Google map interactive. En effet, cette carte doit pouvoir posséder les fonctionnalités de zoom ainsi qu'une navigation tactile et ergonomique.
 
-DÉPENDANCE : FR1, FR3, FR4.
+BUT : Pour que le système puisse afficher une carte Google map interactive.
+
+DÉPENDANCE : Aucune.
+
+\subsection{Exigence fonctionnelle 6.2}
+
+\textbf{ID : FR17}
+
+TITRE : Le système doit pouvoir ajouter un ou plusieurs markers sur une carte Google map.
+
+DESCRIPTION : Étant donné que le système a affiché une carte Google map interactive, il doit permettre de pouvoir ajouter un ou plusieurs marker sur celle-ci. En effet ces markers peuvent posséder un titre intéractive qui, lors d'une appuie, peuvent afficher une multitude d'informations supplémentaires sur le marker associé.
+
+BUT : Pour que le système puisse ajouter un ou plusieurs markers sur une carte Google map.
+
+DÉPENDANCE : F16.
+
+\subsection{Exigence fonctionnelle 6.3}
+
+\textbf{ID : FR18}
+
+TITRE : Le système doit pouvoir afficher un ou plusieurs parcours sur une carte Google map.
+
+DESCRIPTION : Étant donné que le système a affiché une carte Google map interactive, il doit permettre de pouvoir afficher un ou plusieurs parcours sur celle-ci. En effet ces chemins possède un marker de début et un marker de fin pour signaler aux autres participants où ce situe l'utilisateur. Ce parcours possèdera une couleur unique dans la session active.
+
+BUT : Pour que le système puisse afficher un ou plusieurs parcours sur une carte Google map.
+
+DÉPENDANCE : F16, F17.
+
+\subsection{Exigence fonctionnelle 6.4}
+
+\textbf{ID : FR19}
+
+TITRE : Le système doit pouvoir afficher la géo-localisation des participants d'une session active sur une carte Google map.
+
+DESCRIPTION : Étant donné que le système a affiché une carte Google map interactive, il doit permettre de pouvoir afficher la géo-localisation des participants d'une session active sur celle-ci. En effet cette géo-localisation est signalé par un marker au bout du chemin associé aux participants. Cette géo-localisation est réalisé par le GPS interne du téléphone portable. De plus, la précision de la celle-ci dépendra totalement du système d'exploitation et du matériel du téléphone portable de l'utilisateur. 
+
+BUT : Pour que le système puisse afficher la géo-localisation des participants d'une session active sur une carte Google map.
+
+DÉPENDANCE : F16.
+
+\subsection{Exigence fonctionnelle 6.5}
+
+\textbf{ID : FR20}
+
+TITRE : Le système doit pouvoir afficher différentes unités de mesures des statistiques en fonction des activités.
+
+DESCRIPTION : Le système doit pouvoir afficher différentes unités de mesures en fonction du type d'activité. En effet, les mesures sont différentes pour une activité ce réalisant avec une voiture et une activité ce réalisant en bateau ou à pied. Le système va alors déterminer en fonction du type d'activité choisit l'unité de mesure le plus adéquate.
+
+BUT : Pour que le système puisse afficher différentes unités de mesures des statistiques en fonction des activités.
+
+DÉPENDANCE : Aucune.
+
+\section{Performances}
+
+\subsection{Exigence fonctionnelle 7.1}
+
+\textbf{ID : FR21}
+
+TITRE : Le système doit afficher rapidement l'ensemble des sessions dans les listes déroulantes.
+
+DESCRIPTION : Le système doit posséder un niveau de performance élevé pour l'affichage des différentes sessions envoyé par le serveur. En effet, la rapidité d'affichage doit être rapide et aucune latence ne doit être observé par l'utilisateur. De plus, un maximum de 50 sessions actives sera affichées. 
+
+BUT : Pour que le système puisse afficher rapidement l'ensemble des sessions dans les listes déroulantes.
+
+DÉPENDANCE : Aucune.
+
+\subsection{Exigence fonctionnelle 7.2}
+
+\textbf{ID : FR22}
+
+TITRE : Le système doit afficher rapidement l'ensemble des différents éléments afficher sur la carte Google map interactive.
+
+DESCRIPTION : Le système doit posséder un niveau de performance élevé pour l'affichage des différents éléments afficher sur la carte Google map. En effet, aucune latence ne doit être observé par l'utilisateur lors de la réception de coordonnées GPS ou l'affichage d'un nouveau waypoint. De plus, l'affichage des parcours de l'ensemble des participants d'une session active ne doit pas entrainé une surcharge du serveur. 
+
+BUT : Pour que le système puisse afficher rapidement l'ensemble des différents éléments afficher sur la carte Google map interactive.
+
+DÉPENDANCE : Aucune.
+
+\subsection{Exigence fonctionnelle 7.3}
+
+\textbf{ID : FR23}
+
+TITRE : Le serveur doit posséder un temps de réponse inférieur à une seconde.
+
+DESCRIPTION : Le serveur doit posséder un temps de réponse inférieur à une seconde. Ce temps est un temps de performance idéal cependant, le temps de réponse doit être au minimum inférieur à deux secondes.  
+
+BUT : Pour que le Le serveur doit posséder un temps de réponse inférieur à une seconde.
+
+DÉPENDANCE : Aucune.
+
+\section{Sécurité}
+
+\subsection{Exigence fonctionnelle 7.1}
+
+\textbf{ID : FR24}
+
+ESSENTIEL : La sécurité de création de compte pour les utilisateurs du système.
+
+DESCRIPTION : Si un utilisateur veut créer un compte et que le nom de l'utilisateur souhaité est déjà utilisé, l'utilisateur va être invité à choisir un nom d'utilisateur différent.
+
+NIVEAU : Haute.
+
+\subsection{Exigence fonctionnelle 7.2}
+
+\textbf{ID : FR25}
+
+ESSENTIEL : La sécurité de la communication entre le système et le serveur.
+
+DESCRIPTION : Les messages doivent être chiffrés pour les communications de connexion, de sorte que d'autres utilisateurs ne peuvent pas obtenir le nom d'utilisateur et le mot de passe à partir de ces messages.
+
+NIVEAU : Haute.
+
+\subsection{Exigence fonctionnelle 7.3}
+
+\textbf{ID : FR26}
+
+ESSENTIEL : Le nombre de requête par seconde côté serveur.
+
+DESCRIPTION : Le serveur peut ajouter une limitation de requête par seconde pour un utilisateur. Cela permet d'évité les attaques de brute forces et autre attaques d'injection de code.
+
+NIVEAU : Haute.
+
+\subsection{Exigence fonctionnelle 7.4}
+
+\textbf{ID : FR27}
+
+ESSENTIEL : Utilisation d’un token pour la communication client-serveur.
+
+DESCRIPTION : Les échanges entre client-serveur se fait grâce à un token générer par le serveur. Ce token est unique et propre à chaque utilisateur. L'utilisation de ce token permet de sécuriser les ressources du serveur. A chaque requête, le token doit être présent dans l'en-tête. S'il n'y a pas de token, le serveur renvoie une réponse comme quoi l'utilisateur n'est pas autorisé à accéder à cette ressource.
+
+NIVEAU : Haute.
 
 \part{Serveur TrailsCommunity}
 
