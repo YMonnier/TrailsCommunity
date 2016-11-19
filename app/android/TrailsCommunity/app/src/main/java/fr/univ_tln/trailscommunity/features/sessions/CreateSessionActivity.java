@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -20,22 +22,22 @@ import com.android.volley.VolleyError;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.EditorAction;
-import org.androidannotations.annotations.ItemSelect;
-import org.androidannotations.annotations.Touch;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.models.Position;
 import fr.univ_tln.trailscommunity.utilities.network.CustomRequest;
 
-@EActivity(R.layout.root_create_session)
+@EActivity(R.layout.sessions_create_session)
 public class CreateSessionActivity extends AppCompatActivity implements Response.ErrorListener, Response.Listener<JSONObject>{
 
     /**
@@ -73,13 +75,34 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
     private DatePickerDialog.OnDateSetListener date;
 
     /**
-     * Sign in button action.
+     * Create session button action.
      */
     @Click(R.id.createSessionButton)
     void onClickOnCreateSessionButton() {
         attemptCreateSession();
     }
 
+    public Position convertAdressToCoordinates(String address){
+        Geocoder geocoder = new Geocoder(this);
+        Position position = null;
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocationName(address, 1);
+            double latitude = addresses.get(0).getLatitude();
+            double longitude = addresses.get(0).getLongitude();
+            Log.e("LATITUDE", latitude + "");
+            Log.e("LONGITUDE", longitude + "");
+            position = new Position(latitude, longitude);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return position;
+    }
+
+    /**
+     * Generate dialog to display date picker
+     */
     public void displayDatePicker(){
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -95,25 +118,29 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
         };
     }
 
+    /**
+     * Update and put date in EditText
+     */
     private void updateLabel(){
-        String myFormat = "MM/dd/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
         startDateField.setText(sdf.format(myCalendar.getTime()));
     }
 
-    @Touch(R.id.startDateField)
+    /**
+     * Display date picker when touch editText startDateField
+     */
+    @Click(R.id.startDateField)
     void onClickOnSelectStartDate(){
-        Log.e("EVENT", "SELECT DATE");
         displayDatePicker();
         new DatePickerDialog(this, date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+
     }
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     *
      */
     private void attemptCreateSession() {
         updateResetErrorUi();
@@ -122,7 +149,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
         String departurePlace = departurePlaceField.getText().toString();
         String arrivalPlace = arrivalPlaceField.getText().toString();
         String typeActivity = typeActivitySpinner.getSelectedItem().toString();
-        String date = "";
+        String startDate = startDateField.getText().toString();
         String password = passwordField.getText().toString();
 
         boolean cancel = false;
@@ -139,6 +166,12 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
         if (TextUtils.isEmpty(arrivalPlace)) {
             updateErrorUi(arrivalPlaceField, getString(R.string.error_field_required));
             focusView = arrivalPlaceField;
+            cancel = true;
+        }
+
+        if(TextUtils.isEmpty(startDate)){
+            updateErrorUi(startDateField, getString(R.string.error_field_required));
+            focusView = startDateField;
             cancel = true;
         }
 
@@ -168,6 +201,12 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
         }
     }
 
+    /**
+     * Check if password is valid
+     * His length must be sup 8
+     * @param password
+     * @return
+     */
     private boolean isPasswordValid(String password) {
         return password.length() >= 8;
     }
@@ -180,6 +219,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
         // Reset errors.
         departurePlaceField.setError(null);
         arrivalPlaceField.setError(null);
+        startDateField.setError(null);
         passwordField.setError(null);
     }
 
@@ -206,11 +246,12 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
         departurePlaceField.setEnabled(!status);
         arrivalPlaceField.setEnabled(!status);
         typeActivitySpinner.setEnabled(!status);
+        startDateField.setEnabled(!status);
         passwordField.setEnabled(!status);
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progress UI.
      *
      * @param show progress status, true to set visible progress,
      *             false to set unvisible progress
@@ -256,12 +297,17 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
                     final String password) {
         updateLockUi(true);
 
+        Log.e("CREATE SESSION", "true");
+
         //Request...
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        Position positionDeparturePlace = convertAdressToCoordinates(departurePlace);
+        Position positionArrivalPlace = convertAdressToCoordinates(arrivalPlace);
 
         /*
         Map<String, String> parameters = new HashMap<>();
@@ -283,8 +329,6 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
 
     @Override
     public void onResponse(JSONObject response) {
-        // Intent intent = new Intent(this, LoginActivity_.class);
-        // startActivity(intent);
         Log.e("RESPONSE", response.toString());
     }
 }
