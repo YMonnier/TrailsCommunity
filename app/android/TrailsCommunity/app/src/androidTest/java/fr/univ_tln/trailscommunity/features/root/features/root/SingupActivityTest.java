@@ -123,8 +123,8 @@ public class SingupActivityTest {
     }
 
     /**
-      * Check if passwordValidator is valid
-      */
+     * Check if passwordValidator is valid
+     */
     @Test
     public void testPasswordFormNotValid(){
         onView(withId(R.id.emailField))
@@ -147,8 +147,8 @@ public class SingupActivityTest {
     }
 
     /**
-      * Check if error display if password is empty
-      */
+     * Check if error display if password is empty
+     */
     @Test
     public void testErrorEmptyPasswordForm(){
         onView(withId(R.id.emailField))
@@ -264,7 +264,4 @@ public class SingupActivityTest {
             }
         };
     }
-
-
-
 }
