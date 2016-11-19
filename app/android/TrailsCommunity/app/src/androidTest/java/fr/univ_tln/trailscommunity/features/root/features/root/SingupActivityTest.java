@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.root;
+package fr.univ_tln.trailscommunity.features.root.features.root;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -14,6 +14,7 @@ import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.features.root.SignupActivity_;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
