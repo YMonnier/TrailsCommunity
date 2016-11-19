@@ -22,10 +22,9 @@
             </intent-filter>
         </activity>
 
-
-
         <activity android:name=".features.root.SignupActivity_" />
-        <activity android:name=".features.sessions.SessionsActivity_" />
+        <activity android:name=".features.sessions.SessionsActivity_" >
+        </activity>
     </application>
 
 </manifest>
