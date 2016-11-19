@@ -15,13 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
@@ -80,17 +80,14 @@ public class SignupActivity extends AppCompatActivity implements Response.ErrorL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //addCodeNumberInSpinner();
+        //initCodeNumber();
     }
 
-    /**
-     * Delete after test
-     */
-    private void addCodeNumberInSpinner() {
-        SpinnerAdapter codeNumberCountryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, indicatifNumbers);
-        System.out.println(codeNumberCountryAdapter);
-        System.out.println(codeNumberCountrySpinner);
-        this.codeNumberCountrySpinner.setAdapter(codeNumberCountryAdapter);
+
+    @AfterViews
+    void initCodeNumber() {
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, R.layout.activity_signup, indicatifNumbers);
+        codeNumberCountrySpinner.setAdapter(arrayAdapter);
     }
 
     /**
@@ -356,9 +353,6 @@ public class SignupActivity extends AppCompatActivity implements Response.ErrorL
         queue.add(request);
         */
         // Success request
-        // Intent intent = new Intent(LoginActivity.this, SessionViewActivity.class);
-        // startActivity(intent);
-        // finish();
 
         updateLockUi(false);
         showProgress(false);
