@@ -23,11 +23,6 @@
         </activity>
         
         <activity android:name=".features.root.SignupActivity_" />
-        <activity android:name=".features.session.SessionViewActivity" />
-        <activity
-            android:name=".features.session.SessionActivity"
-            android:label="@string/title_activity_session"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
