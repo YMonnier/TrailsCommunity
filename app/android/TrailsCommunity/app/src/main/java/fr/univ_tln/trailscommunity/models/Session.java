@@ -76,6 +76,10 @@ public class Session {
         private Date startDate;
         private boolean close;
 
+        public Session build() {
+            return new Session(this);
+        }
+
         public Builder setActivity(int activity) {
             this.activity = activity;
             return this;

@@ -2,6 +2,9 @@ package fr.univ_tln.trailscommunity.features.sessions;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -23,9 +26,14 @@ import fr.univ_tln.trailscommunity.R;
 @OptionsMenu(R.menu.sessions_sessions_menu)
 public class SessionsActivity extends AppCompatActivity {
 
+    private ListAdapter adapter;
+    private String[] foods = {"A", "B", "C", "D"};
     @AfterViews
     void init() {
         setTitle(getString(R.string.session_activity_name));
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, foods);
+        //setListAdapter(adapter);
     }
 
     /**
@@ -44,5 +52,21 @@ public class SessionsActivity extends AppCompatActivity {
     @OptionsItem(R.id.sessions_add_session_menu)
     void addSessionMenuButton() {
         Log.d("SessionsActivity", "Click on addSessionMenuButton");
+    }
+
+    void listItemClicked(String food) {
+        Toast.makeText(this, "click: " + food, Toast.LENGTH_SHORT).show();
+    }
+
+    void listItemLongClicked(String food) {
+        Toast.makeText(this, "long click: " + food, Toast.LENGTH_SHORT).show();
+    }
+
+    void listItemSelected(boolean somethingSelected, String food) {
+        if (somethingSelected) {
+            Toast.makeText(this, "selected: " + food, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "nothing selected", Toast.LENGTH_SHORT).show();
+        }
     }
 }
