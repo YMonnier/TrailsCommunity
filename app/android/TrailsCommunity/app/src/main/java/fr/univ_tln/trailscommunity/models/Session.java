@@ -19,22 +19,6 @@ public class Session {
     private Date startDate;
     private boolean close;
 
-    /*
-    enum Activity {
-        HIKING(1), BICYCLE(2);
-        private int type;
-        private Activity(int type) {
-            this.type = type;
-        }
-        String value() {
-            switch (type) {
-                case 1: return "Hiking";
-                case 2: return "Bicycle"
-                default: return "";
-            }
-        }
-    }*/
-
     public Session(Builder builder) {
         this.activity = builder.activity;
         this.lock = builder.lock;
@@ -66,6 +50,19 @@ public class Session {
 
     public int getActivity() {
         return activity;
+    }
+
+    public String getActivityName() {
+        switch (activity) {
+            case 1:
+                return "Hiking";
+            case 2:
+                return "Bicycle";
+            case 3:
+                return "4x4";
+            default:
+                return "Empty";
+        }
     }
 
     public static class Builder {

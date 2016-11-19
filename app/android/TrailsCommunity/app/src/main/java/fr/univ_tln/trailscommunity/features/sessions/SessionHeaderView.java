@@ -1,7 +1,6 @@
 package fr.univ_tln.trailscommunity.features.sessions;
 
 import android.content.Context;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -9,7 +8,6 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
-import fr.univ_tln.trailscommunity.models.Session;
 
 /**
  * Project TrailsCommunity.
@@ -19,25 +17,17 @@ import fr.univ_tln.trailscommunity.models.Session;
  * www.yseemonnier.com
  * https://github.com/YMonnier
  */
-@EViewGroup(R.layout.sessions_sessions_list_item)
-public class SessionItemView extends LinearLayout {
+@EViewGroup(R.layout.sessions_sessions_list_header)
+public class SessionHeaderView extends LinearLayout {
 
     @ViewById
     TextView titleTextView;
 
-    @ViewById
-    ImageView imageView;
-
-    public SessionItemView(Context context) {
+    public SessionHeaderView(Context context) {
         super(context);
     }
 
-    public void bind(Session session) {
-        if (session.isLock())
-            imageView.setVisibility(VISIBLE);
-        else
-            imageView.setVisibility(INVISIBLE);
-
-        titleTextView.setText(String.format("Session %s", session.getActivityName()));
+    public void bind(String title) {
+        titleTextView.setText(title);
     }
 }

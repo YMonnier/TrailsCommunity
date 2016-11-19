@@ -2,16 +2,21 @@ package fr.univ_tln.trailscommunity.features.sessions;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.models.Session;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Project TrailsCommunity.
@@ -22,18 +27,20 @@ import fr.univ_tln.trailscommunity.R;
  * https://github.com/YMonnier
  */
 
-@EActivity(R.layout.sessions_sessions_activity)
+@EActivity(R.layout.sessions_session_activity)
 @OptionsMenu(R.menu.sessions_sessions_menu)
 public class SessionsActivity extends AppCompatActivity {
 
-    private ListAdapter adapter;
-    private String[] foods = {"A", "B", "C", "D"};
+    @ViewById
+    ListView sessionList;
+
+    @Bean
+    SessionListAdapter adapter;
+
     @AfterViews
     void init() {
         setTitle(getString(R.string.session_activity_name));
-
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, foods);
-        //setListAdapter(adapter);
+        sessionList.setAdapter(adapter);
     }
 
     /**
@@ -54,19 +61,12 @@ public class SessionsActivity extends AppCompatActivity {
         Log.d("SessionsActivity", "Click on addSessionMenuButton");
     }
 
-    void listItemClicked(String food) {
-        Toast.makeText(this, "click: " + food, Toast.LENGTH_SHORT).show();
-    }
-
-    void listItemLongClicked(String food) {
-        Toast.makeText(this, "long click: " + food, Toast.LENGTH_SHORT).show();
-    }
-
-    void listItemSelected(boolean somethingSelected, String food) {
-        if (somethingSelected) {
-            Toast.makeText(this, "selected: " + food, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "nothing selected", Toast.LENGTH_SHORT).show();
-        }
+    /**
+     * Action click on item list view.
+     * @param session
+     */
+    @ItemClick
+    void sessionListItemClicked(Session session) {
+        Toast.makeText(this, session.getActivityName(), LENGTH_SHORT).show();
     }
 }
