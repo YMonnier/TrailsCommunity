@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Activities array -->
+    <string-array name="activities">
+        <item>4x4</item>
+        <item>Randonnée</item>
+        <item>Paintball</item>
+        <item>VTT</item>
+        <item>Bateau</item>
+    </string-array>
+</resources>
