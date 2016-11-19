@@ -49,8 +49,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @AfterViews
     void init() {
-        emailView.setText("mail@mail.com");
-        passwordView.setText("abcd12345");
+        //emailView.setText("mail@mail.com");
+        //passwordView.setText("abcd12345");
     }
 
     /**
