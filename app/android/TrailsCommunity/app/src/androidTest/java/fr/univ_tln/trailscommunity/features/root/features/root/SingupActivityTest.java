@@ -55,7 +55,7 @@ public class SingupActivityTest {
      * Test all fields of the view
      */
     @Test
-    public void testLoginButton(){
+    public void testRegisterButton(){
         onView(withId(R.id.emailField))
                 .perform(typeText(VALID_EMAIL));
         onView(withId(R.id.nicknameField))
