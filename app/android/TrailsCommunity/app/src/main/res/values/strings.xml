@@ -1,10 +1,8 @@
 <resources>
+    <!-- Application -->
     <string name="app_name">TrailsCommunity</string>
-    <string name="title_activity_session">SessionActivity</string>
-    <string name="create_an_account"><u>Create an account</u></string>
-    <string name="title_create_account">Create account</string>
-    <string name="prompt_confirm_password">Confirm password</string>
-    <string name="prompt_number">Phone number</string>
-    <string name="register">Register</string>
-    <string name="title_activity_login">Login</string>
+
+    <!-- Root package -->
+    <string name="root_create_an_account"><u>Create an account</u></string>
+    <string name="root_signup_button">Register</string>
 </resources>

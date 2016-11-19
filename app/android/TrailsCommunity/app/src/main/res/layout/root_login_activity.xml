@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:clickable="true"
-                android:text="@string/create_an_account" />
+                android:text="@string/root_create_an_account" />
 
             <!-- progress -->
             <ProgressBar
