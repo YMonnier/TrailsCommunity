@@ -25,6 +25,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @LargeTest
 public class LoginActivityTest {
 
+    private static final String VALID_EMAIL = "test@gmail.com";
+    private static final String NOT_VALID_EMAIL = "test@test";
+    private static final String VALID_PASSWORD = "password";
+    private static final String NOT_VALIDE_PASSWORD = "abcd";
+    private static final String EMPTY_VALUE = "";
+
     @Rule
     public ActivityTestRule<LoginActivity_> mActivityRule = new ActivityTestRule<>(
             LoginActivity_.class);
@@ -35,9 +41,9 @@ public class LoginActivityTest {
     @Test
     public void testLoginButton(){
         onView(withId(R.id.emailField))
-                .perform(typeText("test@gmail.com"));
+                .perform(typeText(VALID_EMAIL));
         onView(withId(R.id.passwordField))
-                .perform(typeText("password"));
+                .perform(typeText(VALID_PASSWORD));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
     }
@@ -48,7 +54,7 @@ public class LoginActivityTest {
     @Test
     public void testEmailFormNotValid(){
         onView(withId(R.id.emailField))
-                .perform(typeText("test@test"));
+                .perform(typeText(NOT_VALID_EMAIL));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
         onView(withId(R.id.emailField)).check(matches(withError(
@@ -61,7 +67,7 @@ public class LoginActivityTest {
     @Test
     public void testErrorEmptyEmailForm(){
         onView(withId(R.id.emailField))
-                .perform(typeText(""));
+                .perform(typeText(EMPTY_VALUE));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
         onView(withId(R.id.emailField)).check(matches(withError(
@@ -74,9 +80,9 @@ public class LoginActivityTest {
     @Test
     public void testPasswordFormNotValid(){
         onView(withId(R.id.emailField))
-                .perform(typeText("test@gmail.com"));
+                .perform(typeText(VALID_EMAIL));
         onView(withId(R.id.passwordField))
-                .perform(typeText("abcd"));
+                .perform(typeText(NOT_VALIDE_PASSWORD));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
         onView(withId(R.id.passwordField)).check(matches(withError(
@@ -89,7 +95,7 @@ public class LoginActivityTest {
     @Test
     public void testErrorEmptyPasswordForm(){
         onView(withId(R.id.passwordField))
-                .perform(typeText(""));
+                .perform(typeText(EMPTY_VALUE));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
         onView(withId(R.id.passwordField)).check(matches(withError(
