@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -35,7 +34,7 @@ import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 import fr.univ_tln.trailscommunity.utils.CustomRequest;
 
-@EActivity(R.layout.activity_signup)
+@EActivity(R.layout.root_signup_activity)
 public class SignupActivity extends AppCompatActivity implements Response.ErrorListener, Response.Listener<JSONObject> {
 
     /**
@@ -58,8 +57,8 @@ public class SignupActivity extends AppCompatActivity implements Response.ErrorL
     @ViewById(R.id.numberField)
     EditText numberField;
 
-    @ViewById//(R.id.codeNumberCountrySpinner)
-            Spinner codeNumberCountrySpinner;
+    @ViewById(R.id.codeNumberCountrySpinner)
+    Spinner codeNumberCountrySpinner;
 
     @ViewById(R.id.numberCodeCountryError)
     TextView codeNumberCountryError;
@@ -86,8 +85,10 @@ public class SignupActivity extends AppCompatActivity implements Response.ErrorL
 
     @AfterViews
     void initCodeNumber() {
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, R.layout.activity_signup, indicatifNumbers);
-        codeNumberCountrySpinner.setAdapter(arrayAdapter);
+        //System.out.println(indicatifNumbers);
+        //ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, indicatifNumbers);
+        //arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //codeNumberCountrySpinner.setAdapter(arrayAdapter);
     }
 
     /**

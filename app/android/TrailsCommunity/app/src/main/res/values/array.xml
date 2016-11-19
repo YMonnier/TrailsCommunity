@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="indicatifNumbers">
+    <string-array name="indicatif_numbers">
         <item>+33</item>
-    </array>
+        <item>+32</item>
+        <item>+213</item>
+        <item>+39</item>
+        <item>+43</item>
+        <item>+34</item>
+        <item>+352</item>
+    </string-array>
 </resources>

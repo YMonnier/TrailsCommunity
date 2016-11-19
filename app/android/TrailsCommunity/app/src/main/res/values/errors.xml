@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_nickname">Nickname is too short</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="error_invalid_number">Invalid telephon number</string>
+    <string name="error_invalid_code_number_country">Empty code number</string>
+    <string name="error_not_matching_password">Password not the same</string>
+</resources>

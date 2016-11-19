@@ -10,12 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".features.root.SignupActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/title_create_account"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,9 +25,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:nextFocusDown="@+id/nicknameField"
-                />
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -54,8 +46,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_nickname"
                 android:inputType="text"
-                android:maxLines="1"
-                android:nextFocusDown="@+id/passwordField"/>
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -76,8 +67,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
                 android:inputType="textPassword"
-                android:maxLines="1"
-                android:nextFocusDown="@+id/confirmPasswordField"/>
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -98,8 +88,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_confirm_password"
                 android:inputType="textPassword"
-                android:maxLines="1"
-                android:nextFocusDown="@+id/codeNumberCountrySpinner"/>
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -115,7 +104,8 @@
         <Spinner
             android:id="@+id/codeNumberCountrySpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:entries="@array/indicatif_numbers"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

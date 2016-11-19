@@ -1,5 +1,13 @@
 package fr.univ_tln.trailscommunity.features.sessions;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.v7.app.AppCompatActivity;
+
+import org.androidannotations.annotations.EActivity;
+
+import fr.univ_tln.trailscommunity.R;
+
 /**
  * Project TrailsCommunity.
  * Package fr.univ_tln.trailscommunity.features.session.
@@ -9,6 +17,12 @@ package fr.univ_tln.trailscommunity.features.sessions;
  * https://github.com/YMonnier
  */
 
+@EActivity(R.layout.sessions_sessions_activity)
+public class SessionsActivity extends AppCompatActivity {
 
-public class SessionsActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        setTitle("Sessions");
+    }
 }

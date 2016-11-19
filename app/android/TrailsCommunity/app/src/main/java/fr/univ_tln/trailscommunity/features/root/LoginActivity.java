@@ -22,13 +22,14 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 
 /**
  * A login screen that offers login via email/password.
  */
 
-@EActivity(R.layout.activity_login)
+@EActivity(R.layout.root_login_activity)
 public class LoginActivity extends AppCompatActivity {
 
     /**
@@ -65,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
      */
     @Click(R.id.email_sign_in_button)
     void onClickOnSigninButton() {
-        assert false;
         attemptLogin();
     }
 
@@ -200,9 +200,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Success request
-        // Intent intent = new Intent(LoginActivity.this, SessionViewActivity.class);
-        // startActivity(intent);
-        // finish();
+        startActivity(new Intent(LoginActivity.this, SessionsActivity_.class));
 
         updateLockUi(false);
         showProgress(false);
