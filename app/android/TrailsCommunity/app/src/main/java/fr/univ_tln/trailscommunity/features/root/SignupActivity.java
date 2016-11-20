@@ -252,6 +252,7 @@ public class SignupActivity extends AppCompatActivity implements Response.ErrorL
      */
     @UiThread
     void updateLockUi(boolean status) {
+        emailField.setEnabled(!status);
         nicknameField.setEnabled(!status);
         passwordField.setEnabled(!status);
         confirmPasswordField.setEnabled(!status);
