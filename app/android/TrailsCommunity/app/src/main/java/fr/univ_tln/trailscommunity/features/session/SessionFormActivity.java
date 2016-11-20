@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.sessions;
+package fr.univ_tln.trailscommunity.features.session;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -21,7 +21,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -32,8 +31,8 @@ import java.util.Locale;
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.models.Position;
 
-@EActivity(R.layout.sessions_create_session)
-public class CreateSessionActivity extends AppCompatActivity {
+@EActivity(R.layout.session_form_session)
+public class SessionFormActivity extends AppCompatActivity {
 
     /**
      * Minimum password length

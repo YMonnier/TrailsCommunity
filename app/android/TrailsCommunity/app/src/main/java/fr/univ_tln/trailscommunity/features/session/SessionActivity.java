@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.sessions;
+package fr.univ_tln.trailscommunity.features.session;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import fr.univ_tln.trailscommunity.R;
 
+
 public class SessionActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -19,7 +20,7 @@ public class SessionActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sessions_activity_session);
+        setContentView(R.layout.session_session_activity);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

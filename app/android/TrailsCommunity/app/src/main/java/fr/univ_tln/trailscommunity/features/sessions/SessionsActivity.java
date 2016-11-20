@@ -28,7 +28,7 @@ import static android.widget.Toast.LENGTH_SHORT;
  * https://github.com/YMonnier
  */
 
-@EActivity(R.layout.sessions_session_activity)
+@EActivity(R.layout.sessions_sessions_activity)
 @OptionsMenu(R.menu.sessions_sessions_menu)
 public class SessionsActivity extends AppCompatActivity {
 
