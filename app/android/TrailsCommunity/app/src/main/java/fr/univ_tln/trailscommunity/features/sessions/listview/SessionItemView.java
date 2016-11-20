@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.sessions;
+package fr.univ_tln.trailscommunity.features.sessions.listview;
 
 import android.content.Context;
 import android.widget.ImageView;

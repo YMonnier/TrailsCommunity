@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.sessions;
+package fr.univ_tln.trailscommunity.features.sessions.listview;
 
 import android.content.Context;
 import android.view.View;
@@ -26,7 +26,7 @@ import fr.univ_tln.trailscommunity.models.Session;
  */
 
 @EBean
-class SessionListAdapter extends BaseAdapter {
+public class SessionListAdapter extends BaseAdapter {
 
     /**
      * Item type identifier

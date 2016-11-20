@@ -14,6 +14,7 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
 
 import static android.widget.Toast.LENGTH_SHORT;

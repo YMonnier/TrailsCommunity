@@ -59,7 +59,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile ('com.android.support.test.espresso:espresso-contrib:2.2.2'){
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
         exclude module: 'support-annotations'
         exclude module: 'support-v4'
         exclude module: 'support-v13'
@@ -69,13 +69,18 @@ dependencies {
     }
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
+
+    // Android Annotation (AA)
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+    // Android Annotation - Rest part
+    apt "org.androidannotations:rest-spring:$AAVersion"
+    compile "org.androidannotations:rest-spring-api:$AAVersion"
+    // Use for REST AA integration with spring-android
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    // Gson use to Rest part AA
     compile 'com.google.code.gson:gson:2.4'
 
     testCompile 'junit:junit:4.12'
-    apt "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
-    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3' // Use for REST integration with spring-android
-
-    apt "org.androidannotations:rest-spring:$AAVersion"
-    compile "org.androidannotations:rest-spring-api:$AAVersion"
+    compile 'com.google.android.gms:play-services:9.8.0'
 }
