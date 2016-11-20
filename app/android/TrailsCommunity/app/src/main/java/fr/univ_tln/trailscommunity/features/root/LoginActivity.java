@@ -14,16 +14,27 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.json.JSONObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import fr.univ_tln.trailscommunity.R;
-import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
+import fr.univ_tln.trailscommunity.utilities.network.ErrorHandler;
+import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 
 /**
@@ -47,10 +58,21 @@ public class LoginActivity extends AppCompatActivity {
     @ViewById(R.id.login_progress)
     View progressView;
 
+    @RestService
+    TCRestApi tcRestApi;
+
+    @Bean
+    ErrorHandler errorHandler;
+
     @AfterViews
     void init() {
-        //emailView.setText("mail@mail.com");
-        //passwordView.setText("abcd12345");
+        emailView.setText("ysee@ysee.com");
+        passwordView.setText("abcd1234");
+    }
+
+    @AfterInject
+    void afterInject() {
+        tcRestApi.setRestErrorHandler(errorHandler);
     }
 
     /**
@@ -199,6 +221,20 @@ public class LoginActivity extends AppCompatActivity {
     void userLoginTask(final String email, final String password) {
         updateLockUi(true);
 
+        MultiValueMap<String, Object> authParams = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+        params.set("email", email);
+        params.set("password", password);
+        authParams.set("auth", params);
+
+
+        //GsonBuilder responseEntity = tcRestApi.login(authParams);
+        //System.out.println(responseEntity);
+
+        System.out.println("Test....");
+        ResponseEntity<JsonElement> responseEntity = tcRestApi.login(authParams);
+        System.out.println(responseEntity);
+
         //Request...
         try {
             Thread.sleep(2000);
@@ -207,7 +243,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Success request
-        startActivity(new Intent(LoginActivity.this, SessionsActivity_.class));
+        //startActivity(new Intent(LoginActivity.this, SessionsActivity_.class));
 
         updateLockUi(false);
         showProgress(false);

@@ -16,10 +16,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
@@ -32,10 +28,9 @@ import org.json.JSONObject;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
-import fr.univ_tln.trailscommunity.utilities.network.CustomRequest;
 
 @EActivity(R.layout.root_signup_activity)
-public class SignupActivity extends AppCompatActivity implements Response.ErrorListener, Response.Listener<JSONObject> {
+public class SignupActivity extends AppCompatActivity {
 
     /**
      * Minimum password length
@@ -68,10 +63,6 @@ public class SignupActivity extends AppCompatActivity implements Response.ErrorL
 
     @ViewById(R.id.registerButton)
     Button registerButton;
-
-    private RequestQueue queue;
-
-    private CustomRequest request;
 
     @StringArrayRes
     String[] indicatifNumbers;
@@ -358,17 +349,5 @@ public class SignupActivity extends AppCompatActivity implements Response.ErrorL
 
         updateLockUi(false);
         showProgress(false);
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Log.e("ERROR", error.toString());
-    }
-
-    @Override
-    public void onResponse(JSONObject response) {
-        // Intent intent = new Intent(this, LoginActivity_.class);
-        // startActivity(intent);
-        Log.e("RESPONSE", response.toString());
     }
 }

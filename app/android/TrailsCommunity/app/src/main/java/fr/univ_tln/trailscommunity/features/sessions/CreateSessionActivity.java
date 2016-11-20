@@ -15,10 +15,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
@@ -35,10 +31,9 @@ import java.util.Locale;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.models.Position;
-import fr.univ_tln.trailscommunity.utilities.network.CustomRequest;
 
 @EActivity(R.layout.sessions_create_session)
-public class CreateSessionActivity extends AppCompatActivity implements Response.ErrorListener, Response.Listener<JSONObject>{
+public class CreateSessionActivity extends AppCompatActivity {
 
     /**
      * Minimum password length
@@ -63,10 +58,6 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
     @ViewById(R.id.progress)
     View mProgressView;
 
-    private RequestQueue queue;
-
-    private CustomRequest request;
-
     @StringArrayRes
     String[] activities;
 
@@ -82,7 +73,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
         attemptCreateSession();
     }
 
-    public Position convertAdressToCoordinates(String address){
+    public Position convertAdressToCoordinates(String address) {
         Geocoder geocoder = new Geocoder(this);
         Position position = null;
         List<Address> addresses;
@@ -103,7 +94,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
     /**
      * Generate dialog to display date picker
      */
-    public void displayDatePicker(){
+    public void displayDatePicker() {
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -121,7 +112,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
     /**
      * Update and put date in EditText
      */
-    private void updateLabel(){
+    private void updateLabel() {
         String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
         startDateField.setText(sdf.format(myCalendar.getTime()));
@@ -131,7 +122,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
      * Display date picker when touch editText startDateField
      */
     @Click(R.id.startDateField)
-    void onClickOnSelectStartDate(){
+    void onClickOnSelectStartDate() {
         displayDatePicker();
         new DatePickerDialog(this, date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
@@ -169,19 +160,18 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
             cancel = true;
         }
 
-        if(TextUtils.isEmpty(startDate)){
+        if (TextUtils.isEmpty(startDate)) {
             updateErrorUi(startDateField, getString(R.string.error_field_required));
             focusView = startDateField;
             cancel = true;
         }
 
         //Check if the user entered password
-        if(TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             updateErrorUi(passwordField, getString(R.string.error_field_required));
             focusView = passwordField;
             cancel = true;
-        }
-        else if (!isPasswordValid(password)) {
+        } else if (!isPasswordValid(password)) {
             updateErrorUi(passwordField, getString(R.string.error_invalid_password));
             focusView = passwordField;
             cancel = true;
@@ -204,6 +194,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
     /**
      * Check if password is valid
      * His length must be sup 8
+     *
      * @param password
      * @return
      */
@@ -285,6 +276,7 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
      * to send credential data to the server.
      * If the connexion is succeed, we go to the sessions list.
      * Otherwise, the user put wrong data and should try again...
+     *
      * @param departurePlace
      * @param arrivalPlace
      * @param typeActivity
@@ -292,9 +284,9 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
      */
     @Background
     void createSessionTask(final String departurePlace,
-                    final String arrivalPlace,
-                    final String typeActivity,
-                    final String password) {
+                           final String arrivalPlace,
+                           final String typeActivity,
+                           final String password) {
         updateLockUi(true);
 
         Log.e("CREATE SESSION", "true");
@@ -320,15 +312,5 @@ public class CreateSessionActivity extends AppCompatActivity implements Response
 
         updateLockUi(false);
         showProgress(false);
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Log.e("ERROR", error.toString());
-    }
-
-    @Override
-    public void onResponse(JSONObject response) {
-        Log.e("RESPONSE", response.toString());
     }
 }

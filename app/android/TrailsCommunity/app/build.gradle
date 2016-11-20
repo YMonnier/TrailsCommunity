@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 25
@@ -20,6 +21,16 @@ android {
     lintOptions {
         abortOnError false
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 buildscript {
@@ -32,8 +43,15 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url 'http://repo.spring.io/milestone'
+    }
+}
+
+
 def AAVersion = '4.1.0'
 
 dependencies {
@@ -51,8 +69,13 @@ dependencies {
     }
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
-    compile 'com.android.volley:volley:1.0.0'
+    compile 'com.google.code.gson:gson:2.4'
+
     testCompile 'junit:junit:4.12'
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3' // Use for REST integration with spring-android
+
+    apt "org.androidannotations:rest-spring:$AAVersion"
+    compile "org.androidannotations:rest-spring-api:$AAVersion"
 }
