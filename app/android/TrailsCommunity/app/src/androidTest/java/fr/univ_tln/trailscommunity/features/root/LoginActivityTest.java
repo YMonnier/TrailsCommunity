@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.root.features.root;
+package fr.univ_tln.trailscommunity.features.root;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;

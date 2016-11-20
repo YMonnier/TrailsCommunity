@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.root.features.root;
+package fr.univ_tln.trailscommunity.features.root;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -36,7 +36,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class SingupActivityTest {
+public class SignupActivityTest {
 
     private static final String VALID_EMAIL = "test@gmail.com";
     private static final String VALID_NICKNAME = "Nickname";
@@ -66,6 +66,7 @@ public class SingupActivityTest {
                 .perform(typeText(VALID_PASSWORD));
         onView(withId(R.id.codeNumberCountrySpinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is(CODE_NUMBER_COUNTRY))).perform(click());
+
         onView(withId(R.id.codeNumberCountrySpinner)).check(matches(withSpinnerText(containsString(CODE_NUMBER_COUNTRY))));
         onView(withId(R.id.numberField))
                 .perform(typeText(VALID_NUMBER));
@@ -222,7 +223,7 @@ public class SingupActivityTest {
      * Test if display error when numberField is empty
      */
     @Test
-    public void testEmptyErrorNumberField(){
+    public void testEmptyErrorNumberField() {
         onView(withId(R.id.emailField))
                 .perform(typeText(VALID_EMAIL));
         onView(withId(R.id.nicknameField))
@@ -241,8 +242,9 @@ public class SingupActivityTest {
         onView(withId(R.id.numberField)).check(matches(withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
     }
+
     /**
-     * Match if error display in EditText
+     * Match if error displays in EditText
      * @param expected
      * @return
      */

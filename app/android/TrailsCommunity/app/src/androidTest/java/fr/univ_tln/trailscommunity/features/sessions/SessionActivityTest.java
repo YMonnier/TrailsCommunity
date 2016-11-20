@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.root.features.sessions;
+package fr.univ_tln.trailscommunity.features.sessions;
 
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
