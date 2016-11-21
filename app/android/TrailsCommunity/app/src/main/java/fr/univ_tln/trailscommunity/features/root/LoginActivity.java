@@ -5,35 +5,37 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
-import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.univ_tln.trailscommunity.R;
-import fr.univ_tln.trailscommunity.utilities.network.ErrorHandler;
+import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 
@@ -58,21 +60,20 @@ public class LoginActivity extends AppCompatActivity {
     @ViewById(R.id.login_progress)
     View progressView;
 
+    @ViewById(R.id.email_sign_in_button)
+    Button loginButton;
+
+    @ViewById
+    CoordinatorLayout coordinatorLayout;
+
     @RestService
     TCRestApi tcRestApi;
 
-    @Bean
-    ErrorHandler errorHandler;
-
     @AfterViews
     void init() {
-        emailView.setText("ysee@ysee.com");
+        setTitle(R.string.title_login_activity);
+        emailView.setText("test@test.com");
         passwordView.setText("abcd1234");
-    }
-
-    @AfterInject
-    void afterInject() {
-        tcRestApi.setRestErrorHandler(errorHandler);
     }
 
     /**
@@ -184,6 +185,7 @@ public class LoginActivity extends AppCompatActivity {
     void updateLockUi(boolean status) {
         passwordView.setEnabled(!status);
         emailView.setEnabled(!status);
+        loginButton.setEnabled(!status);
     }
 
     /**
@@ -221,19 +223,23 @@ public class LoginActivity extends AppCompatActivity {
     void userLoginTask(final String email, final String password) {
         updateLockUi(true);
 
-        MultiValueMap<String, Object> authParams = new LinkedMultiValueMap<>();
-        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-        params.set("email", email);
-        params.set("password", password);
-        authParams.set("auth", params);
+        Map<String, Object> auth = new HashMap<>();
+        Map<String, String> sub = new HashMap<>();
+
+        sub.put("email", email);
+        sub.put("password", password);
+        auth.put("auth", sub);
+
+        try {
+            ResponseEntity<JsonElement> responseEntity = tcRestApi.login(auth);
+            System.out.println(responseEntity);
 
 
-        //GsonBuilder responseEntity = tcRestApi.login(authParams);
-        //System.out.println(responseEntity);
+        } catch (RestClientException e) {
+            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please try again.", Snackbar.LENGTH_LONG);
+        }
 
-        System.out.println("Test....");
-        ResponseEntity<JsonElement> responseEntity = tcRestApi.login(authParams);
-        System.out.println(responseEntity);
+
 
         //Request...
         try {

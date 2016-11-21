@@ -15,7 +15,7 @@ import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
-import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.models.Session_old;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -40,7 +40,7 @@ public class SessionsActivity extends AppCompatActivity {
 
     @AfterViews
     void init() {
-        setTitle(getString(R.string.session_activity_name));
+        setTitle(getString(R.string.title_sessions_activity));
         sessionList.setAdapter(adapter);
     }
 
@@ -67,7 +67,7 @@ public class SessionsActivity extends AppCompatActivity {
      * @param session
      */
     @ItemClick
-    void sessionListItemClicked(Session session) {
+    void sessionListItemClicked(Session_old session) {
         Toast.makeText(this, session.getActivityName(), LENGTH_SHORT).show();
     }
 }
