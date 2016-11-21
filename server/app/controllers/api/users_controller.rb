@@ -11,6 +11,10 @@ class Api::UsersController < ApplicationController
         end
     end
 
+    def me
+        ok_request current_user
+    end
+
     private
 
     def user_params
