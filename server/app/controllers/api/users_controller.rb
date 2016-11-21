@@ -1,4 +1,5 @@
 class Api::UsersController < ApplicationController
+    before_action :authenticate_user, :only => [:me]
     def create
         return bad_request 'password not the same' if params[:password] != params[:password_confirmation]
 
