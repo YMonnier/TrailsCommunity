@@ -26,7 +26,8 @@
             android:label="@string/title_activity_login" />
         <activity android:name=".features.root.SignupActivity_" />
         <activity android:name=".features.sessions.SessionsActivity_" />
-        <activity android:name=".features.sessions.FormSessionActivity" />
+        <activity android:name=".features.sessions.SessionFormActivity_" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
