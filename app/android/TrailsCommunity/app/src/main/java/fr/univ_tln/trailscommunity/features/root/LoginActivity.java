@@ -9,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -18,8 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
@@ -35,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.Settings;
+import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
 import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
@@ -158,8 +161,6 @@ public class LoginActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
             userLoginTask(email, password);
-            //authTask = new UserLoginTask(email, password);
-            //authTask.execute((Void) null);
         }
     }
 
@@ -231,28 +232,30 @@ public class LoginActivity extends AppCompatActivity {
         auth.put("auth", sub);
 
         try {
-            ResponseEntity<JsonElement> responseEntity = tcRestApi.login(auth);
-            System.out.println(responseEntity);
+            ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
+            System.out.println(responseLogin);
+            Log.d("LoginActivity", "response login: " + responseLogin);
+            JsonElement je = responseLogin.getBody();
 
+            String token = je.getAsJsonObject().get("jwt").getAsString();
+            Settings.TOKEN_AUTHORIZATION = token;
+            Log.d("LoginActivity", "token: " + token);
 
+            tcRestApi.setHeader("Authorization", token);
+            ResponseEntity<JsonObject> responseUser = tcRestApi.user();
+
+            Log.d("LoginActivity", "response user: " + responseUser);
+
+            updateLockUi(false);
+            showProgress(false);
+
+            startActivity(new Intent(this, SessionsActivity_.class));
         } catch (RestClientException e) {
+            Log.d("LoginActivity", "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
             Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please try again.", Snackbar.LENGTH_LONG);
+            updateLockUi(false);
+            showProgress(false);
         }
-
-
-
-        //Request...
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Success request
-        //startActivity(new Intent(LoginActivity.this, SessionsActivity_.class));
-
-        updateLockUi(false);
-        showProgress(false);
     }
 
     /**
@@ -284,6 +287,14 @@ public class LoginActivity extends AppCompatActivity {
             // and hide the relevant UI components.
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    /**
+     * Save all information about the
+     * current user authenticated into Realm database.
+     */
+    private void saveUser() {
+
     }
 }
 
