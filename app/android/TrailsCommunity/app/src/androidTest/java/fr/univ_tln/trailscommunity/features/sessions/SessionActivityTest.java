@@ -17,7 +17,7 @@ import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 
 import fr.univ_tln.trailscommunity.R;
-import fr.univ_tln.trailscommunity.features.sessions.CreateSessionActivity_;
+import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -49,8 +49,8 @@ public class SessionActivityTest {
     private static final String EMPTY_FIELD = "";
 
     @Rule
-    public ActivityTestRule<CreateSessionActivity_> mActivityRule = new ActivityTestRule<>(
-            CreateSessionActivity_.class);
+    public ActivityTestRule<SessionFormActivity_> mActivityRule = new ActivityTestRule<>(
+            SessionFormActivity_.class);
 
     /**
      * Test all fields of the view
