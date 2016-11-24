@@ -37,7 +37,35 @@ class Api::SessionsController < ApplicationController
     #
     ##
     def index
-        ok_request Session.all, %w(session, user)
+        active_sessions = []
+        my_sessions = []
+        history_sessions = []
+        join_sessions = current_user.join_sessions
+        Session.all.each { |session|
+            if session.user_id == current_user.id
+                my_sessions.push session
+            elsif join_sessions.any? {|js| js.session_id == session.id} and session.close
+                history_sessions.push session
+            else
+                active_sessions.push session
+            end
+        }
+
+
+        json_object = {
+            data: {
+                active_sessions: active_sessions,
+                my_sessions: my_sessions,
+                history_sessions: history_sessions
+                #history_sessions: current_user.join_sessions
+            }
+        }
+
+        render json: json_object,
+               status: :ok,
+               include: nil
+
+        #ok_request render_json#, %w(user)
     end
 
     ##
