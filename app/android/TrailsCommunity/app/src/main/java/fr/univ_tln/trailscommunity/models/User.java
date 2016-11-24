@@ -1,5 +1,7 @@
 package fr.univ_tln.trailscommunity.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -18,8 +20,10 @@ public class User extends RealmObject {
     private int id;
     private String nickname;
     private String email;
+    @SerializedName("phone_number")
     private String phoneNumber;
     private RealmList<Session> sessions;
+    private boolean active = false;
 
     public User(){}
 
@@ -28,6 +32,8 @@ public class User extends RealmObject {
         this.nickname = builder.nickname;
         this.email = builder.email;
         this.phoneNumber = builder.phoneNumber;
+        this.sessions = new RealmList<>();
+        this.active = true;
     }
 
     public int getId() {
@@ -50,12 +56,22 @@ public class User extends RealmObject {
         return sessions;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public static class Builder {
         private int id;
         private String nickname;
         private String email;
         private String phoneNumber;
+        private boolean active = false;
         private RealmList<Session> sessions;
+
 
         public User build(){
             return new User(this);
@@ -63,6 +79,11 @@ public class User extends RealmObject {
 
         public Builder setId(int id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder setActive(boolean active) {
+            this.active = active;
             return this;
         }
 
@@ -85,5 +106,17 @@ public class User extends RealmObject {
             this.sessions = sessions;
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", sessions=" + sessions +
+                ", active=" + active +
+                '}';
     }
 }

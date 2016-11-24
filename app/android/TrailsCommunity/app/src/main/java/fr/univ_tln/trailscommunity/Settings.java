@@ -14,4 +14,9 @@ public class Settings {
      * Token use to access to restricted API resources.
      */
     public static String TOKEN_AUTHORIZATION = "";
+
+    /**
+     * Current user id from the TrailsCommunity API.
+     */
+    public static int userId = -1;
 }

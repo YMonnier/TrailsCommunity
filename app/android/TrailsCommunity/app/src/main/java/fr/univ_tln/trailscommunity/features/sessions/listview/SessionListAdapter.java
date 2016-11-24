@@ -56,11 +56,16 @@ public class SessionListAdapter extends BaseAdapter {
         addHeader("Active sessions");
         addItem(new Session_old.Builder().setActivity(1).build());
         addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
         addHeader("My sessions");
         addItem(new Session_old.Builder().setActivity(1).build());
         addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
         addHeader("History");
         addItem(new Session_old.Builder().setActivity(1).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
         addItem(new Session_old.Builder().setActivity(2).build());
         addItem(new Session_old.Builder().setActivity(1).build());
     }

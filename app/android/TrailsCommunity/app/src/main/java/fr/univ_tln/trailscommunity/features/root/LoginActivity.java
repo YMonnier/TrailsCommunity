@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -38,9 +41,12 @@ import java.util.Map;
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
+import fr.univ_tln.trailscommunity.models.User;
 import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * A login screen that offers login via email/password.
@@ -72,11 +78,24 @@ public class LoginActivity extends AppCompatActivity {
     @RestService
     TCRestApi tcRestApi;
 
+    /**
+     * Realm database instance.
+     */
+    private Realm realm;
+
     @AfterViews
     void init() {
         setTitle(R.string.title_login_activity);
         emailView.setText("test@test.com");
         passwordView.setText("abcd1234");
+
+        //
+        // Init global realm settings
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+
+        findActiveUser();
     }
 
     /**
@@ -234,24 +253,27 @@ public class LoginActivity extends AppCompatActivity {
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
             System.out.println(responseLogin);
-            Log.d("LoginActivity", "response login: " + responseLogin);
+            Log.d(LoginActivity.class.getName(), "response login: " + responseLogin);
             JsonElement je = responseLogin.getBody();
 
+            // Login, get auth token
             String token = je.getAsJsonObject().get("jwt").getAsString();
             Settings.TOKEN_AUTHORIZATION = token;
-            Log.d("LoginActivity", "token: " + token);
+            Log.d(LoginActivity.class.getName(), "token: " + token);
 
+
+            // Get current user information
             tcRestApi.setHeader("Authorization", token);
             ResponseEntity<JsonObject> responseUser = tcRestApi.user();
-
-            Log.d("LoginActivity", "response user: " + responseUser);
+            Log.d(LoginActivity.class.getName(), "response user: " + responseUser);
+            saveUser(responseUser.getBody().getAsJsonObject());
 
             updateLockUi(false);
             showProgress(false);
 
             startActivity(new Intent(this, SessionsActivity_.class));
         } catch (RestClientException e) {
-            Log.d("LoginActivity", "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
+            Log.d(LoginActivity.class.getName(), "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
             Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
             showProgress(false);
@@ -292,9 +314,52 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Save all information about the
      * current user authenticated into Realm database.
+     *
+     * @param userJsonObject json from /users/me route.
      */
-    private void saveUser() {
+    private void saveUser(JsonObject userJsonObject) {
+        JsonObject data = userJsonObject.getAsJsonObject("data");
+        Log.d(LoginActivity.class.getName(), "data: " + data);
+        int userId = data.get("id").getAsInt();
+        Settings.userId = userId;
 
+        // Create Realm instance
+        realm = Realm.getDefaultInstance();
+
+        realm.beginTransaction();
+        // Disable activation user
+        for (User u : realm.where(User.class).findAll()) {
+            u.setActive(false);
+        }
+
+        User userExist = realm.where(User.class).equalTo("id", userId).findFirst();
+        if (userExist == null) {
+            User user = realm.createObjectFromJson(User.class, new Gson().toJson(data));
+            Log.d(LoginActivity.class.getName(), "Created a new user: " + user.toString());
+        } else {
+            // Enable activation user
+            userExist.setActive(true);
+            Log.d(LoginActivity.class.getName(), "Update existing user: " + userExist.toString());
+        }
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    /**
+     * Check if a user is already
+     * authenticated into the application.
+     * If that is the case, the user is redirect to list session view,
+     * otherwise, he has to login from the login form.
+     */
+    private void findActiveUser() {
+        // Create Realm instance
+        realm = Realm.getDefaultInstance();
+        User user = realm.where(User.class).equalTo("active", true).findFirst();
+        if (user != null) {
+            Settings.userId = user.getId();
+            startActivity(new Intent(this, SessionsActivity_.class));
+        }
+        realm.close();
     }
 }
 

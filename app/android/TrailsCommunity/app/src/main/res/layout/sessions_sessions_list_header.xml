@@ -3,14 +3,14 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/sessions_list_header">
+    android:id="@+id/sessions_list_header"
+    android:background="@color/colorHeaderItem"
+    android:textColor="@color/colorWhite">
+
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="30dp"
         android:textSize="20sp"
         android:gravity="center_vertical"
-        android:id="@+id/titleTextView"
-        android:background="@color/colorHeaderItem"
-        android:textColor="@color/colorWhite"
-        android:text="HEADER"/>
+        android:id="@+id/titleTextView" />
 </LinearLayout>
