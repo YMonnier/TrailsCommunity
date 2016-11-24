@@ -18,6 +18,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.univ_tln.trailscommunity.R;
 
 
@@ -25,7 +28,7 @@ public class SessionActivity extends AppCompatActivity implements OnMapReadyCall
 
     private GoogleMap mMap;
 
-    private String[] mChatMessages;
+    private List<String> mChatMessages;
     private DrawerLayout mDrawerLayout;
     private LinearLayout mDrawerLinear;
     private ListView mDrawerList;
@@ -40,7 +43,8 @@ public class SessionActivity extends AppCompatActivity implements OnMapReadyCall
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mChatMessages = getResources().getStringArray(R.array.activities);
+        mChatMessages = new ArrayList<>();
+        mChatMessages.add("Robert : Test loooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnng message.");
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLinear = (LinearLayout) findViewById(R.id.left_drawer);
         mDrawerList = (ListView) findViewById(R.id.my_drawer);

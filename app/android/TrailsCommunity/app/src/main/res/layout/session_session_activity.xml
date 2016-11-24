@@ -16,16 +16,17 @@
             android:layout_height="match_parent"
             tools:context=".features.session.SessionActivity" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
         <LinearLayout
             android:id="@+id/left_drawer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ok"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#1e1e1e">
 
             <!-- The navigation drawer -->
             <ListView
@@ -34,10 +35,24 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:fitsSystemWindows="true"
-                android:background="#1e1e1e"
-                android:textColor="#ffff" />
+                android:textColor="#ffff"
+                android:layout_weight="1"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:hint="@string/your_message"
+                android:textColorHint="@color/colorWhite"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ok"/>
 
         </LinearLayout>
+
+        </RelativeLayout>
 
     </android.support.v4.widget.DrawerLayout>
 
