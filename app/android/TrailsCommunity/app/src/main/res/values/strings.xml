@@ -6,4 +6,7 @@
     <string name="root_create_an_account"><u>Create an account</u></string>
     <string name="root_signup_button">Register</string>
     <string name="root_create_session_button">Create</string>
+    <string name="your_message">Your message...</string>
+    <string name="send">Send</string>
+    <string name="save">Save</string>
 </resources>

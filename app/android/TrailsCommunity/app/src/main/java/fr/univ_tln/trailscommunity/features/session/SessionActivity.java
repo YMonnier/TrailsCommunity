@@ -1,6 +1,7 @@
 package fr.univ_tln.trailscommunity.features.session;
 
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -8,8 +9,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +19,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.univ_tln.trailscommunity.R;
 
 
@@ -25,9 +29,9 @@ public class SessionActivity extends AppCompatActivity implements OnMapReadyCall
 
     private GoogleMap mMap;
 
-    private String[] mChatMessages;
+    private List<String> mChatMessages;
     private DrawerLayout mDrawerLayout;
-    private LinearLayout mDrawerLinear;
+    private RelativeLayout mDrawerLinear;
     private ListView mDrawerList;
 
     @Override
@@ -40,16 +44,24 @@ public class SessionActivity extends AppCompatActivity implements OnMapReadyCall
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mChatMessages = getResources().getStringArray(R.array.activities);
+        init();
+        createChatStructure();
+    }
+
+    public void init(){
+        this.mChatMessages = new ArrayList<>();
+        mChatMessages.add("Robert : Test loooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnng message.");
+    }
+
+    private void createChatStructure(){
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLinear = (LinearLayout) findViewById(R.id.left_drawer);
+        mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
         mDrawerList = (ListView) findViewById(R.id.my_drawer);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mChatMessages));
     }
-
 
     /**
      * Manipulates the map once available.
@@ -82,7 +94,12 @@ public class SessionActivity extends AppCompatActivity implements OnMapReadyCall
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.session_chat_menu:
-                mDrawerLayout.openDrawer(mDrawerLinear);
+                if(!mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
+                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                }
+                else{
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
