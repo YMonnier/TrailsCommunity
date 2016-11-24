@@ -24,7 +24,6 @@
         <!-- <activity android:name=".features.root.LoginActivity_" /> -->
         <activity android:name=".features.root.SignupActivity_" />
         <activity android:name=".features.sessions.SessionsActivity_" />
-        <activity android:name=".features.sessions.SessionFormActivity_" />
 
         <activity android:name=".features.session.SessionFormActivity_" />
         <activity android:name=".features.session.SessionActivity" />
