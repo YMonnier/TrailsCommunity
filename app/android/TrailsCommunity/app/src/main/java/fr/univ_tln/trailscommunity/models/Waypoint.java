@@ -17,7 +17,9 @@ public class Waypoint extends RealmObject {
     private double longitude;
     private boolean sent;
 
-    private Waypoint(Builder builder) {
+    public Waypoint(){}
+
+    public Waypoint(Builder builder) {
         this.latitude = builder.latitude;
         this.longitude = builder.longitude;
     }

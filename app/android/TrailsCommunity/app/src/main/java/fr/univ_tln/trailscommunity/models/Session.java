@@ -27,6 +27,8 @@ public class Session extends RealmObject {
     private RealmList<Coordinate> coordinates;
     private RealmList<Waypoint> waypoints;
 
+    public Session(){}
+
     public Session(Builder builder) {
         this.id = builder.id;
         this.activity = builder.activity;

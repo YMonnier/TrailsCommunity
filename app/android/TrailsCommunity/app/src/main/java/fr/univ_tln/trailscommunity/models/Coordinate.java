@@ -18,7 +18,9 @@ public class Coordinate extends RealmObject {
     private double longitude;
     private boolean sent = false;
 
-    private Coordinate(Builder builder) {
+    public Coordinate(){}
+
+    public Coordinate(Builder builder) {
         this.latitude = builder.latitude;
         this.longitude = builder.longitude;
     }

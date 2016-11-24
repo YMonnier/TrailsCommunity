@@ -21,6 +21,8 @@ public class User extends RealmObject {
     private String phoneNumber;
     private RealmList<Session> sessions;
 
+    public User(){}
+
     public User(Builder builder) {
         this.id = builder.id;
         this.nickname = builder.nickname;
