@@ -23,10 +23,12 @@
         android:theme="@style/AppTheme">
 
         <!-- <activity android:name=".features.root.LoginActivity_" /> -->
-        <activity android:name=".features.root.SignupActivity_" />
+        <activity android:name=".features.root.SignupActivity_"
+            android:parentActivityName=".features.root.LoginActivity_" />
         <activity android:name=".features.sessions.SessionsActivity_" />
         <activity android:name=".features.session.SessionFormActivity_" />
-        <activity android:name=".features.session.SessionActivity" />
+        <activity android:name=".features.session.SessionActivity"
+            android:parentActivityName=".features.sessions.SessionsActivity_"/>
         <activity android:name=".features.root.ProfileActivity_" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
