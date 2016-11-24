@@ -74,7 +74,7 @@
                     android:id="@+id/createAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center_horizontal|bottom"
                     android:clickable="true"
                     android:text="@string/root_create_an_account" />
 

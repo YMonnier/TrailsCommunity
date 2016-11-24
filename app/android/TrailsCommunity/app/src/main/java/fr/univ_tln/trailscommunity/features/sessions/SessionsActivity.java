@@ -1,5 +1,6 @@
 package fr.univ_tln.trailscommunity.features.sessions;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
@@ -14,6 +15,7 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session_old;
 
@@ -51,6 +53,8 @@ public class SessionsActivity extends AppCompatActivity {
     @OptionsItem(R.id.sessions_user_menu)
     void userProfileMenuButton() {
         Log.d("SessionsActivity", "Click on userProfileMenuButton");
+        startActivity(new Intent(this, ProfileActivity_.class));
+        //finish();
     }
 
     /**
