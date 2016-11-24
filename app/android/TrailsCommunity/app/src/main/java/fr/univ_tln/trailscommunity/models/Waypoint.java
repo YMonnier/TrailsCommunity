@@ -13,8 +13,54 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Waypoint extends RealmObject {
-    @PrimaryKey
-    private int id;
     private double latitude;
     private double longitude;
+    private boolean sent;
+
+    private Waypoint(Builder builder) {
+        this.latitude = builder.latitude;
+        this.longitude = builder.longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public boolean isSent() {
+        return sent;
+    }
+
+    public void setSent(boolean sent) {
+        this.sent = sent;
+    }
+
+    public static class Builder {
+        private double latitude;
+        private double longitude;
+        private boolean sent = false;
+
+        public Waypoint build() {
+            return new Waypoint(this);
+        }
+
+        public Builder setLatitude(double latitude) {
+            this.latitude = latitude;
+            return this;
+        }
+
+        public Builder setLongitude(double longitude) {
+            this.longitude = longitude;
+            return this;
+        }
+
+        public Builder setSent(boolean sent) {
+            this.sent = sent;
+            return this;
+        }
+    }
+
 }

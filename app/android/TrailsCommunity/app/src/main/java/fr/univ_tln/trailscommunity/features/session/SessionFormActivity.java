@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 import fr.univ_tln.trailscommunity.R;
-import fr.univ_tln.trailscommunity.models.Position;
+import fr.univ_tln.trailscommunity.models.Coordinate;
 
 @EActivity(R.layout.session_form_session)
 public class SessionFormActivity extends AppCompatActivity {
@@ -72,9 +72,9 @@ public class SessionFormActivity extends AppCompatActivity {
         attemptCreateSession();
     }
 
-    public Position convertAdressToCoordinates(String address) {
+    public Coordinate convertAdressToCoordinates(String address) {
         Geocoder geocoder = new Geocoder(this);
-        Position position = null;
+        Coordinate position = null;
         List<Address> addresses;
         try {
             addresses = geocoder.getFromLocationName(address, 1);
@@ -82,7 +82,10 @@ public class SessionFormActivity extends AppCompatActivity {
             double longitude = addresses.get(0).getLongitude();
             Log.e("LATITUDE", latitude + "");
             Log.e("LONGITUDE", longitude + "");
-            position = new Position(latitude, longitude);
+            position = new Coordinate.Builder()
+                    .setLatitude(latitude)
+                    .setLongitude(longitude)
+                    .build();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -198,7 +201,7 @@ public class SessionFormActivity extends AppCompatActivity {
      * @return
      */
     private boolean isPasswordValid(String password) {
-        return password.length() >= 8;
+        return password.length() >= MIN_PASSWORD_LENGTH;
     }
 
     /**
@@ -297,8 +300,8 @@ public class SessionFormActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Position positionDeparturePlace = convertAdressToCoordinates(departurePlace);
-        Position positionArrivalPlace = convertAdressToCoordinates(arrivalPlace);
+        Coordinate positionDeparturePlace = convertAdressToCoordinates(departurePlace);
+        Coordinate positionArrivalPlace = convertAdressToCoordinates(arrivalPlace);
 
         /*
         Map<String, String> parameters = new HashMap<>();
