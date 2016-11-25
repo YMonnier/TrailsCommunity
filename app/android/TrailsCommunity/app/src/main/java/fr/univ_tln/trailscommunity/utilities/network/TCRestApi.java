@@ -55,4 +55,8 @@ public interface TCRestApi {
     @Get("/users/me")
     @RequiresHeader("Authorization")
     ResponseEntity<JsonObject> user();
+
+    @Get("/sessions")
+    @RequiresHeader("Authorization")
+    ResponseEntity<JsonObject> sessions();
 }

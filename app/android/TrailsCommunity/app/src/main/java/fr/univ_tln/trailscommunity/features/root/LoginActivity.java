@@ -94,8 +94,6 @@ public class LoginActivity extends AppCompatActivity {
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
-
-        findActiveUser();
     }
 
     /**
@@ -191,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
      * @param error error message
      */
     @UiThread
-    void updateErrorUi(EditText view, String error) {
+    void updateErrorUi(final EditText view, final String error) {
         view.setError(error);
     }
 
@@ -215,7 +213,7 @@ public class LoginActivity extends AppCompatActivity {
      * @param email string email
      * @return true if valid, otherwise, false
      */
-    private boolean isEmailValid(String email) {
+    private boolean isEmailValid(final String email) {
         return EmailValidator.validate(email);
     }
 
@@ -225,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
      * @param password password for validation
      * @return true if password length >= 8, otherwise, false
      */
-    private boolean isPasswordValid(String password) {
+    private boolean isPasswordValid(final String password) {
         return password.length() >= MIN_PASSWORD_LENGTH;
     }
 
@@ -317,7 +315,7 @@ public class LoginActivity extends AppCompatActivity {
      *
      * @param userJsonObject json from /users/me route.
      */
-    private void saveUser(JsonObject userJsonObject) {
+    private void saveUser(final JsonObject userJsonObject) {
         JsonObject data = userJsonObject.getAsJsonObject("data");
         Log.d(LoginActivity.class.getName(), "data: " + data);
         int userId = data.get("id").getAsInt();
@@ -351,6 +349,7 @@ public class LoginActivity extends AppCompatActivity {
      * If that is the case, the user is redirect to list session view,
      * otherwise, he has to login from the login form.
      */
+    /*
     private void findActiveUser() {
         // Create Realm instance
         realm = Realm.getDefaultInstance();
@@ -360,6 +359,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(this, SessionsActivity_.class));
         }
         realm.close();
-    }
+    }*/
 }
 

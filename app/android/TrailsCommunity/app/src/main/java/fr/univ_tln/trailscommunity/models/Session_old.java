@@ -52,19 +52,6 @@ public class Session_old {
         return activity;
     }
 
-    public String getActivityName() {
-        switch (activity) {
-            case 1:
-                return "Hiking";
-            case 2:
-                return "Bicycle";
-            case 3:
-                return "4x4";
-            default:
-                return "Empty";
-        }
-    }
-
     public static class Builder {
         private int activity;
         private boolean lock;
