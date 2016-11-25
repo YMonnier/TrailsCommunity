@@ -26,6 +26,9 @@ public class Session extends RealmObject {
     private Date startDate;
     private RealmList<Coordinate> coordinates;
     private RealmList<Waypoint> waypoints;
+    private Date created_at;
+    private Date updated_at;
+
 
     public Session(){}
 
@@ -45,6 +48,26 @@ public class Session extends RealmObject {
 
     public int getActivity() {
         return activity;
+    }
+
+    public String getActivityName() {
+        switch (activity) {
+            case 0:
+                return "4X4";
+            case 1:
+                return "Hiking";
+            case 2:
+                return "Running";
+            case 3:
+                return "Paintball";
+            case 4:
+                return "Bicycling";
+            case 5:
+                return "Boat";
+
+            default:
+                return "";
+        }
     }
 
     public boolean isLock() {
@@ -73,6 +96,14 @@ public class Session extends RealmObject {
 
     public RealmList<Waypoint> getWaypoints() {
         return waypoints;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public void setUpdated_at(Date updated_at) {
+        this.updated_at = updated_at;
     }
 
     public static class Builder {

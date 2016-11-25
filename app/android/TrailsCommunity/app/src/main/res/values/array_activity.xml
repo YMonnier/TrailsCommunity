@@ -2,10 +2,11 @@
 <resources>
     <!-- Activities array -->
     <string-array name="activities">
-        <item>4x4</item>
-        <item>Randonnée</item>
-        <item>Paintball</item>
-        <item>VTT</item>
-        <item>Bateau</item>
+        <item>4x4</item> <!-- 0 -->
+        <item>Hiking</item> <!-- 1 -->
+        <item>Running</item> <!-- 2 -->
+        <item>Paintball</item> <!-- 3 -->
+        <item>Bicycling</item> <!-- 4 -->
+        <item>Boat</item> <!-- 5 -->
     </string-array>
 </resources>

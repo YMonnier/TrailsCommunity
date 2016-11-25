@@ -9,7 +9,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
-import fr.univ_tln.trailscommunity.models.Session_old;
+import fr.univ_tln.trailscommunity.models.Session;
 
 /**
  * Project TrailsCommunity.
@@ -32,7 +32,7 @@ public class SessionItemView extends LinearLayout {
         super(context);
     }
 
-    public void bind(Session_old session) {
+    public void bind(Session session) {
         if (session.isLock())
             imageView.setVisibility(VISIBLE);
         else

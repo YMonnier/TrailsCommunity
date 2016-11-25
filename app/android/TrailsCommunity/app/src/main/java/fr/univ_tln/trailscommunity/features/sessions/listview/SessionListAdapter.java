@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.models.Session_old;
 
 /**
@@ -38,7 +39,11 @@ public class SessionListAdapter extends BaseAdapter {
      */
     private static final int HEADER_TYPE = 1;
 
-    private List<Session_old> sessions;
+    /**
+     * List of session
+     */
+    private List<Session> sessions;
+
     private Map<Integer, String> headers;
 
     @RootContext
@@ -52,7 +57,7 @@ public class SessionListAdapter extends BaseAdapter {
     void initAdapter() {
         sessions = new ArrayList<>();
         headers = new HashMap<>();
-
+/*
         addHeader("Active sessions");
         addItem(new Session_old.Builder().setActivity(1).build());
         addItem(new Session_old.Builder().setActivity(2).build());
@@ -68,6 +73,7 @@ public class SessionListAdapter extends BaseAdapter {
         addItem(new Session_old.Builder().setActivity(2).build());
         addItem(new Session_old.Builder().setActivity(2).build());
         addItem(new Session_old.Builder().setActivity(1).build());
+        */
     }
 
     @Override
@@ -91,13 +97,13 @@ public class SessionListAdapter extends BaseAdapter {
         }
     }
 
-    public void addItem(final Session_old session) {
+    public void addItem(final Session session) {
         assert sessions != null;
         sessions.add(session);
     }
 
     public void addHeader(final String header) {
-        sessions.add(new Session_old.Builder().build());
+        sessions.add(new Session.Builder().build());
         headers.put(sessions.size() - 1, header);
     }
 
@@ -124,7 +130,7 @@ public class SessionListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Session_old getItem(int i) {
+    public Session getItem(int i) {
         return this.sessions.get(i);
     }
 
