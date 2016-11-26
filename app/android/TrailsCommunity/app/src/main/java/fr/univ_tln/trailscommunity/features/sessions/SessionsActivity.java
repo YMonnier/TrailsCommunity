@@ -161,17 +161,6 @@ public class SessionsActivity extends AppCompatActivity {
     }
 
     /**
-     * Action click on user profile.
-     * Button to view user profile
-     */
-    @OptionsItem(R.id.sessions_user_menu)
-    void userProfileMenuButton() {
-        Log.d("SessionsActivity", "Click on userProfileMenuButton");
-        startActivity(new Intent(this, ProfileActivity_.class));
-        //finish();
-    }
-
-    /**
      * Action click plus button.
      * Button to view session form.
      */

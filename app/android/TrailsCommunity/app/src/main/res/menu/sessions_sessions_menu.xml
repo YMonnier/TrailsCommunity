@@ -3,13 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/sessions_user_menu"
-        android:icon="@drawable/ic_user"
-        android:title=""
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/sessions_add_session_menu"
         android:icon="@drawable/ic_plus"
         android:title=""
         app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/action_settings"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_menu_settings"
+        android:title="">
+        <menu>
+            <item
+                android:id="@+id/user_profile"
+                app:showAsAction="always"
+                android:title="@string/user_profile" />
+            <item
+                android:id="@+id/deconnexion"
+                app:showAsAction="always"
+                android:title="@string/deconnexion" />
+        </menu>
+    </item>
 </menu>
