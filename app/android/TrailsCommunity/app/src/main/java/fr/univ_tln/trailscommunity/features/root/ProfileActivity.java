@@ -14,12 +14,14 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import fr.univ_tln.trailscommunity.R;
 
 @EActivity(R.layout.root_profile_activity)
+@OptionsMenu(R.menu.basic_menu)
 public class ProfileActivity extends AppCompatActivity {
 
     @ViewById(R.id.nicknameField)

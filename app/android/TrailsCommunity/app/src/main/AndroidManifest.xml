@@ -24,6 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -40,7 +41,7 @@
             *** MAIN ACTIVITY ***
         -->
         <activity
-            android:name=".features.session.SessionFormActivity_"
+            android:name=".features.root.LoginActivity_"
             android:parentActivityName=".features.sessions.SessionsActivity_">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -52,7 +53,6 @@
         <!--
             *** ROOT PACKAGE ***
         -->
-        <activity android:name=".features.root.LoginActivity_" />
         <activity
             android:name=".features.root.SignupActivity_"
             android:parentActivityName=".features.root.LoginActivity_" />
@@ -66,18 +66,9 @@
         <!--
             *** SESSION PACKAGE ***
         -->
-        <!-- <activity android:name=".features.session.SessionFormActivity_" /> -->
+        <activity android:name=".features.session.SessionFormActivity_" />
+        <activity android:name=".features.session.SessionActivity" />
 
-
-        <!--
-            *** TESTS ***
-        -->
-        <activity
-            android:name=".features.session.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
     </application>
 
 </manifest>
