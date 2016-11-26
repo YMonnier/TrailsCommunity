@@ -283,7 +283,7 @@ public class LoginActivity extends AppCompatActivity {
      * Shows the progress UI and hides the login form.
      *
      * @param show progress status, true to set visible progress,
-     *             false to set unvisible progress
+     *             false to set invisible progress
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     @UiThread

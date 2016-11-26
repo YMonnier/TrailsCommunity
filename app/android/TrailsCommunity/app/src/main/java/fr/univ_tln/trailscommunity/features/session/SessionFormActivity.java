@@ -4,35 +4,43 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
-import android.location.Address;
-import android.location.Geocoder;
+import android.content.Context;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.annotations.res.StringArrayRes;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.models.Coordinate;
+import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.utilities.geocoder.GMGeocoder;
+import fr.univ_tln.trailscommunity.utilities.validators.DateValidator;
+import fr.univ_tln.trailscommunity.utilities.view.ViewUtils;
 
 @EActivity(R.layout.session_form_session)
-public class SessionFormActivity extends AppCompatActivity {
+public class SessionFormActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     /**
      * Minimum password length
@@ -57,12 +65,29 @@ public class SessionFormActivity extends AppCompatActivity {
     @ViewById(R.id.progress)
     View mProgressView;
 
-    @StringArrayRes
-    String[] activities;
 
-    private Calendar myCalendar = Calendar.getInstance();
+    /**
+     * Activity Initialization after loading views.
+     * * Populate spinner (list of activity from `Session.TypeActivity` enum)
+     */
+    @AfterViews
+    void init() {
+        setupActivitiesSpinner();
+    }
 
-    private DatePickerDialog.OnDateSetListener date;
+    /**
+     * Populate spinner with type of activities.
+     */
+    private void setupActivitiesSpinner() {
+        Session.TypeActivity[] typeActivities = Session.TypeActivity.values();
+        if (typeActivities == null)
+            throw new AssertionError("typeActivities should not be null");
+        if (typeActivities != null) {
+            SpinnerAdapter listAdapter =
+                    new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, typeActivities);
+            typeActivitySpinner.setAdapter(listAdapter);
+        }
+    }
 
     /**
      * Create session button action.
@@ -72,64 +97,60 @@ public class SessionFormActivity extends AppCompatActivity {
         attemptCreateSession();
     }
 
-    public Coordinate convertAdressToCoordinates(String address) {
-        Geocoder geocoder = new Geocoder(this);
-        Coordinate position = null;
-        List<Address> addresses;
-        try {
-            addresses = geocoder.getFromLocationName(address, 1);
-            double latitude = addresses.get(0).getLatitude();
-            double longitude = addresses.get(0).getLongitude();
-            Log.e("LATITUDE", latitude + "");
-            Log.e("LONGITUDE", longitude + "");
-            position = new Coordinate.Builder()
-                    .setLatitude(latitude)
-                    .setLongitude(longitude)
-                    .build();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return position;
-    }
-
     /**
-     * Generate dialog to display date picker
-     */
-    public void displayDatePicker() {
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
-            }
-
-        };
-    }
-
-    /**
-     * Update and put date in EditText
-     */
-    private void updateLabel() {
-        String myFormat = "yyyy-MM-dd"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
-        startDateField.setText(sdf.format(myCalendar.getTime()));
-    }
-
-    /**
-     * Display date picker when touch editText startDateField
+     * Display date picker when touch startDateField
      */
     @Click(R.id.startDateField)
     void onClickOnSelectStartDate() {
-        displayDatePicker();
-        new DatePickerDialog(this, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        Calendar calendar = Calendar.getInstance();
 
+        // Hide keyboard before to show DatePickerDialog
+        ViewUtils.closeKeyboard(this, getCurrentFocus());
+
+        // Setup date picker with a minimum date.
+        DatePickerDialog pickerDialog = new DatePickerDialog(this, this, calendar
+                .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        pickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        pickerDialog.show();
+    }
+
+    /**
+     * Date picker action. User can select a date.
+     *
+     * @param datePicker date picker source
+     * @param year       year selected
+     * @param month      month selected
+     * @param day        day selected
+     */
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        if (DateValidator.validate(calendar)) {
+            String myFormat = "yyyy-MM-dd";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.FRANCE);
+            updateInputStartDate(sdf.format(calendar.getTime()));
+        } else {
+            updateInputStartDate("");
+            updateErrorUi(startDateField, "Invalid selected date");
+        }
+    }
+
+    /**
+     * Check all input data when user
+     * press on next button edit text.
+     *
+     * @param textView action source
+     * @param actionId type of action(IME_ID)
+     * @param keyEvent event
+     */
+    @EditorAction(R.id.passwordField)
+    void onNextActionsEditText(TextView textView, int actionId, KeyEvent keyEvent) {
+        Log.d(SessionFormActivity.class.getName(), "KEY.. " + actionId);
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            attemptCreateSession();
+        }
     }
 
     /**
@@ -141,9 +162,12 @@ public class SessionFormActivity extends AppCompatActivity {
         // Store values at the time of the login attempt.
         String departurePlace = departurePlaceField.getText().toString();
         String arrivalPlace = arrivalPlaceField.getText().toString();
-        String typeActivity = typeActivitySpinner.getSelectedItem().toString();
+        Session.TypeActivity typeActivity = (Session.TypeActivity) typeActivitySpinner.getSelectedItem();
         String startDate = startDateField.getText().toString();
         String password = passwordField.getText().toString();
+
+        Coordinate departureCoords = GMGeocoder.addressToCoordinates(this, departurePlace);
+        Coordinate arrivalCoords = GMGeocoder.addressToCoordinates(this, arrivalPlace);
 
         boolean cancel = false;
         View focusView = null;
@@ -151,36 +175,48 @@ public class SessionFormActivity extends AppCompatActivity {
         // Check if the user entered departure place.
         if (TextUtils.isEmpty(departurePlace)) {
             updateErrorUi(departurePlaceField, getString(R.string.error_field_required));
-            focusView = departurePlaceField;
+            if (focusView == null)
+                focusView = departurePlaceField;
+            cancel = true;
+        } else if (departureCoords == null) {
+            updateErrorUi(departurePlaceField, getString(R.string.error_place_does_not_exist));
+            if (focusView == null)
+                focusView = departurePlaceField;
             cancel = true;
         }
 
         // Check if the user entered arrival place.
         if (TextUtils.isEmpty(arrivalPlace)) {
             updateErrorUi(arrivalPlaceField, getString(R.string.error_field_required));
-            focusView = arrivalPlaceField;
+            if (focusView == null)
+                focusView = arrivalPlaceField;
+            cancel = true;
+        } else if (arrivalCoords == null) {
+            updateErrorUi(arrivalPlaceField, getString(R.string.error_place_does_not_exist));
+            if (focusView == null)
+                focusView = arrivalPlaceField;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(startDate)) {
             updateErrorUi(startDateField, getString(R.string.error_field_required));
-            focusView = startDateField;
+            if (focusView == null)
+                focusView = startDateField;
             cancel = true;
         }
 
         //Check if the user entered password
-        if (TextUtils.isEmpty(password)) {
-            updateErrorUi(passwordField, getString(R.string.error_field_required));
-            focusView = passwordField;
-            cancel = true;
-        } else if (!isPasswordValid(password)) {
-            updateErrorUi(passwordField, getString(R.string.error_invalid_password));
-            focusView = passwordField;
-            cancel = true;
+        if (!TextUtils.isEmpty(password)) {
+            if (!isPasswordValid(password)) {
+                updateErrorUi(passwordField, getString(R.string.error_invalid_password));
+                if (focusView == null)
+                    focusView = passwordField;
+                cancel = true;
+            }
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
+            // There was an error; don't attempt, focus on the first
             // form field with an error.
             assert focusView != null;
             if (focusView != null)
@@ -189,19 +225,29 @@ public class SessionFormActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            createSessionTask(departurePlace, arrivalPlace, typeActivity, password);
+            createSessionTask(departurePlace, arrivalPlace, typeActivity.ordinal(), password);
         }
     }
 
     /**
      * Check if password is valid
-     * His length must be sup 8
+     * His length must be sup 8.
      *
-     * @param password
+     * @param password optional password from
      * @return
      */
-    private boolean isPasswordValid(String password) {
+    private boolean isPasswordValid(final String password) {
+        if (password == null)
+            throw new AssertionError("Password should not be null");
         return password.length() >= MIN_PASSWORD_LENGTH;
+    }
+
+    /**
+     * Put date in EditText.
+     */
+    @UiThread
+    void updateInputStartDate(String date) {
+        startDateField.setText(date);
     }
 
     /**
@@ -209,7 +255,6 @@ public class SessionFormActivity extends AppCompatActivity {
      */
     @UiThread
     void updateResetErrorUi() {
-        // Reset errors.
         departurePlaceField.setError(null);
         arrivalPlaceField.setError(null);
         startDateField.setError(null);
@@ -224,7 +269,11 @@ public class SessionFormActivity extends AppCompatActivity {
      * @param error error message
      */
     @UiThread
-    void updateErrorUi(EditText view, String error) {
+    void updateErrorUi(final EditText view, final String error) {
+        if (error == null)
+            throw new AssertionError("Password should not be null");
+        if (view == null)
+            throw new AssertionError("View should not be null");
         view.setError(error);
     }
 
@@ -235,7 +284,7 @@ public class SessionFormActivity extends AppCompatActivity {
      *               disable all clickable buttons, otherwise, false
      */
     @UiThread
-    void updateLockUi(boolean status) {
+    void updateLockUi(final boolean status) {
         departurePlaceField.setEnabled(!status);
         arrivalPlaceField.setEnabled(!status);
         typeActivitySpinner.setEnabled(!status);
@@ -275,23 +324,28 @@ public class SessionFormActivity extends AppCompatActivity {
 
     /**
      * Background task which allows
-     * to send credential data to the server.
-     * If the connexion is succeed, we go to the sessions list.
+     * to send session data to the server.
+     * If the request is succeed, we go to the sessions list.
      * Otherwise, the user put wrong data and should try again...
      *
-     * @param departurePlace
-     * @param arrivalPlace
-     * @param typeActivity
-     * @param password
+     * @param departurePlace place where the session should start
+     * @param arrivalPlace   place where the session should end
+     * @param typeActivity   the type of activities (hiking, paintball, ...). See `Session.TypeActivity`
+     * @param password       the optional password to restricted the session.
      */
     @Background
     void createSessionTask(final String departurePlace,
                            final String arrivalPlace,
-                           final String typeActivity,
+                           final int typeActivity,
                            final String password) {
         updateLockUi(true);
 
-        Log.e("CREATE SESSION", "true");
+        Log.d(SessionFormActivity.class.getName(),
+                "departurePlace: " + departurePlace + "\n" +
+                        "arrivalPlace: " + arrivalPlace + "\n" +
+                        "typeActivity: " + typeActivity + "\n" +
+                        "password: " + password + "\n");
+
 
         //Request...
         try {
@@ -300,17 +354,9 @@ public class SessionFormActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Coordinate positionDeparturePlace = convertAdressToCoordinates(departurePlace);
-        Coordinate positionArrivalPlace = convertAdressToCoordinates(arrivalPlace);
+        Coordinate positionDeparturePlace = GMGeocoder.addressToCoordinates(this, departurePlace);
+        Coordinate positionArrivalPlace = GMGeocoder.addressToCoordinates(this, arrivalPlace);
 
-        /*
-        Map<String, String> parameters = new HashMap<>();
-
-        queue = Volley.newRequestQueue(this);
-        request = new CustomRequest(Request.Method.POST, url, parameters, this, this);
-        queue.add(request);
-        */
-        // Success request
 
         updateLockUi(false);
         showProgress(false);

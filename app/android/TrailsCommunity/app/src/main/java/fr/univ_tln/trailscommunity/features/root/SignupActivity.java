@@ -184,7 +184,7 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
+            // There was an error; don't attempt, focus on the first
             // form field with an error.
             assert focusView != null;
             if (focusView != null)

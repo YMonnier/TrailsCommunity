@@ -220,7 +220,7 @@ public class SignupActivityTest {
     }
 
     /**
-     * Test if display error when numberField is empty
+     * Test if display error when phoneNumberField is empty
      */
     @Test
     public void testEmptyErrorNumberField() {

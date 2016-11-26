@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_arrival_place"
-            android:inputType="textEmailAddress"
+            android:inputType="text"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>
@@ -43,7 +43,8 @@
         android:id="@+id/typeActivitySpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/activities"/>
+        android:layout_marginBottom="7dp"
+        android:layout_marginTop="7dp" />
 
     <EditText
         android:id="@+id/startDateField"
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/prompt_date"
         android:inputType="datetime"
+        android:focusable="false"
         android:maxLines="1" />
 
     <android.support.design.widget.TextInputLayout
@@ -61,9 +63,11 @@
             android:id="@+id/passwordField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/prompt_password"
+            android:hint="@string/prompt_password_optional"
             android:inputType="textPassword"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:imeOptions="actionDone"
+            />
 
     </android.support.design.widget.TextInputLayout>
 

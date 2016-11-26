@@ -2,6 +2,7 @@ package fr.univ_tln.trailscommunity.models;
 
 import java.util.Date;
 
+import fr.univ_tln.trailscommunity.utilities.exceptions.TypeActivityEnumException;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -29,8 +30,56 @@ public class Session extends RealmObject {
     private Date created_at;
     private Date updated_at;
 
+    /**
+     * Enumeration of activities type.
+     */
+    public enum TypeActivity {
+        OFFROAD4x4("Off road 4x4"), // start index 0
+        HIKING("Hiking"),
+        RUNNING("Running"),
+        PAINTBALL("Paintball"),
+        BICYCLE("Bicycle"),
+        BOAT("Boat"); // end index
 
-    public Session(){}
+        private final String name;
+
+        TypeActivity(String name) {
+            this.name = name;
+        }
+
+        /**
+         * Return the enum index
+         * depending on his name.
+         * @param name name activity
+         * @return enum value index
+         * @throws TypeActivityEnumException throw a new exception
+         * if the enum value is not found
+         */
+        public int getIndex(String name) throws TypeActivityEnumException {
+            int res = -1;
+            if(name == null)
+                throw new AssertionError("Name should not be null");
+            if(!name.isEmpty()){
+                try {
+                    TypeActivity ta = valueOf(name.toUpperCase());
+                    if(ta == null)
+                        throw new AssertionError("Name should not be null");
+                    if (ta != null)
+                        res = ta.ordinal();
+                } catch (IllegalArgumentException e) {
+                    throw new TypeActivityEnumException("Name not found");
+                }
+            }
+            return res;
+        }
+
+        public String toString() {
+            return this.name;
+        }
+    }
+
+
+    public Session() {}
 
     public Session(Builder builder) {
         this.id = builder.id;

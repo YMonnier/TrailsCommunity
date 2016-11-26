@@ -26,31 +26,40 @@ public class ProfileActivity extends AppCompatActivity {
     EditText nicknameField;
 
     @ViewById(R.id.numberField)
-    EditText numberField;
+    EditText phoneNumberField;
 
     @ViewById(R.id.progress)
     View mProgressView;
 
     @ViewById(R.id.save)
-    Button save;
+    Button saveButton;
 
     @AfterViews
     void init() {
         setTitle("User informations");
         nicknameField.setText("GreatNickname");
-        numberField.setText("6 00 00 00 00");
+        phoneNumberField.setText("6 00 00 00 00");
     }
 
+    /**
+     * Save button action.
+     */
     @Click(R.id.save)
-    void onClickOnRegisterButton() {
+    void onClickOnSaveButton() {
         saveProfile();
     }
 
+    /**
+     * Method which allows to save user information
+     * to database and send it to the server side.
+     * Before to send the data, we check if all data are available and valid.
+     * If it is not the case, an error focus is shown.
+     */
     private void saveProfile() {
         updateResetErrorUi();
 
         String nickname = nicknameField.getText().toString();
-        String number = numberField.getText().toString();
+        String number = phoneNumberField.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -63,9 +72,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(number)) {
-            updateErrorUi(numberField, getString(R.string.error_field_required));
+            updateErrorUi(phoneNumberField, getString(R.string.error_field_required));
             if (focusView == null)
-                focusView = numberField;
+                focusView = phoneNumberField;
             cancel = true;
         }
 
@@ -101,28 +110,28 @@ public class ProfileActivity extends AppCompatActivity {
      */
     @UiThread
     void updateResetErrorUi() {
-        // Reset errors.
         nicknameField.setError(null);
-        numberField.setError(null);
+        phoneNumberField.setError(null);
     }
 
     /**
-     * Update clickable button depending on a status
+     * Update clickable button/inputs depending on a status
      *
      * @param status true if we want to
-     *               disable all clickable buttons, otherwise, false
+     *               disable all clickable buttons/inputs, otherwise, false
      */
     @UiThread
     void updateLockUi(boolean status) {
         nicknameField.setEnabled(!status);
-        numberField.setEnabled(!status);
+        phoneNumberField.setEnabled(!status);
+        saveButton.setEnabled(!status);
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progress UI
      *
      * @param show progress status, true to set visible progress,
-     *             false to set unvisible progress
+     *             false to set invisible progress
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     @UiThread
@@ -150,16 +159,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     /**
      * Background task which allows
-     * to send credential data to the server.
-     * If the connexion is succeed, we go to the sessions list.
-     * Otherwise, the user put wrong data and should try again...
+     * to send user information data to the server.
      *
      * @param nickname user nickname
-     * @param  number user telephon number
+     * @param phoneNumber user phone number
      */
     @Background
     void saveProfileTask(final String nickname,
-                    final String number) {
+                    final String phoneNumber) {
         updateLockUi(true);
 
         //Request...

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import fr.univ_tln.trailscommunity.models.Session;
-import fr.univ_tln.trailscommunity.models.Session_old;
 
 /**
  * Project TrailsCommunity.
