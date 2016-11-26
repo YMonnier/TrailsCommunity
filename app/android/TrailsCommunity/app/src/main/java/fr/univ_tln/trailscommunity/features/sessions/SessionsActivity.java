@@ -32,6 +32,7 @@ import org.springframework.web.client.RestClientException;
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
+import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.Snack;
@@ -167,6 +168,13 @@ public class SessionsActivity extends AppCompatActivity {
     @OptionsItem(R.id.sessions_add_session_menu)
     void addSessionMenuButton() {
         Log.d("SessionsActivity", "Click on addSessionMenuButton");
+        startActivity(new Intent(this, SessionFormActivity_.class));
+    }
+
+    @OptionsItem(R.id.user_profile)
+    void addUserProfileMenuButton(){
+        Log.d("SessinsActivity", "Click on addUserProfileMenuButton");
+        startActivity(new Intent(this, ProfileActivity_.class));
     }
 
     /**

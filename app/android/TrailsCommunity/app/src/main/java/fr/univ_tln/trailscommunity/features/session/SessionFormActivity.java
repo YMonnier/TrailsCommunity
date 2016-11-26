@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
@@ -32,6 +33,7 @@ import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 
 @EActivity(R.layout.session_form_session)
+@OptionsMenu(R.menu.basic_menu)
 public class SessionFormActivity extends AppCompatActivity {
 
     /**
