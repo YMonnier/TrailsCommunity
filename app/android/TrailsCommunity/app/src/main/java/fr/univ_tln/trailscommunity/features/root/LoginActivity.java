@@ -47,6 +47,7 @@ import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 /**
  * A login screen that offers login via email/password.
@@ -323,24 +324,29 @@ public class LoginActivity extends AppCompatActivity {
 
         // Create Realm instance
         realm = Realm.getDefaultInstance();
+        if (realm != null) {
+            realm.beginTransaction();
 
-        realm.beginTransaction();
-        // Disable activation user
-        for (User u : realm.where(User.class).findAll()) {
-            u.setActive(false);
-        }
+            // Disable activation user
+            RealmResults<User> users = realm.where(User.class).findAll();
+            if (users != null) {
+                for (User u : users) {
+                    u.setActive(false);
+                }
+            }
 
-        User userExist = realm.where(User.class).equalTo("id", userId).findFirst();
-        if (userExist == null) {
-            User user = realm.createObjectFromJson(User.class, new Gson().toJson(data));
-            Log.d(LoginActivity.class.getName(), "Created a new user: " + user.toString());
-        } else {
-            // Enable activation user
-            userExist.setActive(true);
-            Log.d(LoginActivity.class.getName(), "Update existing user: " + userExist.toString());
+            User userExist = realm.where(User.class).equalTo("id", userId).findFirst();
+            if (userExist == null) {
+                User user = realm.createObjectFromJson(User.class, new Gson().toJson(data));
+                Log.d(LoginActivity.class.getName(), "Created a new user: " + user.toString());
+            } else {
+                // Enable activation user
+                userExist.setActive(true);
+                Log.d(LoginActivity.class.getName(), "Update existing user: " + userExist.toString());
+            }
+            realm.commitTransaction();
+            realm.close();
         }
-        realm.commitTransaction();
-        realm.close();
     }
 
     /**
