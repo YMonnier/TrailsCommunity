@@ -5,14 +5,24 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -21,10 +31,23 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
+import fr.univ_tln.trailscommunity.models.User;
+import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 /**
  * A login screen that offers login via email/password.
@@ -47,10 +70,31 @@ public class LoginActivity extends AppCompatActivity {
     @ViewById(R.id.login_progress)
     View progressView;
 
+    @ViewById(R.id.email_sign_in_button)
+    Button loginButton;
+
+    @ViewById
+    CoordinatorLayout coordinatorLayout;
+
+    @RestService
+    TCRestApi tcRestApi;
+
+    /**
+     * Realm database instance.
+     */
+    private Realm realm;
+
     @AfterViews
     void init() {
-        //emailView.setText("mail@mail.com");
-        //passwordView.setText("abcd12345");
+        setTitle(R.string.title_login_activity);
+        emailView.setText("test@test.com");
+        passwordView.setText("abcd1234");
+
+        //
+        // Init global realm settings
+        Realm.init(this);
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfiguration);
     }
 
     /**
@@ -135,8 +179,6 @@ public class LoginActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
             userLoginTask(email, password);
-            //authTask = new UserLoginTask(email, password);
-            //authTask.execute((Void) null);
         }
     }
 
@@ -148,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
      * @param error error message
      */
     @UiThread
-    void updateErrorUi(EditText view, String error) {
+    void updateErrorUi(final EditText view, final String error) {
         view.setError(error);
     }
 
@@ -162,6 +204,7 @@ public class LoginActivity extends AppCompatActivity {
     void updateLockUi(boolean status) {
         passwordView.setEnabled(!status);
         emailView.setEnabled(!status);
+        loginButton.setEnabled(!status);
     }
 
     /**
@@ -171,7 +214,7 @@ public class LoginActivity extends AppCompatActivity {
      * @param email string email
      * @return true if valid, otherwise, false
      */
-    private boolean isEmailValid(String email) {
+    private boolean isEmailValid(final String email) {
         return EmailValidator.validate(email);
     }
 
@@ -181,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
      * @param password password for validation
      * @return true if password length >= 8, otherwise, false
      */
-    private boolean isPasswordValid(String password) {
+    private boolean isPasswordValid(final String password) {
         return password.length() >= MIN_PASSWORD_LENGTH;
     }
 
@@ -199,18 +242,41 @@ public class LoginActivity extends AppCompatActivity {
     void userLoginTask(final String email, final String password) {
         updateLockUi(true);
 
-        //Request...
+        Map<String, Object> auth = new HashMap<>();
+        Map<String, String> sub = new HashMap<>();
+
+        sub.put("email", email);
+        sub.put("password", password);
+        auth.put("auth", sub);
+
         try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
+            System.out.println(responseLogin);
+            Log.d(LoginActivity.class.getName(), "response login: " + responseLogin);
+            JsonElement je = responseLogin.getBody();
+
+            // Login, get auth token
+            String token = je.getAsJsonObject().get("jwt").getAsString();
+            Settings.TOKEN_AUTHORIZATION = token;
+            Log.d(LoginActivity.class.getName(), "token: " + token);
+
+
+            // Get current user information
+            tcRestApi.setHeader("Authorization", token);
+            ResponseEntity<JsonObject> responseUser = tcRestApi.user();
+            Log.d(LoginActivity.class.getName(), "response user: " + responseUser);
+            saveUser(responseUser.getBody().getAsJsonObject());
+
+            updateLockUi(false);
+            showProgress(false);
+
+            startActivity(new Intent(this, SessionsActivity_.class));
+        } catch (RestClientException e) {
+            Log.d(LoginActivity.class.getName(), "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
+            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please try again.", Snackbar.LENGTH_LONG);
+            updateLockUi(false);
+            showProgress(false);
         }
-
-        // Success request
-        startActivity(new Intent(LoginActivity.this, SessionsActivity_.class));
-
-        updateLockUi(false);
-        showProgress(false);
     }
 
     /**
@@ -243,5 +309,62 @@ public class LoginActivity extends AppCompatActivity {
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
+
+    /**
+     * Save all information about the
+     * current user authenticated into Realm database.
+     *
+     * @param userJsonObject json from /users/me route.
+     */
+    private void saveUser(final JsonObject userJsonObject) {
+        JsonObject data = userJsonObject.getAsJsonObject("data");
+        Log.d(LoginActivity.class.getName(), "data: " + data);
+        int userId = data.get("id").getAsInt();
+        Settings.userId = userId;
+
+        // Create Realm instance
+        realm = Realm.getDefaultInstance();
+        if (realm != null) {
+            realm.beginTransaction();
+
+            // Disable activation user
+            RealmResults<User> users = realm.where(User.class).findAll();
+            if (users != null) {
+                for (User u : users) {
+                    u.setActive(false);
+                }
+            }
+
+            User userExist = realm.where(User.class).equalTo("id", userId).findFirst();
+            if (userExist == null) {
+                User user = realm.createObjectFromJson(User.class, new Gson().toJson(data));
+                Log.d(LoginActivity.class.getName(), "Created a new user: " + user.toString());
+            } else {
+                // Enable activation user
+                userExist.setActive(true);
+                Log.d(LoginActivity.class.getName(), "Update existing user: " + userExist.toString());
+            }
+            realm.commitTransaction();
+            realm.close();
+        }
+    }
+
+    /**
+     * Check if a user is already
+     * authenticated into the application.
+     * If that is the case, the user is redirect to list session view,
+     * otherwise, he has to login from the login form.
+     */
+    /*
+    private void findActiveUser() {
+        // Create Realm instance
+        realm = Realm.getDefaultInstance();
+        User user = realm.where(User.class).equalTo("active", true).findFirst();
+        if (user != null) {
+            Settings.userId = user.getId();
+            startActivity(new Intent(this, SessionsActivity_.class));
+        }
+        realm.close();
+    }*/
 }
 

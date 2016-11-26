@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.sessions;
+package fr.univ_tln.trailscommunity.features.sessions.listview;
 
 import android.content.Context;
 import android.view.View;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.models.Session_old;
 
 /**
  * Project TrailsCommunity.
@@ -26,7 +27,7 @@ import fr.univ_tln.trailscommunity.models.Session;
  */
 
 @EBean
-class SessionListAdapter extends BaseAdapter {
+public class SessionListAdapter extends BaseAdapter {
 
     /**
      * Item type identifier
@@ -38,7 +39,11 @@ class SessionListAdapter extends BaseAdapter {
      */
     private static final int HEADER_TYPE = 1;
 
+    /**
+     * List of session
+     */
     private List<Session> sessions;
+
     private Map<Integer, String> headers;
 
     @RootContext
@@ -52,17 +57,23 @@ class SessionListAdapter extends BaseAdapter {
     void initAdapter() {
         sessions = new ArrayList<>();
         headers = new HashMap<>();
-
+/*
         addHeader("Active sessions");
-        addItem(new Session.Builder().setActivity(1).build());
-        addItem(new Session.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(1).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
         addHeader("My sessions");
-        addItem(new Session.Builder().setActivity(1).build());
-        addItem(new Session.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(1).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
         addHeader("History");
-        addItem(new Session.Builder().setActivity(1).build());
-        addItem(new Session.Builder().setActivity(2).build());
-        addItem(new Session.Builder().setActivity(1).build());
+        addItem(new Session_old.Builder().setActivity(1).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(2).build());
+        addItem(new Session_old.Builder().setActivity(1).build());
+        */
     }
 
     @Override

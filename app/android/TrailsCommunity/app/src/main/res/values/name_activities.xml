@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_activity_login">Login</string>
-    <string name="session_activity_name">Sessions</string>
+    <string name="title_login_activity">Login</string>
+    <string name="title_sessions_activity">Sessions</string>
+    <string name="title_activity_session">Session</string>
 </resources>

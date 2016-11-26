@@ -14,6 +14,7 @@ import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.features.root.SignupActivity_;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -35,7 +36,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class SingupActivityTest {
+public class SignupActivityTest {
 
     private static final String VALID_EMAIL = "test@gmail.com";
     private static final String VALID_NICKNAME = "Nickname";
@@ -54,7 +55,7 @@ public class SingupActivityTest {
      * Test all fields of the view
      */
     @Test
-    public void testLoginButton(){
+    public void testRegisterButton(){
         onView(withId(R.id.emailField))
                 .perform(typeText(VALID_EMAIL));
         onView(withId(R.id.nicknameField))
@@ -65,6 +66,7 @@ public class SingupActivityTest {
                 .perform(typeText(VALID_PASSWORD));
         onView(withId(R.id.codeNumberCountrySpinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is(CODE_NUMBER_COUNTRY))).perform(click());
+
         onView(withId(R.id.codeNumberCountrySpinner)).check(matches(withSpinnerText(containsString(CODE_NUMBER_COUNTRY))));
         onView(withId(R.id.numberField))
                 .perform(typeText(VALID_NUMBER));
@@ -122,8 +124,8 @@ public class SingupActivityTest {
     }
 
     /**
-      * Check if passwordValidator is valid
-      */
+     * Check if passwordValidator is valid
+     */
     @Test
     public void testPasswordFormNotValid(){
         onView(withId(R.id.emailField))
@@ -146,8 +148,8 @@ public class SingupActivityTest {
     }
 
     /**
-      * Check if error display if password is empty
-      */
+     * Check if error display if password is empty
+     */
     @Test
     public void testErrorEmptyPasswordForm(){
         onView(withId(R.id.emailField))
@@ -221,7 +223,7 @@ public class SingupActivityTest {
      * Test if display error when numberField is empty
      */
     @Test
-    public void testEmptyErrorNumberField(){
+    public void testEmptyErrorNumberField() {
         onView(withId(R.id.emailField))
                 .perform(typeText(VALID_EMAIL));
         onView(withId(R.id.nicknameField))
@@ -240,8 +242,9 @@ public class SingupActivityTest {
         onView(withId(R.id.numberField)).check(matches(withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
     }
+
     /**
-     * Match if error display in EditText
+     * Match if error displays in EditText
      * @param expected
      * @return
      */
@@ -263,7 +266,4 @@ public class SingupActivityTest {
             }
         };
     }
-
-
-
 }

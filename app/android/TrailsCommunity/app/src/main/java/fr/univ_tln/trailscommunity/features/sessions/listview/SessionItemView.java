@@ -1,4 +1,4 @@
-package fr.univ_tln.trailscommunity.features.sessions;
+package fr.univ_tln.trailscommunity.features.sessions.listview;
 
 import android.content.Context;
 import android.widget.ImageView;
@@ -38,6 +38,6 @@ public class SessionItemView extends LinearLayout {
         else
             imageView.setVisibility(INVISIBLE);
 
-        titleTextView.setText(String.format("Session %s", session.getActivityName()));
+        titleTextView.setText(String.format("Session_old %s", session.getActivityName()));
     }
 }
