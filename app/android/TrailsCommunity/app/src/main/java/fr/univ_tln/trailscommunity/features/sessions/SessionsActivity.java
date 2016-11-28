@@ -33,6 +33,7 @@ import org.springframework.web.client.RestClientException;
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
+import fr.univ_tln.trailscommunity.features.session.ModifySessionActivity_;
 import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
