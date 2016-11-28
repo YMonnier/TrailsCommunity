@@ -65,7 +65,7 @@ public class Session extends RealmObject {
          * @throws TypeActivityEnumException throw a new exception
          * if the enum value is not found
          */
-        public int getIndex(String name) throws TypeActivityEnumException {
+        public static int getIndex(String name) throws TypeActivityEnumException {
             int res = -1;
             if(name == null)
                 throw new AssertionError("Name should not be null");

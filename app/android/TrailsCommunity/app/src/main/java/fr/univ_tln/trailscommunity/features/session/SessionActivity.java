@@ -1,11 +1,10 @@
 package fr.univ_tln.trailscommunity.features.session;
 
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,83 +14,59 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.features.session.navigation.MapNavigation;
+import fr.univ_tln.trailscommunity.models.Session;
 
+@EActivity(R.layout.session_session_activity)
+public class SessionActivity extends AppCompatActivity {
 
-public class SessionActivity extends AppCompatActivity implements OnMapReadyCallback {
+    @ViewById(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
-    private GoogleMap mMap;
+    @ViewById(R.id.left_drawer)
+    RelativeLayout drawerLinear;
 
-    private List<String> mChatMessages;
-    private DrawerLayout mDrawerLayout;
-    private RelativeLayout mDrawerLinear;
-    private ListView mDrawerList;
+    @ViewById(R.id.chat_list_view)
+    ListView chatListView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.session_session_activity);
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        init();
-        createChatStructure();
-    }
-
-    public void init(){
-        this.mChatMessages = new ArrayList<>();
-        mChatMessages.add("Robert : Test loooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnng message.");
-    }
-
-    private void createChatStructure(){
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLinear = (RelativeLayout) findViewById(R.id.left_drawer);
-        mDrawerList = (ListView) findViewById(R.id.my_drawer);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mChatMessages));
-    }
+    @ViewById(R.id.fab)
+    FloatingActionButton floatingActionButton;
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * Creating facade for
+     * the map navigation manipulation.
      */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    @Bean(MapNavigation.class)
+    MapNavigation mapNavigation;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    protected Session session;
+
+    private List<String> chatMessageList;
+
+    @AfterViews
+    void init(){
+        Log.d(SessionActivity.class.getName(), "init AfterViews....");
+        session = new Session.Builder()
+                .setActivity(Session.TypeActivity.HIKING.ordinal())
+                .build();
+        mapNavigation.init(session);
+
+        this.chatMessageList = new ArrayList<>();
+        chatMessageList.add("Robert : Test loooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnng message.");
+
+        // Set the adapter for the list view
+        chatListView.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, chatMessageList));
     }
 
     @Override
@@ -106,11 +81,11 @@ public class SessionActivity extends AppCompatActivity implements OnMapReadyCall
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.session_chat_menu:
-                if(!mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
-                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                if(!drawerLayout.isDrawerOpen(Gravity.LEFT)){
+                    drawerLayout.openDrawer(Gravity.LEFT);
                 }
                 else{
-                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                    drawerLayout.closeDrawer(Gravity.LEFT);
                 }
                 return true;
             default:
@@ -118,4 +93,14 @@ public class SessionActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
+    /**
+     * Floating action button which allows
+     * to display the current user statistics.
+     * @param view
+     */
+    @Click(R.id.fab)
+    void clickOnFloatingButton(View view) {
+        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
 }

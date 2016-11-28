@@ -1,5 +1,7 @@
 package fr.univ_tln.trailscommunity;
 
+import fr.univ_tln.trailscommunity.models.Session;
+
 /**
  * Project TrailsCommunity.
  * Package fr.univ_tln.trailscommunity.
