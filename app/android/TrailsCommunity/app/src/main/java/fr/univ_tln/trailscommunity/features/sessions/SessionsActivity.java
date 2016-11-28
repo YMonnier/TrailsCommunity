@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,7 +32,6 @@ import org.springframework.web.client.RestClientException;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
-import fr.univ_tln.trailscommunity.features.root.LoginActivity_;
 import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
 import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
@@ -96,51 +96,63 @@ public class SessionsActivity extends AppCompatActivity {
         try {
             showProgressBar(AnimationType.FADEIN, 0f, 1f, View.VISIBLE);
             tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
-            ResponseEntity<JsonObject> sessions = tcRestApi.sessions();
-            JsonObject data = sessions.getBody().get("data").getAsJsonObject();
+            ResponseEntity<JsonObject> responseSessions = tcRestApi.sessions();
 
-            adapter.addHeader("Active sessions");
-            JsonArray activeSessionArray = data.getAsJsonArray("active_sessions");
-            Log.d(CLASS_NAME, activeSessionArray.toString());
-            Gson gson = new Gson();
-            if (activeSessionArray == null)
-                throw new AssertionError("activeSessionArray cannot be null");
-            if (activeSessionArray != null) {
+            if (responseSessions == null)
+                throw new AssertionError("response sessions should not be null");
 
-                for (JsonElement sessionJson : activeSessionArray) {
-                    Log.d(CLASS_NAME, sessionJson.toString());
-                    adapter.addItem(gson.fromJson(sessionJson, Session.class));
-                }
-            }
+            if (responseSessions != null) {
+                if (responseSessions.getStatusCode().is2xxSuccessful()) {
+                    JsonObject data = responseSessions.getBody().get("data").getAsJsonObject();
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
 
-            adapter.addHeader("My sessions");
-            JsonArray mySessionArray = data.getAsJsonArray("my_sessions");
-            Log.d(CLASS_NAME, mySessionArray.toString());
-            if (mySessionArray == null) throw new AssertionError("mySessionArray cannot be null");
-            if (mySessionArray != null) {
-                for (JsonElement sessionJson : mySessionArray) {
-                    adapter.addItem(gson.fromJson(sessionJson, Session.class));
-                    Log.d(CLASS_NAME, sessionJson.toString());
-                }
-            }
 
-            adapter.addHeader("History");
-            JsonArray historySessionArray = data.getAsJsonArray("active_sessions");
-            Log.d(CLASS_NAME, historySessionArray.toString());
-            if (historySessionArray == null)
-                throw new AssertionError("historySessionArray cannot be null");
-            if (historySessionArray != null) {
-                for (JsonElement sessionJson : historySessionArray) {
-                    adapter.addItem(gson.fromJson(sessionJson, Session.class));
-                    Log.d(CLASS_NAME, sessionJson.toString());
-                }
-            }
-            showProgressBar(AnimationType.FADEOUT, 1f, 0f, View.GONE);
-            setAdapter();
+                    adapter.addHeader("Active sessions");
+                    JsonArray activeSessionArray = data.getAsJsonArray("active_sessions");
+                    Log.d(CLASS_NAME, activeSessionArray.toString());
+                    if (activeSessionArray == null)
+                        throw new AssertionError("activeSessionArray cannot be null");
+                    if (activeSessionArray != null) {
+
+                        for (JsonElement sessionJson : activeSessionArray) {
+                            Log.d(CLASS_NAME, sessionJson.toString());
+                            adapter.addItem(gson.fromJson(sessionJson, Session.class));
+                        }
+                    }
+
+                    adapter.addHeader("My sessions");
+                    JsonArray mySessionArray = data.getAsJsonArray("my_sessions");
+                    Log.d(CLASS_NAME, mySessionArray.toString());
+                    if (mySessionArray == null)
+                        throw new AssertionError("mySessionArray cannot be null");
+                    if (mySessionArray != null) {
+                        for (JsonElement sessionJson : mySessionArray) {
+                            adapter.addItem(gson.fromJson(sessionJson, Session.class));
+                            Log.d(CLASS_NAME, sessionJson.toString());
+                        }
+                    }
+
+                    adapter.addHeader("History");
+                    JsonArray historySessionArray = data.getAsJsonArray("active_sessions");
+                    Log.d(CLASS_NAME, historySessionArray.toString());
+                    if (historySessionArray == null)
+                        throw new AssertionError("historySessionArray cannot be null");
+                    if (historySessionArray != null) {
+                        for (JsonElement sessionJson : historySessionArray) {
+                            adapter.addItem(gson.fromJson(sessionJson, Session.class));
+                            Log.d(CLASS_NAME, sessionJson.toString());
+                        }
+                    }
+                    showProgressBar(AnimationType.FADEOUT, 1f, 0f, View.GONE);
+                    setAdapter();
+                } else
+                    Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+            } else
+                Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
         } catch (RestClientException e) {
             showProgressBar(AnimationType.FADEOUT, 1f, 0f, View.GONE);
             Log.d(CLASS_NAME, "error HTTP request: " + e.getLocalizedMessage());
-            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please try again.", Snackbar.LENGTH_LONG);
+            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
         }
     }
 
@@ -173,13 +185,13 @@ public class SessionsActivity extends AppCompatActivity {
     }
 
     @OptionsItem(R.id.user_profile)
-    void addUserProfileMenuButton(){
+    void addUserProfileMenuButton() {
         Log.d("SessionsActivity", "Click on addUserProfileMenuButton");
         startActivity(new Intent(this, ProfileActivity_.class));
     }
 
     @OptionsItem(R.id.logout)
-    void addLogoutMenuButton(){
+    void addLogoutMenuButton() {
         Log.d("SessionActivity", "Click on addLogoutMenuButton");
 
         //startActivity(new Intent(this, LoginActivity_.class));

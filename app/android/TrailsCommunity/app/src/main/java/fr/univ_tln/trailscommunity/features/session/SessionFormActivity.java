@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +21,8 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
@@ -28,15 +31,25 @@ import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.Settings;
+import fr.univ_tln.trailscommunity.features.root.LoginActivity;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.geocoder.GMGeocoder;
+import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.DateValidator;
 import fr.univ_tln.trailscommunity.utilities.view.ViewUtils;
 
@@ -67,6 +80,8 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
     @ViewById(R.id.progress)
     View mProgressView;
 
+    @RestService
+    TCRestApi tcRestApi;
 
     /**
      * Activity Initialization after loading views.
@@ -227,7 +242,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            createSessionTask(departurePlace, arrivalPlace, typeActivity.ordinal(), password);
+            createSessionTask(departurePlace, arrivalPlace, departureCoords, arrivalCoords, typeActivity.ordinal(), startDate, password);
         }
     }
 
@@ -338,9 +353,15 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
     @Background
     void createSessionTask(final String departurePlace,
                            final String arrivalPlace,
+                           final Coordinate departureCoords,
+                           final Coordinate arrivalCoords,
                            final int typeActivity,
+                           final String startDate,
                            final String password) {
         updateLockUi(true);
+
+        //Coordinate positionDeparturePlace = GMGeocoder.addressToCoordinates(this, departurePlace);
+        //Coordinate positionArrivalPlace = GMGeocoder.addressToCoordinates(this, arrivalPlace);
 
         Log.d(SessionFormActivity.class.getName(),
                 "departurePlace: " + departurePlace + "\n" +
@@ -348,19 +369,36 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
                         "typeActivity: " + typeActivity + "\n" +
                         "password: " + password + "\n");
 
+        String depCoords = departureCoords.getLatitude() + ";" + departureCoords.getLongitude();
+        String arrCoords = arrivalCoords.getLatitude() + ";" + arrivalCoords.getLongitude();
+        Session.Builder sessionBuilder = new Session.Builder()
+                .setActivity(typeActivity)
+                .setDeparturePlace(depCoords)
+                .setArrivalPlace(arrCoords)
+                .setStartDate(startDate);
 
-        //Request...
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        Map<String, Object> params = new HashMap<>();
+        params.put("departure_place", depCoords);
+        params.put("arrival_place", arrCoords);
+        params.put("activity", typeActivity);
+        params.put("start_date", startDate);
+
+
+        if (!TextUtils.isEmpty(password)) {
+            sessionBuilder.setPassword(password);
+            params.put("password", password);
         }
 
-        Coordinate positionDeparturePlace = GMGeocoder.addressToCoordinates(this, departurePlace);
-        Coordinate positionArrivalPlace = GMGeocoder.addressToCoordinates(this, arrivalPlace);
-
-
-        updateLockUi(false);
-        showProgress(false);
+        try {
+            tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
+            ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(sessionBuilder.build());
+            //ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(params);
+            Log.d(SessionFormActivity.class.getName(), responseSession.toString());
+        } catch (RestClientException e) {
+            Log.d(SessionFormActivity.class.getName(), "error HTTP request: " + e.getLocalizedMessage());
+            //Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+            updateLockUi(false);
+            showProgress(false);
+        }
     }
 }

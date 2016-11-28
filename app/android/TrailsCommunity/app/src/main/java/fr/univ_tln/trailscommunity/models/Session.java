@@ -1,5 +1,7 @@
 package fr.univ_tln.trailscommunity.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 import fr.univ_tln.trailscommunity.utilities.exceptions.TypeActivityEnumException;
@@ -22,9 +24,17 @@ public class Session extends RealmObject {
     private int activity;
     private boolean lock;
     private boolean close;
+
+    @SerializedName("departure_place")
     private String departurePlace;
+
+    @SerializedName("arrival_place")
     private String arrivalPlace;
-    private Date startDate;
+
+    @SerializedName("start_date")
+    private String startDate;
+
+    private String password;
     private RealmList<Coordinate> coordinates;
     private RealmList<Waypoint> waypoints;
     private Date created_at;
@@ -135,7 +145,7 @@ public class Session extends RealmObject {
         return arrivalPlace;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
@@ -147,6 +157,10 @@ public class Session extends RealmObject {
         return waypoints;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
     }
@@ -155,14 +169,23 @@ public class Session extends RealmObject {
         this.updated_at = updated_at;
     }
 
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
     public static class Builder {
         private int id;
         private int activity;
         private boolean lock;
         private boolean close;
+        private String password;
         private String departurePlace;
         private String arrivalPlace;
-        private Date startDate;
+        private String startDate;
 
         public Session build() {
             return new Session(this);
@@ -188,6 +211,11 @@ public class Session extends RealmObject {
             return this;
         }
 
+        public Builder setPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
         public Builder setDeparturePlace(String departurePlace) {
             this.departurePlace = departurePlace;
             return this;
@@ -198,7 +226,7 @@ public class Session extends RealmObject {
             return this;
         }
 
-        public Builder setStartDate(Date startDate) {
+        public Builder setStartDate(String startDate) {
             this.startDate = startDate;
             return this;
         }
