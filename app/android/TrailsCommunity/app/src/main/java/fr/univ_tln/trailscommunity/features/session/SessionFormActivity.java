@@ -61,6 +61,8 @@ import fr.univ_tln.trailscommunity.utilities.view.ViewUtils;
 @OptionsMenu(R.menu.basic_menu)
 public class SessionFormActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
+    private static final String TAG = SessionFormActivity.class.getName();
+
     /**
      * Minimum password length
      */
@@ -168,7 +170,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
      */
     @EditorAction(R.id.passwordField)
     void onNextActionsEditText(TextView textView, int actionId, KeyEvent keyEvent) {
-        Log.d(SessionFormActivity.class.getName(), "KEY.. " + actionId);
+        Log.d(TAG, "KEY.. " + actionId);
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             attemptCreateSession();
         }
@@ -367,7 +369,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
         //Coordinate positionDeparturePlace = GMGeocoder.addressToCoordinates(this, departurePlace);
         //Coordinate positionArrivalPlace = GMGeocoder.addressToCoordinates(this, arrivalPlace);
 
-        Log.d(SessionFormActivity.class.getName(),
+        Log.d(TAG,
                 "departurePlace: " + departurePlace + "\n" +
                         "arrivalPlace: " + arrivalPlace + "\n" +
                         "typeActivity: " + typeActivity + "\n" +
@@ -397,9 +399,9 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
             tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
             ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(sessionBuilder.build());
             //ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(params);
-            Log.d(SessionFormActivity.class.getName(), responseSession.toString());
+            Log.d(TAG, responseSession.toString());
         } catch (RestClientException e) {
-            Log.d(SessionFormActivity.class.getName(), "error HTTP request: " + e.getLocalizedMessage());
+            Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
             //Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
             showProgress(false);

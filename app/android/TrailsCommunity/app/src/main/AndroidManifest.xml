@@ -9,6 +9,9 @@
 
     <!-- Location permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -39,6 +42,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+
+        <!--
+            *** Location service ***
+        -->
+        <service
+            android:name=".features.session.navigation.location.LocationService_"
+            android:exported="false" />
+
         <!--
             *** MAIN ACTIVITY ***
         -->
@@ -66,8 +77,9 @@
         <!--
             *** SESSION PACKAGE ***
         -->
-        <activity android:name=".features.session.SessionFormActivity_"
-            android:parentActivityName=".features.sessions.SessionsActivity_"/>
+        <activity
+            android:name=".features.session.SessionFormActivity_"
+            android:parentActivityName=".features.sessions.SessionsActivity_" />
         <!-- <activity android:name=".features.session.SessionActivity" /> -->
         <activity android:name=".features.session.ModifySessionActivity_"></activity>
     </application>

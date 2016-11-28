@@ -30,6 +30,8 @@ import fr.univ_tln.trailscommunity.models.Session;
 @EActivity(R.layout.session_session_activity)
 public class SessionActivity extends AppCompatActivity {
 
+    private static final String TAG = SessionActivity.class.getName();
+
     @ViewById(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
@@ -55,7 +57,7 @@ public class SessionActivity extends AppCompatActivity {
 
     @AfterViews
     void init(){
-        Log.d(SessionActivity.class.getName(), "init AfterViews....");
+        Log.d(TAG, "init AfterViews....");
         session = new Session.Builder()
                 .setActivity(Session.TypeActivity.HIKING.ordinal())
                 .build();

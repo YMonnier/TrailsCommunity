@@ -29,6 +29,9 @@ import java.util.Map;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.features.session.SessionActivity;
+import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationService;
+import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationService_;
+import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationSetting;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
 
@@ -47,8 +50,9 @@ import fr.univ_tln.trailscommunity.models.Session;
 @EBean
 public class MapNavigation
         implements OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener,
-        LocationListener {
+        GoogleMap.OnMapLongClickListener {
+
+    private static final String TAG = MapNavigation.class.getSimpleName();
 
     @RootContext
     SessionActivity context;
@@ -58,7 +62,6 @@ public class MapNavigation
      */
     GoogleMap mapView;
 
-    LocationManager locationManager;
 
     private Map<Integer, String> users;
 
@@ -66,8 +69,7 @@ public class MapNavigation
      *
      */
     public void init(Session session) {
-        Log.d(MapNavigation.class.getName(), "init");
-        Log.d(MapNavigation.class.getName(), context.toString());
+        Log.d(TAG, "init");
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
@@ -77,8 +79,9 @@ public class MapNavigation
         Session.TypeActivity typeActivity = Session.TypeActivity.values()[session.getActivity()];
         LocationSetting locationSetting = LocationSetting.fromActivity(typeActivity);
 
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        //locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
+        /*
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -92,7 +95,12 @@ public class MapNavigation
                     locationSetting.getTime(),
                     locationSetting.getDistance(), this);
         }
+        */
 
+        LocationService_.intent(context)
+                .extra(LocationSetting.EXTRA_DISTANCE, locationSetting.getDistance())
+                .extra(LocationSetting.EXTRA_TIME_MILLIS, locationSetting.getTime())
+                .start();
     }
 
     /**
@@ -108,7 +116,7 @@ public class MapNavigation
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         googleMap.setOnMapLongClickListener(this);
-        Log.d(MapNavigation.class.getName(), "onMapReady");
+        Log.d(TAG, "onMapReady");
         mapView = googleMap;
 
         //mapView.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -158,31 +166,5 @@ public class MapNavigation
     @Override
     public void onMapLongClick(LatLng latLng) {
         addWaypoint(latLng);
-    }
-
-    //
-    //
-    // Location Listener
-    //
-    //
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(MapNavigation.class.getName(), "Location updated: " + location);
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
     }
 }

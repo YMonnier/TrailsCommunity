@@ -1,6 +1,4 @@
-package fr.univ_tln.trailscommunity.features.session.navigation;
-
-import android.location.Location;
+package fr.univ_tln.trailscommunity.features.session.navigation.location;
 
 import fr.univ_tln.trailscommunity.models.Session;
 
@@ -14,6 +12,9 @@ import fr.univ_tln.trailscommunity.models.Session;
  */
 
 public class LocationSetting {
+    public static final String EXTRA_DISTANCE = "EXTRA_DISTANCE";
+    public static final String EXTRA_TIME_MILLIS = "EXTRA_TIME_MILLIS";
+
     private int distance;
     private int time;
 

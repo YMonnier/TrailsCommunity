@@ -56,6 +56,8 @@ import io.realm.RealmResults;
 @EActivity(R.layout.root_login_activity)
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = LoginActivity.class.getName();
+
     /**
      * Minimum password length
      */
@@ -252,7 +254,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
             System.out.println(responseLogin);
-            Log.d(LoginActivity.class.getName(), "response login: " + responseLogin);
+            Log.d(TAG, "response login: " + responseLogin);
 
             if (responseLogin == null)
                 throw new AssertionError("response login should not be null");
@@ -264,7 +266,7 @@ public class LoginActivity extends AppCompatActivity {
                     // Login, get auth token
                     String token = je.getAsJsonObject().get("jwt").getAsString();
                     Settings.TOKEN_AUTHORIZATION = token;
-                    Log.d(LoginActivity.class.getName(), "token: " + token);
+                    Log.d(TAG, "token: " + token);
 
                     // Get current user information
                     tcRestApi.setHeader("Authorization", token);
@@ -273,7 +275,7 @@ public class LoginActivity extends AppCompatActivity {
                         throw new AssertionError("response user should not be null");
 
                     if (responseUser != null) {
-                        Log.d(LoginActivity.class.getName(), "response user: " + responseUser);
+                        Log.d(TAG, "response user: " + responseUser);
                         saveUser(responseUser.getBody().getAsJsonObject());
 
                         updateLockUi(false);
@@ -290,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
             updateLockUi(false);
             showProgress(false);
         } catch (RestClientException e) {
-            Log.d(LoginActivity.class.getName(), "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
+            Log.d(TAG, "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
             Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
             showProgress(false);
@@ -336,7 +338,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void saveUser(final JsonObject userJsonObject) {
         JsonObject data = userJsonObject.getAsJsonObject("data");
-        Log.d(LoginActivity.class.getName(), "data: " + data);
+        Log.d(TAG, "data: " + data);
         int userId = data.get("id").getAsInt();
         Settings.userId = userId;
 
@@ -356,11 +358,11 @@ public class LoginActivity extends AppCompatActivity {
             User userExist = realm.where(User.class).equalTo("id", userId).findFirst();
             if (userExist == null) {
                 User user = realm.createObjectFromJson(User.class, new Gson().toJson(data));
-                Log.d(LoginActivity.class.getName(), "Created a new user: " + user.toString());
+                Log.d(TAG, "Created a new user: " + user.toString());
             } else {
                 // Enable activation user
                 userExist.setActive(true);
-                Log.d(LoginActivity.class.getName(), "Update existing user: " + userExist.toString());
+                Log.d(TAG, "Update existing user: " + userExist.toString());
             }
             realm.commitTransaction();
             realm.close();

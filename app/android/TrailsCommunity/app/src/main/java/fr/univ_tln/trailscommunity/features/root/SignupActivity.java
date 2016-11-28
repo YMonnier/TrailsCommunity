@@ -32,6 +32,8 @@ import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 @EActivity(R.layout.root_signup_activity)
 public class SignupActivity extends AppCompatActivity {
 
+    private static final String TAG = SignupActivity.class.getName();
+
     /**
      * Minimum password length
      */

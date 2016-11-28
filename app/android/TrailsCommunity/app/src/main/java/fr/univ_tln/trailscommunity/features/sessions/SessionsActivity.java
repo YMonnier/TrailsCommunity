@@ -33,7 +33,6 @@ import org.springframework.web.client.RestClientException;
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
-import fr.univ_tln.trailscommunity.features.session.ModifySessionActivity_;
 import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
@@ -55,7 +54,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 @OptionsMenu(R.menu.sessions_sessions_menu)
 public class SessionsActivity extends AppCompatActivity {
 
-    private static final String CLASS_NAME = SessionsActivity.class.getName();
+    private static final String TAG = SessionsActivity.class.getName();
 
     enum AnimationType {
         FADEIN, FADEOUT
@@ -110,38 +109,38 @@ public class SessionsActivity extends AppCompatActivity {
 
                     adapter.addHeader("Active sessions");
                     JsonArray activeSessionArray = data.getAsJsonArray("active_sessions");
-                    Log.d(CLASS_NAME, activeSessionArray.toString());
+                    Log.d(TAG, activeSessionArray.toString());
                     if (activeSessionArray == null)
                         throw new AssertionError("activeSessionArray cannot be null");
                     if (activeSessionArray != null) {
 
                         for (JsonElement sessionJson : activeSessionArray) {
-                            Log.d(CLASS_NAME, sessionJson.toString());
+                            Log.d(TAG, sessionJson.toString());
                             adapter.addItem(gson.fromJson(sessionJson, Session.class));
                         }
                     }
 
                     adapter.addHeader("My sessions");
                     JsonArray mySessionArray = data.getAsJsonArray("my_sessions");
-                    Log.d(CLASS_NAME, mySessionArray.toString());
+                    Log.d(TAG, mySessionArray.toString());
                     if (mySessionArray == null)
                         throw new AssertionError("mySessionArray cannot be null");
                     if (mySessionArray != null) {
                         for (JsonElement sessionJson : mySessionArray) {
                             adapter.addItem(gson.fromJson(sessionJson, Session.class));
-                            Log.d(CLASS_NAME, sessionJson.toString());
+                            Log.d(TAG, sessionJson.toString());
                         }
                     }
 
                     adapter.addHeader("History");
                     JsonArray historySessionArray = data.getAsJsonArray("active_sessions");
-                    Log.d(CLASS_NAME, historySessionArray.toString());
+                    Log.d(TAG, historySessionArray.toString());
                     if (historySessionArray == null)
                         throw new AssertionError("historySessionArray cannot be null");
                     if (historySessionArray != null) {
                         for (JsonElement sessionJson : historySessionArray) {
                             adapter.addItem(gson.fromJson(sessionJson, Session.class));
-                            Log.d(CLASS_NAME, sessionJson.toString());
+                            Log.d(TAG, sessionJson.toString());
                         }
                     }
                     showProgressBar(AnimationType.FADEOUT, 1f, 0f, View.GONE);
@@ -152,7 +151,7 @@ public class SessionsActivity extends AppCompatActivity {
                 Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
         } catch (RestClientException e) {
             showProgressBar(AnimationType.FADEOUT, 1f, 0f, View.GONE);
-            Log.d(CLASS_NAME, "error HTTP request: " + e.getLocalizedMessage());
+            Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
             Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
         }
     }
