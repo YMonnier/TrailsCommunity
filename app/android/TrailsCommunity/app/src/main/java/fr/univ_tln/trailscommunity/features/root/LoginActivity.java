@@ -253,27 +253,45 @@ public class LoginActivity extends AppCompatActivity {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
             System.out.println(responseLogin);
             Log.d(LoginActivity.class.getName(), "response login: " + responseLogin);
-            JsonElement je = responseLogin.getBody();
 
-            // Login, get auth token
-            String token = je.getAsJsonObject().get("jwt").getAsString();
-            Settings.TOKEN_AUTHORIZATION = token;
-            Log.d(LoginActivity.class.getName(), "token: " + token);
+            if (responseLogin == null)
+                throw new AssertionError("response login should not be null");
 
+            if (responseLogin != null) {
+                if (responseLogin.getStatusCode().is2xxSuccessful()) {
+                    JsonElement je = responseLogin.getBody();
 
-            // Get current user information
-            tcRestApi.setHeader("Authorization", token);
-            ResponseEntity<JsonObject> responseUser = tcRestApi.user();
-            Log.d(LoginActivity.class.getName(), "response user: " + responseUser);
-            saveUser(responseUser.getBody().getAsJsonObject());
+                    // Login, get auth token
+                    String token = je.getAsJsonObject().get("jwt").getAsString();
+                    Settings.TOKEN_AUTHORIZATION = token;
+                    Log.d(LoginActivity.class.getName(), "token: " + token);
 
+                    // Get current user information
+                    tcRestApi.setHeader("Authorization", token);
+                    ResponseEntity<JsonObject> responseUser = tcRestApi.user();
+                    if (responseUser == null)
+                        throw new AssertionError("response user should not be null");
+
+                    if (responseUser != null) {
+                        Log.d(LoginActivity.class.getName(), "response user: " + responseUser);
+                        saveUser(responseUser.getBody().getAsJsonObject());
+
+                        updateLockUi(false);
+                        showProgress(false);
+
+                        startActivity(new Intent(this, SessionsActivity_.class));
+                    }
+                } else {
+                    Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+                }
+            } else {
+                Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+            }
             updateLockUi(false);
             showProgress(false);
-
-            startActivity(new Intent(this, SessionsActivity_.class));
         } catch (RestClientException e) {
             Log.d(LoginActivity.class.getName(), "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
-            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please try again.", Snackbar.LENGTH_LONG);
+            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
             showProgress(false);
         }
