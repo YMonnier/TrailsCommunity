@@ -175,12 +175,12 @@ Un visiteur de l'application mobile devrait voir la page d'ouverture de session 
 
 \par Pour la création d'un compte utilisateur, il est nécessaire de remplir l'ensemble des champs de l'interface. Toutefois, il sera possible de modifier son pseudonyme ainsi que son numéro de téléphone plus tard après sa connexion.
 
-%\begin{figure}[!h]
-%	\caption{Maquette de l'IHM pour la création d'un compte utilisateur}
-%	\label{create_user_account}
-%	\centering
-%	\includegraphics[scale=0.2]{images/mockups/register.png}
-%\end{figure}
+\begin{figure}[!h]
+	\caption{Maquette de l'IHM pour la création d'un compte utilisateur}
+	\label{create_user_account}
+	\centering
+	\includegraphics[scale=0.2]{images/mockups/register.png}
+\end{figure}
 
 \paragraph{}Après la connexion à un compte utilisateur, celui-ci peut alors choisir entre des sessions actives, les sessions dont il est l'organisateur ou des sessions clôturer qui sont dans la liste des historiques. L'icône plus permet de créer une nouvelle session. De plus, les boutons avec les 3 points permet d'afficher une liste déroulantes des différentes actions disponible sur cette interface. Les actions disponibles sont : la modification de ses données utilisateurs ainsi que la déconnexion.
 
@@ -662,11 +662,46 @@ NIVEAU : Haute.
 
 \section{Diagrammes de séquence}
 
+\paragraph{Login}
+L'identification nécessite une adresse email ainsi qu'un mot de passe qui seront renseignés par l'utilisateur. Une vérification au niveau du serveur sera effectuée. Le cas d'erreurs comme la saisie d'une mauvaise adresse mail ou d'un mauvais mot de passe provoquent l'affichage d'un message d'erreur.Il en va de même pour la réponse du serveur.
+
 \begin{figure}[!h]
 	\caption{Diagramme de séquence du cas d'utilisation "Login"}
 	\label{LoginSequencePNG}}
 	\centering
-	\includegraphics[scale=0.2]{Bureau/Diagramme_TrailsCommunity/LoginSequence.png}
+	\includegraphics[scale=0.2]{Images/diagrammSequence/loginSequence.png}
+\end{figure}
+
+\paragraph{Enregistrement}
+L'enregistrement nécessite de nombreuses certaines informations, toutes obligatoires (une absence provoquera un enregistrement impossible). Ces informations sont à fournir par le visiteur souhaitant créer un compte:
+- Email
+- Pseudo
+- Mot de passe
+- Confirmation du mot de passe
+- Numéro de téléphone
+Les cas d'erreurs tels que une mauvaise saisie sont traités et provoquent l'affichage d'un message d'erreur. Ces informations sont ensuite envoyées au serveur pour être enregistrer. Si ce dernier renvoie un message d'erreur, là aussi le cas sera traité et provoquera l'affichage d'un message.
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence du cas d'utilisation "Registration"}
+	\label{RegistrationPNG}}
+	\centering
+	\includegraphics[scale=0.2]{Images/diagrammSequence/registrationSequence.png}
+\end{figure}
+
+\paragraph{Création session}
+La création d'une session ne peut être effectuée que par un utilisateur connecté. Celui-ci devra renseigner:
+- Lieu de départ
+- Lieu d'arrivé
+- Type de l'activité
+- Date de départ
+- Mot de passe
+Là aussi les erreurs sont traitées et provoquent l'affichage de message. L'ensemble de ces informations seront envoyées aux serveur. Si le serveur renvoie un message d'erreur un message sera affiché.
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence du cas d'utilisation "Create Session"}
+	\label{CreateSessionPNG}}
+	\centering
+	\includegraphics[scale=0.2]{Images/diagrammSequence/createSessionSequence.png}
 \end{figure}
 
 
