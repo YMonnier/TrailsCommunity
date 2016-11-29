@@ -56,7 +56,7 @@ public class SessionActivity extends AppCompatActivity {
     private List<String> chatMessageList;
 
     @AfterViews
-    void init(){
+    void init() {
         Log.d(TAG, "init AfterViews....");
         session = new Session.Builder()
                 .setActivity(Session.TypeActivity.HIKING.ordinal())
@@ -83,10 +83,9 @@ public class SessionActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.session_chat_menu:
-                if(!drawerLayout.isDrawerOpen(Gravity.LEFT)){
+                if (!drawerLayout.isDrawerOpen(Gravity.LEFT)) {
                     drawerLayout.openDrawer(Gravity.LEFT);
-                }
-                else{
+                } else {
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 }
                 return true;
@@ -98,11 +97,28 @@ public class SessionActivity extends AppCompatActivity {
     /**
      * Floating action button which allows
      * to display the current user statistics.
+     *
      * @param view
      */
     @Click(R.id.fab)
     void clickOnFloatingButton(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        if (mapNavigation != null) {
+            mapNavigation.stop();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mapNavigation != null) {
+            mapNavigation.stop();
+        }
     }
 }

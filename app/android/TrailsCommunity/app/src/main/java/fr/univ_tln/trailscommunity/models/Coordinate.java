@@ -65,4 +65,13 @@ public class Coordinate extends RealmObject {
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", sent=" + sent +
+                '}';
+    }
 }

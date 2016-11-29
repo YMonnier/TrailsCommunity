@@ -81,7 +81,7 @@
             android:name=".features.session.SessionFormActivity_"
             android:parentActivityName=".features.sessions.SessionsActivity_" />
         <!-- <activity android:name=".features.session.SessionActivity" /> -->
-        <activity android:name=".features.session.ModifySessionActivity_"></activity>
+        <activity android:name=".features.session.ModifySessionActivity_" />
     </application>
 
 </manifest>

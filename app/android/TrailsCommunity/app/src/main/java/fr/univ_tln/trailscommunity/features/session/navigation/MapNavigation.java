@@ -1,14 +1,14 @@
 package fr.univ_tln.trailscommunity.features.session.navigation;
 
-import android.Manifest;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.provider.Settings;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,9 +20,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.features.session.SessionActivity;
 import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationService;
 import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationService_;
-import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationSetting;
+import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationSettings;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
 
@@ -58,50 +60,52 @@ public class MapNavigation
     SessionActivity context;
 
     /**
-     *
+     * Map view
      */
     GoogleMap mapView;
 
 
     private Map<Integer, String> users;
 
+    private Polyline polyline;
+
     /**
      *
      */
     public void init(Session session) {
         Log.d(TAG, "init");
-
-
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
                 .findFragmentById(R.id.map_navigation);
         mapFragment.getMapAsync(this);
 
+        // Add observer broadcast messaging for location.
+        LocalBroadcastManager.getInstance(context).registerReceiver(locationReceiver,
+                new IntentFilter(LocationService.LOCATION_BROADCAST));
+
+        // Add observer broadcast to asklocation settings id gps is disabled.
+        LocalBroadcastManager.getInstance(context).registerReceiver(askLocationReceiver,
+                new IntentFilter(LocationService.ASK_LOCATION_SETTINGS_BROADCAST));
+
         Session.TypeActivity typeActivity = Session.TypeActivity.values()[session.getActivity()];
-        LocationSetting locationSetting = LocationSetting.fromActivity(typeActivity);
-
-        //locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        /*
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    locationSetting.getTime(),
-                    locationSetting.getDistance(), this);
-        }
-        */
+        LocationSettings locationSetting = LocationSettings.fromActivity(typeActivity);
 
         LocationService_.intent(context)
-                .extra(LocationSetting.EXTRA_DISTANCE, locationSetting.getDistance())
-                .extra(LocationSetting.EXTRA_TIME_MILLIS, locationSetting.getTime())
+                .extra(LocationSettings.EXTRA_DISTANCE, locationSetting.getDistance())
+                .extra(LocationSettings.EXTRA_TIME_MILLIS, locationSetting.getTime())
                 .start();
     }
+
+    /**
+     * Method to stop observer broadcast
+     * messaging and service location.
+     */
+    public void stop() {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(locationReceiver);
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(askLocationReceiver);
+        LocationService_.intent(context)
+                .stop();
+    }
+
 
     /**
      * Manipulates the map once available.
@@ -120,11 +124,19 @@ public class MapNavigation
         mapView = googleMap;
 
         //mapView.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        addCoordinate(new Coordinate());
+        //
+        // Test
+        //
+
+        PolylineOptions rectOptions = new PolylineOptions();
+        polyline = mapView.addPolyline(rectOptions);
+        polyline.setColor(Color.BLUE);
+        //addUserMarker(polyline);
     }
 
     /**
      * Add a new waypoint to the current map.
+     *
      * @param coordinate waypoint coordinate.
      */
     public void addWaypoint(final LatLng coordinate) {
@@ -132,27 +144,23 @@ public class MapNavigation
     }
 
     public void addCoordinate(final Coordinate coordinate) {
-        //mapView.addPolyline()
-        PolylineOptions rectOptions = new PolylineOptions()
-                .add(new LatLng(37.35, -122.0))
-                .add(new LatLng(37.45, -122.0))  // North of the previous point, but at the same longitude
-                .add(new LatLng(37.45, -122.2))  // Same latitude, and 30km to the west
-                .add(new LatLng(37.35, -122.2))  // Same longitude, and 16km to the south
-                .add(new LatLng(37.35, -122.0)); // Closes the polyline.
+        if (coordinate == null)
+            throw new AssertionError("coordinate should not be null");
 
-        // Get back the mutable Polyline
-        Polyline polyline = mapView.addPolyline(rectOptions);
-        polyline.setColor(Color.BLUE);
-        addUserMarker(polyline);
-        mapView.moveCamera(CameraUpdateFactory.newLatLng(polyline.getPoints().get(0)));
-        //polyline.setPoints();
+        if (coordinate != null) {
+            LatLng point = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
+            List<LatLng> listPoint = polyline.getPoints();
+            listPoint.add(point);
+            polyline.setPoints(listPoint);
+            mapView.moveCamera(CameraUpdateFactory.newLatLng(point));
+        }
     }
 
     public void addCoordinate(final List<Coordinate> coordinates) {
 
     }
 
-    private void addUserMarker(Polyline polyline){
+    private void addUserMarker(Polyline polyline) {
         mapView.addMarker(new MarkerOptions()
                 .title("Pseudo")
                 .position(polyline.getPoints().get(polyline.getPoints().size() - 1))
@@ -160,11 +168,74 @@ public class MapNavigation
     }
 
     /**
-     * Long
-     * @param latLng
+     * Long click which will add a new waypoint and broadcast
+     * to others participant through the server.
+     *
+     * @param latLng location waypoint
      */
     @Override
     public void onMapLongClick(LatLng latLng) {
         addWaypoint(latLng);
+    }
+
+    /**
+     * Handler for receive location intents. This will be
+     * called whenever an Intent with an action named `LocationService.LOCATION_BROADCAST`
+     * is broadcasted.
+     */
+    private BroadcastReceiver locationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String jsonLocation = intent.getStringExtra(LocationService_.EXTRA_LOCATION);
+            Coordinate coordinate = new Gson().fromJson(jsonLocation, Coordinate.class);
+            Log.d(TAG, "Got location from service: " + coordinate);
+            addCoordinate(coordinate);
+        }
+    };
+
+    /**
+     * Handler for receive the ask location settings. This will be
+     * called whenever an Intent with an action named `LocationService.ASK_LOCATION_SETTINGS`
+     * is broadcasted.
+     */
+    private BroadcastReceiver askLocationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showSettingsAlert();
+        }
+    };
+
+
+    /**
+     * Function to show settings alert dialog.
+     * On pressing the Settings button it will launch Settings Options.
+     */
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        // On pressing the Settings button.
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                dialog.cancel();
+            }
+        });
+
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 }

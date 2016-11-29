@@ -5,55 +5,55 @@ import fr.univ_tln.trailscommunity.models.Session;
 /**
  * Project TrailsCommunity.
  * Package fr.univ_tln.trailscommunity.features.session.navigation.
- * File LocationSetting.java.
+ * File LocationSettings.java.
  * Created by Ysee on 28/11/2016 - 17:15.
  * www.yseemonnier.com
  * https://github.com/YMonnier
  */
 
-public class LocationSetting {
+public class LocationSettings {
     public static final String EXTRA_DISTANCE = "EXTRA_DISTANCE";
     public static final String EXTRA_TIME_MILLIS = "EXTRA_TIME_MILLIS";
 
     private int distance;
     private int time;
 
-    private LocationSetting(Builder builder) {
+    private LocationSettings(Builder builder) {
         this.distance = builder.distance;
         this.time = builder.time;
     }
 
 
-    public static LocationSetting fromActivity(Session.TypeActivity typeActivity) {
-        LocationSetting res = null;
+    public static LocationSettings fromActivity(Session.TypeActivity typeActivity) {
+        LocationSettings res = null;
         switch (typeActivity) {
             case OFFROAD4x4:
-                res = new LocationSetting.Builder()
+                res = new LocationSettings.Builder()
                     .setDistance(50)
                     .setTime(1000 * 60 * 1).build();
                 break;
             case BICYCLE:
-                res = new LocationSetting.Builder()
+                res = new LocationSettings.Builder()
                         .setDistance(20)
                         .setTime(1000 * 60 * 1).build();
                 break;
             case BOAT:
-                res = new LocationSetting.Builder()
+                res = new LocationSettings.Builder()
                         .setDistance(100)
                         .setTime(1000 * 60 * 1).build();
                 break;
             case HIKING:
-                res = new LocationSetting.Builder()
+                res = new LocationSettings.Builder()
                         .setDistance(10)
                         .setTime(1000).build();
                 break;
             case PAINTBALL:
-                res = new LocationSetting.Builder()
+                res = new LocationSettings.Builder()
                         .setDistance(10)
                         .setTime(1000 * 60 * 1).build();
                 break;
             case RUNNING:
-                res = new LocationSetting.Builder()
+                res = new LocationSettings.Builder()
                         .setDistance(15)
                         .setTime(1000 * 60 * 1).build();
                 break;
@@ -73,8 +73,8 @@ public class LocationSetting {
         private int distance;
         private int time;
 
-        public LocationSetting build() {
-            return new LocationSetting(this);
+        public LocationSettings build() {
+            return new LocationSettings(this);
         }
 
         public Builder setDistance(int distance) {
