@@ -720,9 +720,19 @@ Avant sa première connexion, l'utilisateur devra créer un compte pour obtenir 
 
 \paragraph{}Comme on peut le voir sur le diagramme d'activité. La gestion d'erreur ce passe sur les les 2 applications : le modele et le serveur. De plus, le serveur se charge de remonter les erreurs sur le format des données ou la lecture/écriture en base de données. Le client informe l'utlisateur sur l'echec du format des données entré en paramètre et aussi l'echec des opération serveur.
 
-%Diagramme d'activité créer un sondage%
+%Diagramme d'activité créer une session%
 
 Les cas d'utilisation de modification d'une session qui comprend la cloture d'une session est particulièrement similaire à ce cas d'utilisation.
+
+%Diagramme de séquence modification modifier session%
+
+%Diagramme de séquence cloturer session (A voir si il est fait)%
+
+\subsection{Traitement d'un cas d'utilisation - Rejoindre une session}
+
+%Diagramme de sequence rejoindre une session%
+
+%Diagramme d'activite rejoindre une session%
 
 \part{Serveur TrailsCommunity}
 
@@ -1538,6 +1548,51 @@ Authorization
 		\hline
 	\end{tabular}
 \end{center}
->>>>>>> 824ffb9003992ca2ca4f37f6d833f672cd891ea2
+
+\section{Test}
+
+\subsection{Test unitaire}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
+
+\subsection{Test UI}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
+ 
+%Test serveur%
+
+\section{Test}
+
+\subsection{Test unitaire}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
+
+\subsection{Test UI}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
 
 \end{document}          
