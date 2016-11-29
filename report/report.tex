@@ -658,52 +658,81 @@ NIVEAU : Haute.
 	\end{tabular}
 \end{center}
 
-\chapter{Diagrammes}
+\chapter{Conception UML}
 
-\section{Diagrammes de séquence}
+\section{Modélisation de l'axe statique}
 
-\paragraph{Login}
-L'identification nécessite une adresse email ainsi qu'un mot de passe qui seront renseignés par l'utilisateur. Une vérification au niveau du serveur sera effectuée. Le cas d'erreurs comme la saisie d'une mauvaise adresse mail ou d'un mauvais mot de passe provoquent l'affichage d'un message d'erreur.Il en va de même pour la réponse du serveur.
+\subsection{Diagramme de contexte statique}
 
-\begin{figure}[!h]
-	\caption{Diagramme de séquence du cas d'utilisation "Login"}
-	\label{LoginSequencePNG}}
-	\centering
-	\includegraphics[scale=0.2]{Images/diagrammSequence/loginSequence.png}
-\end{figure}
-
-\paragraph{Enregistrement}
-L'enregistrement nécessite de nombreuses certaines informations, toutes obligatoires (une absence provoquera un enregistrement impossible). Ces informations sont à fournir par le visiteur souhaitant créer un compte:
-- Email
-- Pseudo
-- Mot de passe
-- Confirmation du mot de passe
-- Numéro de téléphone
-Les cas d'erreurs tels que une mauvaise saisie sont traités et provoquent l'affichage d'un message d'erreur. Ces informations sont ensuite envoyées au serveur pour être enregistrer. Si ce dernier renvoie un message d'erreur, là aussi le cas sera traité et provoquera l'affichage d'un message.
+\paragraph{}Nous distinguons quatres types d'acteurs : un visiteur, un utilisateur, un participant et un organisateur. Chaque acteurs auront des utilisations de l'application mobile complètement distincts. 
 
 \begin{figure}[!h]
-	\caption{Diagramme de séquence du cas d'utilisation "Registration"}
-	\label{RegistrationPNG}}
+	\caption{Diagramme de contexte statique}
+	\label{statique_diagram}}
 	\centering
-	\includegraphics[scale=0.2]{Images/diagrammSequence/registrationSequence.png}
+	\includegraphics[scale=0.2]{Images/diagram/statique_diagram.png}
 \end{figure}
 
-\paragraph{Création session}
-La création d'une session ne peut être effectuée que par un utilisateur connecté. Celui-ci devra renseigner:
-- Lieu de départ
-- Lieu d'arrivé
-- Type de l'activité
-- Date de départ
-- Mot de passe
-Là aussi les erreurs sont traitées et provoquent l'affichage de message. L'ensemble de ces informations seront envoyées aux serveur. Si le serveur renvoie un message d'erreur un message sera affiché.
+L'accès aux données nécéssaires au fonctionnement de l'application se fera par le biais d'un serveur codé en Ruby dont le fonctionnement est détaillé en annexe. C'est ce serveur qui communiquera avec la base de données qui stocke l'ensemble des informations des sessions.
+
+\subsection{Diagramme des cas d'utilisation}
+
+\paragraph{}L'ensemble des cas d'usages excepté la création d'un compte utilisateur requiere une authentification. Le statut de l'acteur diffère en fonction des actions qu'il réalise sur l'application. 
 
 \begin{figure}[!h]
-	\caption{Diagramme de séquence du cas d'utilisation "Create Session"}
-	\label{CreateSessionPNG}}
+	\caption{Diagramme des cas d'utilisation}
+	\label{use_case_diagram}}
 	\centering
-	\includegraphics[scale=0.2]{Images/diagrammSequence/createSessionSequence.png}
+	\includegraphics[scale=0.2]{Images/diagram/use_case_diagram.png}
 \end{figure}
 
+\paragraph{}La priorité des cas d'utilisation est détaillée dans la figure ... La principal fonctionnalité de l'application est d'assurer la possibilité de créer une session d'une activité quelconque et d'y participer.
+
+\subsection{Diagramme de classe}
+
+%Tableau des priorités%
+
+%Diagramme de classe%
+
+%Diagramme entité-association%
+
+\section{Modélisation des axes fonctionnel et dynamique}
+
+\subsection{Généralités}
+
+\paragraph{}Tous les diagrammes de séquences et d'activité présentés ci-dessous seront depuis le point de vue du client.
+\paragraph{}Une rapide modélisation du serveur sera présent&e dans la partie `Modélisation du serveur`. Les diagrammes de séquence comprennent cependant une redirection vers la réception ou l'envoi de données vers ou depuis le serveur.
+\paragraph{}Tous les cas d'utilisation débutent nécéssairement par une connexion de l'utilisateur,  décrite dans le diagramme de séquence en figure ...
+\paragraph{}De plus l'ensemble des données sont testées sur le client mais aussi sur le serveur qui contient la base de données.
+
+%Diagramme de séquence authentification%
+
+Avant sa première connexion, l'utilisateur devra créer un compte pour obtenir ses informations de connexion. Cette étape est primordiale car certaines données sont sensible car elle seront utilisés directement par l'application comme le pseudonyme ou le numéro de téléphone.
+
+%Diagramme de séquence créer un compte utilisateur%
+
+\subsection{Traitement d'un cas d'utilisation - Créer une session}
+
+\paragraph{}Le cas d'utilisation que nous avons choisi de détailler ici est la création d'une session. C'est un des cas d'utilisation essentiel au fonctionnement de notre application mobile. Sans cette étape, il est impossible de réaliser n'importe quelles actions concretes sur l'application.
+\paragraph{}Le diagramme de séquence s'articule principalement autour de trois étapes : l'authentification, la saisie des données du sondage puis l'envoi des données au serveur.
+
+%Diagramme de séquence créer une session%
+
+\paragraph{}Comme on peut le voir sur le diagramme d'activité. La gestion d'erreur ce passe sur les les 2 applications : le modele et le serveur. De plus, le serveur se charge de remonter les erreurs sur le format des données ou la lecture/écriture en base de données. Le client informe l'utlisateur sur l'echec du format des données entré en paramètre et aussi l'echec des opération serveur.
+
+%Diagramme d'activité créer une session%
+
+Les cas d'utilisation de modification d'une session qui comprend la cloture d'une session est particulièrement similaire à ce cas d'utilisation.
+
+%Diagramme de séquence modification modifier session%
+
+%Diagramme de séquence cloturer session (A voir si il est fait)%
+
+\subsection{Traitement d'un cas d'utilisation - Rejoindre une session}
+
+%Diagramme de sequence rejoindre une session%
+
+%Diagramme d'activite rejoindre une session%
 
 \part{Serveur TrailsCommunity}
 
@@ -1519,6 +1548,51 @@ Authorization
 		\hline
 	\end{tabular}
 \end{center}
->>>>>>> 824ffb9003992ca2ca4f37f6d833f672cd891ea2
+
+\section{Test}
+
+\subsection{Test unitaire}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
+
+\subsection{Test UI}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
+ 
+%Test serveur%
+
+\section{Test}
+
+\subsection{Test unitaire}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
+
+\subsection{Test UI}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
 
 \end{document}          
