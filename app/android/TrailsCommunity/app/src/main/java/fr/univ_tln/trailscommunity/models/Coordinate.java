@@ -1,5 +1,8 @@
 package fr.univ_tln.trailscommunity.models;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 
 import io.realm.RealmObject;

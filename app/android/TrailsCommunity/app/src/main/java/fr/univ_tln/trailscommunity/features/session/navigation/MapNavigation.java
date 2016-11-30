@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -120,6 +121,9 @@ public class MapNavigation
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         googleMap.setOnMapLongClickListener(this);
+        googleMap.getUiSettings().setAllGesturesEnabled(true);
+        googleMap.getUiSettings().setCompassEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         Log.d(TAG, "onMapReady");
         mapView = googleMap;
 
@@ -130,7 +134,10 @@ public class MapNavigation
 
         PolylineOptions rectOptions = new PolylineOptions();
         polyline = mapView.addPolyline(rectOptions);
-        polyline.setColor(Color.BLUE);
+        polyline.setColor(Color.RED);
+        polyline.setVisible(true);
+        polyline.setWidth(6);
+        polyline.setZIndex(1234);
         //addUserMarker(polyline);
     }
 
@@ -143,6 +150,10 @@ public class MapNavigation
         mapView.addMarker(new MarkerOptions().position(coordinate).title("Pseudo | Waypoint"));
     }
 
+    /**
+     * Add a new point to the specific polyline.
+     * @param coordinate  coordinate we want to add.
+     */
     public void addCoordinate(final Coordinate coordinate) {
         if (coordinate == null)
             throw new AssertionError("coordinate should not be null");
@@ -150,9 +161,12 @@ public class MapNavigation
         if (coordinate != null) {
             LatLng point = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
             List<LatLng> listPoint = polyline.getPoints();
-            listPoint.add(point);
-            polyline.setPoints(listPoint);
-            mapView.moveCamera(CameraUpdateFactory.newLatLng(point));
+            if (listPoint != null) {
+                listPoint.add(point);
+                polyline.setPoints(listPoint);
+                polyline.setVisible(true);
+                mapView.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+            }
         }
     }
 
