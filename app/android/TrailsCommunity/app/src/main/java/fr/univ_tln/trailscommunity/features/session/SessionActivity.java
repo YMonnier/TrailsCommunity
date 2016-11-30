@@ -14,6 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
@@ -69,6 +73,11 @@ public class SessionActivity extends AppCompatActivity {
         // Set the adapter for the list view
         chatListView.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, chatMessageList));
+
+
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "FCM TEST Token: " + token);
     }
 
     @Override

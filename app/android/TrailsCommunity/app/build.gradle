@@ -46,6 +46,7 @@ buildscript {
         // the latest version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'io.realm:realm-gradle-plugin:2.2.0'
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 
@@ -75,6 +76,7 @@ dependencies {
     }
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
+    compile 'com.google.android.gms:play-services:10.0.1'
 
     // Android Annotation (AA)
     apt "org.androidannotations:androidannotations:$AAVersion"
@@ -87,6 +89,11 @@ dependencies {
     // Gson use to Rest part AA
     compile 'com.google.code.gson:gson:2.4'
 
+    // Firebase
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+
     testCompile 'junit:junit:4.12'
-    compile 'com.google.android.gms:play-services:9.8.0'
 }
+
+// Stay at the bottom
+apply plugin: 'com.google.gms.google-services'
