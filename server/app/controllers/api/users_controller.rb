@@ -13,6 +13,9 @@ class Api::UsersController < ApplicationController
     end
 
     def me
+        if params[:device_token]
+            current_user.update_columns(device: params[:device_token])
+        end
         ok_request current_user
     end
 

@@ -110,10 +110,8 @@ class Api::SessionsController < ApplicationController
             session = Session.find(id)
             if session.lock
                 if params[:password]
-
-
                     if BCrypt::Password.new(session.password) != params[:password]
-                        r = {session: 'Bad password.' + session.password}
+                        r = {session: 'Bad password.'}
                         return bad_request r
                     end
                 else
@@ -152,6 +150,7 @@ class Api::SessionsController < ApplicationController
             @waypoint = Waypoint.new(coords_params)
             @waypoint.session_id = id
             if @waypoint.save
+                NotificationManager::push_waypoint current_user @waypoint
                 return ok_request ''
             else
                 return bad_request @waypoint.errors
@@ -178,13 +177,14 @@ class Api::SessionsController < ApplicationController
     def coordinate
         id = params[:id]
         if Session.exists?(id)
-            @waypoint = Coordinate.new(coords_params)
-            @waypoint.session_id = id
-            @waypoint.user_id = current_user.id
+            @coordinate = Coordinate.new(coords_params)
+            @coordinate.session_id = id
+            @coordinate.user_id = current_user.id
             if @waypoint.save
+                NotificationManager::push_waypoint current_user @coordinate
                 return ok_request ''
             else
-                return bad_request @waypoint.errors
+                return bad_request @coordinate.errors
             end
         else
             r = {session: 'Record Not Found'}
@@ -193,14 +193,10 @@ class Api::SessionsController < ApplicationController
     end
 
     def test
-        data = {
-            latitude: 12,
-            longitude: 14
-        }
-        if test = 12 == 12
-            ok_request test
-        end
-        #ok_request NotificationManager::push_waipoint current_user.current_session_id, data
+        point = Coordinate.new
+        point.latitude = 123
+        point.longitude = 1234
+        ok_request NotificationManager::push_test current_user, point
     end
 
     private
