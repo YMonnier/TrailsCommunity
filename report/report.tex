@@ -668,12 +668,12 @@ NIVEAU : Haute.
 
 \begin{figure}[!h]
 	\caption{Diagramme de contexte statique}
-	\label{statique_diagram}}
+	\label{statique_diagram}
 	\centering
-	\includegraphics[scale=0.2]{Images/diagram/statique_diagram.png}
+	\includegraphics[scale=0.7]{Images/diagram/static_diagram.png}
 \end{figure}
 
-L'accès aux données nécéssaires au fonctionnement de l'application se fera par le biais d'un serveur codé en Ruby dont le fonctionnement est détaillé en annexe. C'est ce serveur qui communiquera avec la base de données qui stocke l'ensemble des informations des sessions.
+\paragraph{}L'accès aux données nécessaires au fonctionnement de l'application se fera par le biais d'un serveur codé en Ruby dont le fonctionnement est détaillé en annexe. C'est ce serveur qui communiquera avec la base de données qui stocke l'ensemble des informations des sessions.
 
 \subsection{Diagramme des cas d'utilisation}
 
@@ -681,35 +681,69 @@ L'accès aux données nécéssaires au fonctionnement de l'application se fera p
 
 \begin{figure}[!h]
 	\caption{Diagramme des cas d'utilisation}
-	\label{use_case_diagram}}
+	\label{use_case_diagram}
 	\centering
-	\includegraphics[scale=0.2]{Images/diagram/use_case_diagram.png}
+	\includegraphics[scale=0.5]{Images/diagram/use_case_diagram.png}
 \end{figure}
 
 \paragraph{}La priorité des cas d'utilisation est détaillée dans la figure ... La principal fonctionnalité de l'application est d'assurer la possibilité de créer une session d'une activité quelconque et d'y participer.
 
-\subsection{Diagramme de classe}
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Use case & Priority & Risk \\ \hline
+		Create a session & High & High \\ \hline
+		Manage a session & High & High \\ \hline
+		Join a session & High & Mean \\ \hline
+		Create a waypoint & Mean & Mean \\ \hline
+		Authentification & Mean & Mean \\ \hline
+		Use the chat & Low & Low \\ \hline
+		See statistics & Low & Low \\ \hline
+		See his history & Low & Low \\ \hline
+		Modify profil & Low & Low \\
+		\hline \hline
+	\end{tabular}
+\end{center}
 
-%Tableau des priorités%
+\subsection{Diagramme de classe}
 
 %Diagramme de classe%
 
-%Diagramme entité-association%
+\begin{figure}[!h]
+	\caption{Diagramme entité association}
+	\label{database_ERD}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/database_ERD.png}
+\end{figure}
 
 \section{Modélisation des axes fonctionnel et dynamique}
 
 \subsection{Généralités}
 
 \paragraph{}Tous les diagrammes de séquences et d'activité présentés ci-dessous seront depuis le point de vue du client.
-\paragraph{}Une rapide modélisation du serveur sera présent&e dans la partie `Modélisation du serveur`. Les diagrammes de séquence comprennent cependant une redirection vers la réception ou l'envoi de données vers ou depuis le serveur.
-\paragraph{}Tous les cas d'utilisation débutent nécéssairement par une connexion de l'utilisateur,  décrite dans le diagramme de séquence en figure ...
+\paragraph{}Une rapide modélisation du serveur sera présente dans la partie `Modélisation du serveur`. Les diagrammes de séquence comprennent cependant une redirection vers la réception ou l'envoi de données vers ou depuis le serveur.
+\paragraph{}Tous les cas d'utilisation débutent nécessairement par une connexion de l'utilisateur,  décrite dans le diagramme de séquence en figure ...
 \paragraph{}De plus l'ensemble des données sont testées sur le client mais aussi sur le serveur qui contient la base de données.
 
 %Diagramme de séquence authentification%
 
+\begin{figure}[!h]
+	\caption{Diagramme de séquence authentification}
+	\label{authentification_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/login_sequence_diagram.png}
+\end{figure}
+
 Avant sa première connexion, l'utilisateur devra créer un compte pour obtenir ses informations de connexion. Cette étape est primordiale car certaines données sont sensible car elle seront utilisés directement par l'application comme le pseudonyme ou le numéro de téléphone.
 
 %Diagramme de séquence créer un compte utilisateur%
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence créer un compte utilisateur}
+	\label{register_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.5]{Images/diagram/registration_sequence_diagram.png}
+\end{figure}
 
 \subsection{Traitement d'un cas d'utilisation - Créer une session}
 
@@ -718,11 +752,25 @@ Avant sa première connexion, l'utilisateur devra créer un compte pour obtenir 
 
 %Diagramme de séquence créer une session%
 
-\paragraph{}Comme on peut le voir sur le diagramme d'activité. La gestion d'erreur ce passe sur les les 2 applications : le modele et le serveur. De plus, le serveur se charge de remonter les erreurs sur le format des données ou la lecture/écriture en base de données. Le client informe l'utlisateur sur l'echec du format des données entré en paramètre et aussi l'echec des opération serveur.
+\begin{figure}[!h]
+	\caption{Diagramme de séquence créer une session}
+	\label{create_session_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.5]{Images/diagram/create_session_sequence_diagram.png}
+\end{figure}
+
+\paragraph{}Comme on peut le voir sur le diagramme d'activité. La gestion d'erreur ce passe sur les les 2 applications : le modele et le serveur. De plus, le serveur se charge de remonter les erreurs sur le format des données ou la lecture/écriture en base de données. Le client informe l'utilisateur sur l'échec du format des données entré en paramètre et aussi l'échec des opération serveur.
 
 %Diagramme d'activité créer une session%
 
-Les cas d'utilisation de modification d'une session qui comprend la cloture d'une session est particulièrement similaire à ce cas d'utilisation.
+\begin{figure}[!h]
+	\caption{Diagramme d'activité de la création d'une session}
+	\label{create_session_activity_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/create_session_activity_diagram.png}
+\end{figure}
+
+Les cas d'utilisation de modification d'une session qui comprend la clôture d'une session est particulièrement similaire à ce cas d'utilisation.
 
 %Diagramme de séquence modification modifier session%
 
@@ -732,7 +780,39 @@ Les cas d'utilisation de modification d'une session qui comprend la cloture d'un
 
 %Diagramme de sequence rejoindre une session%
 
+\begin{figure}[!h]
+	\caption{Diagramme de séquence rejoindre une session}
+	\label{join_session_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/selection_session_sequence_diagram.png}
+\end{figure}
+
 %Diagramme d'activite rejoindre une session%
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité rejoindre une session}
+	\label{join_session_activity_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/selection_session_activity_diagram.png}
+\end{figure}
+
+%Diagramme d'activite de l'affichage d'une session%
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence de l'affichage d'une session}
+	\label{view_session_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/view_session_sequence_diagram.png}
+\end{figure}
+
+%%
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité de l'affichage d'une session}
+	\label{view_session_activity_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/view_session_activity_diagram.png}
+\end{figure}
 
 \part{Serveur TrailsCommunity}
 
