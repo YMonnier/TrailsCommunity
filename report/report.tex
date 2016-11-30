@@ -1417,7 +1417,7 @@ Authorization
 
 \subsection{Requête}
 
-\paragraph{} Permet de à l'utilisateur de rejoindre une session spécifique selon son identifiant (ID). Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$
+\paragraph{} Permet de à l'utilisateur de rejoindre une session spécifique selon son identifiant (ID). Cette ressource est contrainte d'un token d'authentification <$Authorization$> qui a été donnée avec la ressource $api/login/auth\_token$. De plus, un mot de passe peut être demandé si la session est restreinte.
 
 \begin{center}
 	\begin{tabular}{|c|c|}
@@ -1438,17 +1438,21 @@ api/sessions/:id/join
 	\begin{tabular}{|c|c|c|}
 	\hline
 	Type & Paramètres & Valeurs \\ \hline
-	$ URL\_PARAM $ & 
-	\begin{lstlisting}
-id
-	\end{lstlisting} &
-	$ Integer $ \\ \hline
 	$ HEADER $ & 
 	\begin{lstlisting}
 Authorization
 	\end{lstlisting} &
 	$ String $ \\ \hline
-	
+	$ URL\_PARAM $ & 
+	\begin{lstlisting}
+id
+	\end{lstlisting} &
+	$ Integer $ \\ \hline
+	$ URL\_PARAM $ & 
+	\begin{lstlisting}
+password (optional)
+	\end{lstlisting} &
+	$ String $ \\ \hline
 	\end{tabular}
 \end{center}
 
@@ -1461,6 +1465,15 @@ Authorization
 		Statut & Réponse \\
 		\hline
 		$ 200 $ & \\ 
+		\hline
+		$ 400 $ & \begin{lstlisting}
+{
+  "errors": {
+    "session": "Bad password." OR
+    "session": "This session needs a password to join it."
+  }
+}
+		\end{lstlisting} \\
 		\hline
 		$ 401 $ & \\
 		\hline
