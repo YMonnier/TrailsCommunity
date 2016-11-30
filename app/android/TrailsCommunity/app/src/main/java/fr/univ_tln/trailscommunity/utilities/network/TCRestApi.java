@@ -15,6 +15,7 @@ import org.androidannotations.rest.spring.annotations.Accept;
 import org.androidannotations.rest.spring.annotations.Body;
 import org.androidannotations.rest.spring.annotations.Get;
 import org.androidannotations.rest.spring.annotations.Header;
+import org.androidannotations.rest.spring.annotations.Path;
 import org.androidannotations.rest.spring.annotations.Post;
 import org.androidannotations.rest.spring.annotations.RequiresHeader;
 import org.androidannotations.rest.spring.annotations.Rest;
@@ -76,6 +77,10 @@ public interface TCRestApi {
     @Get("/users/me")
     @RequiresHeader("Authorization")
     ResponseEntity<JsonObject> user();
+
+    @Get("/users/me?device_token={deviseToken}")
+    @RequiresHeader("Authorization")
+    ResponseEntity<JsonObject> user(@Path("deviseToken") String deviceToken);
 
 
     /**

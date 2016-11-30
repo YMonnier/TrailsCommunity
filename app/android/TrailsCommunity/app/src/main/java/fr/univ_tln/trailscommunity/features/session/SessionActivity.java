@@ -73,11 +73,6 @@ public class SessionActivity extends AppCompatActivity {
         // Set the adapter for the list view
         chatListView.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, chatMessageList));
-
-
-
-        String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "FCM TEST Token: " + token);
     }
 
     @Override

@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,7 +57,7 @@ import io.realm.RealmResults;
 @EActivity(R.layout.root_login_activity)
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = LoginActivity.class.getName();
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     /**
      * Minimum password length
@@ -270,7 +271,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Get current user information
                     tcRestApi.setHeader("Authorization", token);
-                    ResponseEntity<JsonObject> responseUser = tcRestApi.user();
+                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
+                    Log.d(TAG, "FCM TEST Token: " + token);
+                    ResponseEntity<JsonObject> responseUser = tcRestApi.user(deviceToken);
                     if (responseUser == null)
                         throw new AssertionError("response user should not be null");
 

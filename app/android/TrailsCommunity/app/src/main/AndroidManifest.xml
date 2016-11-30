@@ -73,8 +73,8 @@
         <!--
             *** MAIN ACTIVITY ***
         -->
-        <activity android:name=".features.session.SessionActivity_">
-            <!-- android:name=".features.root.LoginActivity_"
+        <activity android:name=".features.root.LoginActivity_">
+            <!-- android:name=".features.session.SessionActivity_"
             android:parentActivityName=".features.sessions.SessionsActivity_">
             -->
 
@@ -100,7 +100,7 @@
         <activity
             android:name=".features.session.SessionFormActivity_"
             android:parentActivityName=".features.sessions.SessionsActivity_" />
-        <!-- <activity android:name=".features.session.SessionActivity" /> -->
+        <!-- <activity android:name=".features.session.SessionActivity_" /> -->
         <activity android:name=".features.session.ModifySessionActivity_" />
     </application>
 

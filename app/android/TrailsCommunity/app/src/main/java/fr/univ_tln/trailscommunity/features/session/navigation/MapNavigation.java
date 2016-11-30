@@ -37,6 +37,8 @@ import fr.univ_tln.trailscommunity.features.session.navigation.location.Location
 import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationSettings;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.models.Waypoint;
+import fr.univ_tln.trailscommunity.utilities.notification.NotificationReceiverService;
 
 /**
  * Project TrailsCommunity.
@@ -71,10 +73,18 @@ public class MapNavigation
     private Polyline polyline;
 
     /**
+     * Gson instance use to map json to object
+     * or to convert object to json.
+     * Used for `intent` communication.
+     */
+    private Gson gson;
+
+    /**
      *
      */
     public void init(Session session) {
         Log.d(TAG, "init");
+        gson = new Gson();
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
                 .findFragmentById(R.id.map_navigation);
         mapFragment.getMapAsync(this);
@@ -83,13 +93,23 @@ public class MapNavigation
         LocalBroadcastManager.getInstance(context).registerReceiver(locationReceiver,
                 new IntentFilter(LocationService.LOCATION_BROADCAST));
 
-        // Add observer broadcast to asklocation settings id gps is disabled.
+        // Add observer broadcast to ask location settings id gps is disabled.
         LocalBroadcastManager.getInstance(context).registerReceiver(askLocationReceiver,
                 new IntentFilter(LocationService.ASK_LOCATION_SETTINGS_BROADCAST));
+
+        // Add observer broadcast to receive location from notification
+        LocalBroadcastManager.getInstance(context).registerReceiver(coordinateSharingReceiver,
+                new IntentFilter(NotificationReceiverService.COORDINATE_SHARING_RECEIVER));
+
+        // Add observer broadcast to receive waypoint from notification
+        LocalBroadcastManager.getInstance(context).registerReceiver(waypointSharingReceiver,
+                new IntentFilter(NotificationReceiverService.WAYPOINT_SHARING_RECEIVER));
 
         Session.TypeActivity typeActivity = Session.TypeActivity.values()[session.getActivity()];
         LocationSettings locationSetting = LocationSettings.fromActivity(typeActivity);
 
+        // Start the location service
+        // See fr.univ_tln.trailscommunity.features.session.navigation.LocationService
         LocationService_.intent(context)
                 .extra(LocationSettings.EXTRA_DISTANCE, locationSetting.getDistance())
                 .extra(LocationSettings.EXTRA_TIME_MILLIS, locationSetting.getTime())
@@ -99,10 +119,13 @@ public class MapNavigation
     /**
      * Method to stop observer broadcast
      * messaging and service location.
+     * Used when use leave application from session activity(onFinish`, `onDestroy`, `onStop`)
      */
     public void stop() {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(locationReceiver);
         LocalBroadcastManager.getInstance(context).unregisterReceiver(askLocationReceiver);
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(waypointSharingReceiver);
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(coordinateSharingReceiver);
         LocationService_.intent(context)
                 .stop();
     }
@@ -152,7 +175,8 @@ public class MapNavigation
 
     /**
      * Add a new point to the specific polyline.
-     * @param coordinate  coordinate we want to add.
+     *
+     * @param coordinate coordinate we want to add.
      */
     public void addCoordinate(final Coordinate coordinate) {
         if (coordinate == null)
@@ -201,7 +225,7 @@ public class MapNavigation
         @Override
         public void onReceive(Context context, Intent intent) {
             String jsonLocation = intent.getStringExtra(LocationService_.EXTRA_LOCATION);
-            Coordinate coordinate = new Gson().fromJson(jsonLocation, Coordinate.class);
+            Coordinate coordinate = gson.fromJson(jsonLocation, Coordinate.class);
             Log.d(TAG, "Got location from service: " + coordinate);
             addCoordinate(coordinate);
         }
@@ -219,6 +243,33 @@ public class MapNavigation
         }
     };
 
+    /**
+     * Handler for receive the location intent from notification(NotificationReceiverService). This will be
+     * called whenever an Intent with an action named `LocationService.ASK_LOCATION_SETTINGS`
+     * is broadcasted.
+     */
+    private BroadcastReceiver coordinateSharingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String json = intent.getStringExtra(NotificationReceiverService.EXTRA_COORDINATE_SHARING_RECEIVER);
+            Coordinate coordinate = gson.fromJson(json, Coordinate.class);
+            Log.d(TAG, "Got location from notification: " + coordinate);
+        }
+    };
+
+    /**
+     * Handler for receive the waypoint intent from notification(NotificationReceiverService). This will be
+     * called whenever an Intent with an action named `LocationService.ASK_LOCATION_SETTINGS`
+     * is broadcasted.
+     */
+    private BroadcastReceiver waypointSharingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String json = intent.getStringExtra(NotificationReceiverService.EXTRA_WAYPOINT_SHARING_RECEIVER);
+            Waypoint waypoint = gson.fromJson(json, Waypoint.class);
+            Log.d(TAG, "Got waypoint from notification: " + waypoint);
+        }
+    };
 
     /**
      * Function to show settings alert dialog.

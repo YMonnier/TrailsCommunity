@@ -60,7 +60,12 @@ public class LocationService extends Service implements LocationListener {
      */
     LocationManager locationManager;
 
+    /**
+     * Store the previous location to copare with the current
+     * location to know which location has the best accuracy.
+     */
     private Location currentBestLocation = null;
+
 
     private int timeInterval = 60_000;
 
@@ -68,8 +73,6 @@ public class LocationService extends Service implements LocationListener {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate");
-
-        //intent = new Intent(BROADCAST_ACTION);
     }
 
     @Override
@@ -87,15 +90,18 @@ public class LocationService extends Service implements LocationListener {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "ActivityCompat.checkSelfPermission::OK");
 
-            /*Intent intentSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            intentSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intentSettings);*/
         } else {
             Log.d(TAG, "ActivityCompat.checkSelfPermission::NOT OK");
             broadcastLocationSettings();
         }
     }
 
+
+    /**
+     * Used to broadcast a message to
+     * alert user that GPS is disable.
+     * See `MapNavigation.askLocationReceiver`
+     */
     private void broadcastLocationSettings() {
         Intent intent = new Intent(ASK_LOCATION_SETTINGS_BROADCAST);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
