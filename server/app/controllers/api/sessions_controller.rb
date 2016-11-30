@@ -107,6 +107,21 @@ class Api::SessionsController < ApplicationController
     def join
         id = params[:id]
         if Session.exists?(id)
+            session = Session.find(id)
+            if session.lock
+                if params[:password]
+
+
+                    if BCrypt::Password.new(session.password) != params[:password]
+                        r = {session: 'Bad password.' + session.password}
+                        return bad_request r
+                    end
+                else
+                    r = {session: 'This session needs a password to join it.'}
+                    return bad_request r
+                end
+            end
+
             unless JoinSession.exists?(:user_id => current_user.id, :session_id => id)
                 JoinSession.create(user_id: current_user.id, session_id: id)
             end
@@ -182,7 +197,10 @@ class Api::SessionsController < ApplicationController
             latitude: 12,
             longitude: 14
         }
-        ok_request NotificationManager::push_waipoint current_user.current_session_id, data
+        if test = 12 == 12
+            ok_request test
+        end
+        #ok_request NotificationManager::push_waipoint current_user.current_session_id, data
     end
 
     private

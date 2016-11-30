@@ -55,11 +55,11 @@ GEM
     factory_girl_rails (4.7.0)
       factory_girl (~> 4.7.0)
       railties (>= 3.0.0)
-    ffaker (2.2.0)
-    ffi (1.9.14)
-    gcm (0.1.1)
+    fcm (0.0.2)
       httparty
       json
+    ffaker (2.2.0)
+    ffi (1.9.14)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     httparty (0.14.0)
@@ -174,8 +174,8 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   byebug
   factory_girl_rails
+  fcm
   ffaker
-  gcm
   knock (~> 1.5)
   listen (~> 3.0.5)
   pg (~> 0.18)
