@@ -101,6 +101,10 @@ L'application a également la capacité de représenter à la fois des informati
 Le troisième chapitre fournit la conception et la description du serveur. Il regroupe l'ensemble des conventions, des codes statut ainsi que l'ensemble de ses ressources.
 Le quatrième chapitre regroupe l'ensemble des annexes du projet. Ce sont en globalité des diagrammes UML. Ils permettent soit une meilleurs finesse de compréhension du système soit, une meilleurs spécification métier du serveur.
 
+\section{Outils utilisés}
+
+\paragraph{}De nombreux outils seront utilisés tout au long du développement de l'application. En effet, l'équipe utilisera le logiciel TRELLO pour la gestion de projet et la répartition des taches entre les différents membres. Dans un domaine plus précis, les développeurs ont mis en place un dépôt GIT qui permet de pouvoir centraliser l'ensemble du travail réalisé ainsi que de gérer les différentes version du produit. De plus, un outils d'intégration continue à été intégré pour suivre à chaque dépôt de code, la qualité de celui-ci.
+
 \chapter{Description générale}
 
 \section{Perspective du produit}
@@ -759,7 +763,7 @@ Avant sa première connexion, l'utilisateur devra créer un compte pour obtenir 
 	\includegraphics[scale=0.5]{Images/diagram/create_session_sequence_diagram.png}
 \end{figure}
 
-\paragraph{}Comme on peut le voir sur le diagramme d'activité. La gestion d'erreur ce passe sur les les 2 applications : le modele et le serveur. De plus, le serveur se charge de remonter les erreurs sur le format des données ou la lecture/écriture en base de données. Le client informe l'utilisateur sur l'échec du format des données entré en paramètre et aussi l'échec des opération serveur.
+\paragraph{}Comme on peut le voir sur le diagramme d'activité. La gestion d'erreur ce passe sur les les 2 applications : le modèle et le serveur. De plus, le serveur se charge de remonter les erreurs sur le format des données ou la lecture/écriture en base de données. Le client informe l'utilisateur sur l'échec du format des données entré en paramètre et aussi l'échec des opération serveur.
 
 %Diagramme d'activité créer une session%
 
@@ -813,6 +817,32 @@ Les cas d'utilisation de modification d'une session qui comprend la clôture d'u
 	\centering
 	\includegraphics[scale=0.7]{Images/diagram/view_session_activity_diagram.png}
 \end{figure}
+
+%Test client%
+
+\section{Test}
+
+\paragraph{}L'ensemble des fonctionnalités de l'application seront tester avec un panel de test important. Du côté du client, des test unitaire ainsi que des tests graphiques seront réalisé pour tester la robusté de l'application et son bon comportement
+
+\subsection{Test unitaire}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
+
+\subsection{Test UI}
+
+\begin{center}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Identifiant & Titre & Description \\
+		\hline \hline
+	\end{tabular}
+\end{center}
 
 \part{Serveur TrailsCommunity}
 
