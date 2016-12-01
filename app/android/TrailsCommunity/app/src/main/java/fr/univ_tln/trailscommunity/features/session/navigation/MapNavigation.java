@@ -57,6 +57,9 @@ public class MapNavigation
         implements OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener {
 
+    /**
+     * Tag used for Logger.
+     */
     private static final String TAG = MapNavigation.class.getSimpleName();
 
     @RootContext
@@ -80,7 +83,9 @@ public class MapNavigation
     private Gson gson;
 
     /**
-     *
+     * Initialize the Map Navigation and the Location Service.
+     * Add all broadcast observe to receive location
+     * from LocationService et some information from Push Notification.
      */
     public void init(Session session) {
         Log.d(TAG, "init");
@@ -117,8 +122,7 @@ public class MapNavigation
     }
 
     /**
-     * Method to stop observer broadcast
-     * messaging and service location.
+     * Method to stop observer broadcast messaging and service location.
      * Used when use leave application from session activity(onFinish`, `onDestroy`, `onStop`)
      */
     public void stop() {
@@ -198,6 +202,10 @@ public class MapNavigation
 
     }
 
+    /**
+     * Add a marker to indicate the current user position.
+     * @param polyline polyline we want add a marker
+     */
     private void addUserMarker(Polyline polyline) {
         mapView.addMarker(new MarkerOptions()
                 .title("Pseudo")

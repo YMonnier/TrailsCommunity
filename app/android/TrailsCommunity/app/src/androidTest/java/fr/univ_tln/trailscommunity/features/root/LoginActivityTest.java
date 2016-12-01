@@ -3,18 +3,13 @@ package fr.univ_tln.trailscommunity.features.root;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.view.View;
-import android.widget.EditText;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 
 import fr.univ_tln.trailscommunity.R;
-import fr.univ_tln.trailscommunity.features.root.LoginActivity_;
+import fr.univ_tln.trailscommunity.features.EspressoUtils;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -58,7 +53,7 @@ public class LoginActivityTest {
                 .perform(typeText(NOT_VALID_EMAIL));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
-        onView(withId(R.id.emailField)).check(matches(withError(
+        onView(withId(R.id.emailField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_invalid_email))));
     }
 
@@ -71,7 +66,7 @@ public class LoginActivityTest {
                 .perform(typeText(EMPTY_VALUE));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
-        onView(withId(R.id.emailField)).check(matches(withError(
+        onView(withId(R.id.emailField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
     }
 
@@ -86,7 +81,7 @@ public class LoginActivityTest {
                 .perform(typeText(NOT_VALIDE_PASSWORD));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
-        onView(withId(R.id.passwordField)).check(matches(withError(
+        onView(withId(R.id.passwordField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_invalid_password))));
     }
 
@@ -99,31 +94,7 @@ public class LoginActivityTest {
                 .perform(typeText(EMPTY_VALUE));
         onView(withId(R.id.email_sign_in_button))
                 .perform(click());
-        onView(withId(R.id.passwordField)).check(matches(withError(
+        onView(withId(R.id.passwordField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
-    }
-
-    /**
-     * Match if error display in EditText
-     * @param expected
-     * @return
-     */
-    private static Matcher<View> withError(final String expected) {
-        return new TypeSafeMatcher<View>() {
-
-            @Override
-            public boolean matchesSafely(View view) {
-                if (!(view instanceof EditText)) {
-                    return false;
-                }
-                EditText editText = (EditText) view;
-                return editText.getError().toString().equals(expected);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-
-            }
-        };
     }
 }

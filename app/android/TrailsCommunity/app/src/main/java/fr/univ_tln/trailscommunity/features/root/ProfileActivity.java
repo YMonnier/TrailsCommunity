@@ -24,6 +24,11 @@ import fr.univ_tln.trailscommunity.R;
 @OptionsMenu(R.menu.basic_menu)
 public class ProfileActivity extends AppCompatActivity {
 
+    /**
+     * Tag used for Logger.
+     */
+    private static final String TAG = ProfileActivity.class.getSimpleName();
+
     @ViewById(R.id.nicknameField)
     EditText nicknameField;
 
@@ -38,7 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @AfterViews
     void init() {
-        setTitle("User informations");
+        setTitle("User information");
         nicknameField.setText("GreatNickname");
         phoneNumberField.setText("6 00 00 00 00");
     }

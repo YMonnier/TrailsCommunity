@@ -20,6 +20,8 @@ public class DateValidator {
      */
     public static boolean validate(Calendar calendar) {
         Calendar currentCalendar = Calendar.getInstance();
+        if (currentCalendar == null)
+            return false;
         currentCalendar.setTimeInMillis(System.currentTimeMillis());
         return calendar.get(Calendar.YEAR) >= currentCalendar.get(Calendar.YEAR)
                 && calendar.get(Calendar.MONTH) >= currentCalendar.get(Calendar.MONTH)

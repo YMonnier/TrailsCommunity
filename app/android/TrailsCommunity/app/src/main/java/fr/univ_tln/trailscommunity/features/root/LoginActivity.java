@@ -53,10 +53,12 @@ import io.realm.RealmResults;
 /**
  * A login screen that offers login via email/password.
  */
-
 @EActivity(R.layout.root_login_activity)
 public class LoginActivity extends AppCompatActivity {
 
+    /**
+     * Tag used for Logger.
+     */
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     /**
@@ -64,15 +66,28 @@ public class LoginActivity extends AppCompatActivity {
      */
     public static final int MIN_PASSWORD_LENGTH = 8;
 
+    /**
+     * Input email used to authenticate the user.
+     */
     @ViewById(R.id.emailField)
     AutoCompleteTextView emailView;
 
+    /**
+     * Input password used to authenticate the user.
+     */
     @ViewById(R.id.passwordField)
     EditText passwordView;
 
+    /**
+     * Progress loader which allows the user
+     * to see the network activity(request activity).
+     */
     @ViewById(R.id.login_progress)
     View progressView;
 
+    /**
+     * Button action to login to the API.
+     */
     @ViewById(R.id.email_sign_in_button)
     Button loginButton;
 
@@ -81,11 +96,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @RestService
     TCRestApi tcRestApi;
-
-    /**
-     * Realm database instance.
-     */
-    private Realm realm;
 
     @AfterViews
     void init() {
@@ -346,7 +356,10 @@ public class LoginActivity extends AppCompatActivity {
         Settings.userId = userId;
 
         // Create Realm instance
-        realm = Realm.getDefaultInstance();
+        /*
+      Realm database instance.
+     */
+        Realm realm = Realm.getDefaultInstance();
         if (realm != null) {
             realm.beginTransaction();
 

@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
  */
 
 public  class EmailValidator {
+    /**
+     * Regular expression to test an email.
+     */
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";

@@ -37,6 +37,9 @@ import fr.univ_tln.trailscommunity.models.Coordinate;
 @EService
 public class LocationService extends Service implements LocationListener {
 
+    /**
+     * Tag used for Logger.
+     */
     private static final String TAG = LocationService.class.getSimpleName();
 
     /**
@@ -75,6 +78,14 @@ public class LocationService extends Service implements LocationListener {
         Log.d(TAG, "onCreate");
     }
 
+    /**
+     * Start the Location Service.
+     * Add the Location Update for Network and GPS Provider.
+     * If the the application does not follows permission, we
+     * ask the user to change it.
+     * @param intent
+     * @param startId
+     */
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
@@ -89,10 +100,9 @@ public class LocationService extends Service implements LocationListener {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "ActivityCompat.checkSelfPermission::OK");
-
+            broadcastLocationSettings();
         } else {
             Log.d(TAG, "ActivityCompat.checkSelfPermission::NOT OK");
-            broadcastLocationSettings();
         }
     }
 
@@ -107,6 +117,10 @@ public class LocationService extends Service implements LocationListener {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
+    /**
+     * Used to broadcast the location updated to the MapNavigation.
+     * @param location sharing location
+     */
     private void broadcastLocation(Location location) {
         Log.d(TAG, "broadcast location : " + location);
         Coordinate coordinate = new Coordinate.Builder()
@@ -119,6 +133,10 @@ public class LocationService extends Service implements LocationListener {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
+    /**
+     * Method called when the location is updated.
+     * @param location new location(GPS coordinates)
+     */
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "location updated: " + location);

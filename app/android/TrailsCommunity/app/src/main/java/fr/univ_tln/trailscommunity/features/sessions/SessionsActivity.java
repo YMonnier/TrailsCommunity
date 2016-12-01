@@ -54,7 +54,10 @@ import static android.widget.Toast.LENGTH_SHORT;
 @OptionsMenu(R.menu.sessions_sessions_menu)
 public class SessionsActivity extends AppCompatActivity {
 
-    private static final String TAG = SessionsActivity.class.getName();
+    /**
+     * Tag used for Logger.
+     */
+    private static final String TAG = SessionsActivity.class.getSimpleName();
 
     enum AnimationType {
         FADEIN, FADEOUT

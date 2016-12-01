@@ -48,31 +48,10 @@ public class SessionListAdapter extends BaseAdapter {
     @RootContext
     Context context;
 
-    // Instead of initAdapter
-    // void fetch(session_id) --> HTTP Request
-    // +(optional) add loader view?
-
     @AfterInject
     void initAdapter() {
         sessions = new ArrayList<>();
         headers = new HashMap<>();
-/*
-        addHeader("Active sessions");
-        addItem(new Session_old.Builder().setActivity(1).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addHeader("My sessions");
-        addItem(new Session_old.Builder().setActivity(1).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addHeader("History");
-        addItem(new Session_old.Builder().setActivity(1).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addItem(new Session_old.Builder().setActivity(2).build());
-        addItem(new Session_old.Builder().setActivity(1).build());
-        */
     }
 
     @Override
@@ -89,7 +68,7 @@ public class SessionListAdapter extends BaseAdapter {
                 return header;
             }
         } else {
-            if(view instanceof  SessionItemView)
+            if (view instanceof SessionItemView)
                 return (SessionItemView) view;
             else
                 return (SessionHeaderView) view;
@@ -97,13 +76,19 @@ public class SessionListAdapter extends BaseAdapter {
     }
 
     public void addItem(final Session session) {
-        assert sessions != null;
-        sessions.add(session);
+        if (session == null)
+            throw new AssertionError("Session should not be null");
+        if (session != null && sessions != null)
+            sessions.add(session);
     }
 
     public void addHeader(final String header) {
-        sessions.add(new Session.Builder().build());
-        headers.put(sessions.size() - 1, header);
+        if (header == null)
+            throw new AssertionError("Header string should not be null");
+        if (sessions != null && headers != null) {
+            sessions.add(new Session.Builder().build());
+            headers.put(sessions.size() - 1, header);
+        }
     }
 
     @Override

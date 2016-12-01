@@ -17,6 +17,7 @@ import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.features.EspressoUtils;
 import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 
 import static android.support.test.espresso.Espresso.onData;
@@ -56,7 +57,7 @@ public class SessionActivityTest {
      * Test all fields of the view
      */
     @Test
-    public void testCreateSessionButton(){
+    public void testCreateSessionButton() {
         onView(withId(R.id.departurePlaceField))
                 .perform(typeText(VALID_DEPARTURE_ADRESS));
         onView(withId(R.id.arrivalPlaceField))
@@ -81,7 +82,7 @@ public class SessionActivityTest {
     }
 
     @Test
-    public void testEmptyErrorDeparturePlaceField(){
+    public void testEmptyErrorDeparturePlaceField() {
         onView(withId(R.id.departurePlaceField))
                 .perform(typeText(EMPTY_FIELD));
         onView(withId(R.id.arrivalPlaceField))
@@ -104,12 +105,12 @@ public class SessionActivityTest {
         onView(withId(R.id.createSessionButton))
                 .perform(click());
 
-        onView(withId(R.id.departurePlaceField)).check(matches(withError(
+        onView(withId(R.id.departurePlaceField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
     }
 
     @Test
-    public void testEmptyErrorArrivalPlaceField(){
+    public void testEmptyErrorArrivalPlaceField() {
         onView(withId(R.id.departurePlaceField))
                 .perform(typeText(VALID_DEPARTURE_ADRESS));
         onView(withId(R.id.arrivalPlaceField))
@@ -132,12 +133,12 @@ public class SessionActivityTest {
         onView(withId(R.id.createSessionButton))
                 .perform(click());
 
-        onView(withId(R.id.arrivalPlaceField)).check(matches(withError(
+        onView(withId(R.id.arrivalPlaceField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
     }
 
     @Test
-    public void testEmptyErrorStartDateField(){
+    public void testEmptyErrorStartDateField() {
         onView(withId(R.id.departurePlaceField))
                 .perform(typeText(VALID_DEPARTURE_ADRESS));
         onView(withId(R.id.arrivalPlaceField))
@@ -150,12 +151,12 @@ public class SessionActivityTest {
         onView(withId(R.id.createSessionButton))
                 .perform(click());
 
-        onView(withId(R.id.startDateField)).check(matches(withError(
+        onView(withId(R.id.startDateField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
     }
 
     @Test
-    public void testEmptyErrorPasswordField(){
+    public void testEmptyErrorPasswordField() {
         onView(withId(R.id.departurePlaceField))
                 .perform(typeText(VALID_DEPARTURE_ADRESS));
         onView(withId(R.id.arrivalPlaceField))
@@ -178,32 +179,7 @@ public class SessionActivityTest {
         onView(withId(R.id.createSessionButton))
                 .perform(click());
 
-        onView(withId(R.id.passwordField)).check(matches(withError(
+        onView(withId(R.id.passwordField)).check(matches(EspressoUtils.withError(
                 mActivityRule.getActivity().getString(R.string.error_field_required))));
-    }
-
-
-    /**
-     * Match if error display in EditText
-     * @param expected
-     * @return
-     */
-    private static Matcher<View> withError(final String expected) {
-        return new TypeSafeMatcher<View>() {
-
-            @Override
-            public boolean matchesSafely(View view) {
-                if (!(view instanceof EditText)) {
-                    return false;
-                }
-                EditText editText = (EditText) view;
-                return editText.getError().toString().equals(expected);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-
-            }
-        };
     }
 }
