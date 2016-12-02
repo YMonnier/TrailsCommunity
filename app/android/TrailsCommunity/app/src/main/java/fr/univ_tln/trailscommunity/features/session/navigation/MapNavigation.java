@@ -11,13 +11,14 @@ import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -25,10 +26,11 @@ import com.google.gson.Gson;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
-import org.springframework.util.Assert;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.features.session.SessionActivity;
@@ -37,7 +39,10 @@ import fr.univ_tln.trailscommunity.features.session.navigation.location.Location
 import fr.univ_tln.trailscommunity.features.session.navigation.location.LocationSettings;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.models.UserNavigationSettings;
 import fr.univ_tln.trailscommunity.models.Waypoint;
+import fr.univ_tln.trailscommunity.utilities.color.ColorUtils;
+import fr.univ_tln.trailscommunity.utilities.mapview.MapViewUtils;
 import fr.univ_tln.trailscommunity.utilities.notification.NotificationReceiverService;
 
 /**
@@ -62,6 +67,18 @@ public class MapNavigation
      */
     private static final String TAG = MapNavigation.class.getSimpleName();
 
+    /**
+     * Width of polyline.
+     */
+    private static final int WIDTH_POLYLINE = 6;
+
+    /**
+     * Constant used to define
+     * the current user color marker.
+     */
+    //private static final String CURRENT_USER_COLOR = "#3498db";
+    private static final String CURRENT_USER_COLOR = "#1D4A64";
+
     @RootContext
     SessionActivity context;
 
@@ -71,9 +88,16 @@ public class MapNavigation
     GoogleMap mapView;
 
 
-    private Map<Integer, String> users;
+    /**
+     *
+     */
+    private Map<Integer, UserNavigationSettings> users;
 
-    private Polyline polyline;
+
+    /**
+     * Current user polyline
+     */
+    private UserNavigationSettings currentUser;
 
     /**
      * Gson instance use to map json to object
@@ -89,7 +113,10 @@ public class MapNavigation
      */
     public void init(Session session) {
         Log.d(TAG, "init");
+        users = new HashMap<>();
         gson = new Gson();
+
+        // Get Google Map and initialize it
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
                 .findFragmentById(R.id.map_navigation);
         mapFragment.getMapAsync(this);
@@ -110,11 +137,13 @@ public class MapNavigation
         LocalBroadcastManager.getInstance(context).registerReceiver(waypointSharingReceiver,
                 new IntentFilter(NotificationReceiverService.WAYPOINT_SHARING_RECEIVER));
 
+        // Get activity information-
+        // Start the location service
+        // See fr.univ_tln.trailscommunity.features.session.navigation.LocationService
+
         Session.TypeActivity typeActivity = Session.TypeActivity.values()[session.getActivity()];
         LocationSettings locationSetting = LocationSettings.fromActivity(typeActivity);
 
-        // Start the location service
-        // See fr.univ_tln.trailscommunity.features.session.navigation.LocationService
         LocationService_.intent(context)
                 .extra(LocationSettings.EXTRA_DISTANCE, locationSetting.getDistance())
                 .extra(LocationSettings.EXTRA_TIME_MILLIS, locationSetting.getTime())
@@ -153,19 +182,22 @@ public class MapNavigation
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         Log.d(TAG, "onMapReady");
         mapView = googleMap;
-
+        setupCurrentUser();
         //mapView.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        //
-        // Test
-        //
+    }
 
-        PolylineOptions rectOptions = new PolylineOptions();
-        polyline = mapView.addPolyline(rectOptions);
-        polyline.setColor(Color.RED);
-        polyline.setVisible(true);
-        polyline.setWidth(6);
-        polyline.setZIndex(1234);
-        //addUserMarker(polyline);
+    /**
+     * Initialize the current user by creating a
+     * UserNavigationSettings with default marker, color..
+     */
+    private void setupCurrentUser() {
+        currentUser = new UserNavigationSettings.Builder()
+                .setColor(CURRENT_USER_COLOR)
+                .setId(fr.univ_tln.trailscommunity.Settings.userId)
+                //.setMarker()
+                .setMarker(createMarker(CURRENT_USER_COLOR, null, false))
+                .setPolyline(createPolyline(CURRENT_USER_COLOR, null))
+                .build();
     }
 
     /**
@@ -178,39 +210,26 @@ public class MapNavigation
     }
 
     /**
-     * Add a new point to the specific polyline.
+     * Add a new point to the specific currentPolyline.
      *
      * @param coordinate coordinate we want to add.
      */
-    public void addCoordinate(final Coordinate coordinate) {
-        if (coordinate == null)
-            throw new AssertionError("coordinate should not be null");
+    public void addCoordinate(final UserNavigationSettings user, final Coordinate coordinate) {
+        if (coordinate == null || user == null)
+            throw new AssertionError("coordinate or user should not be null");
 
-        if (coordinate != null) {
+        if (coordinate != null && user != null) {
             LatLng point = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
-            List<LatLng> listPoint = polyline.getPoints();
+            List<LatLng> listPoint = user.getPolyline().getPoints();
             if (listPoint != null) {
                 listPoint.add(point);
-                polyline.setPoints(listPoint);
-                polyline.setVisible(true);
-                mapView.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+                user.getPolyline().setPoints(listPoint);
+                user.getPolyline().setVisible(true);
+                user.getMarker().setPosition(point);
+                user.getMarker().setVisible(true);
+                //mapView.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
             }
         }
-    }
-
-    public void addCoordinate(final List<Coordinate> coordinates) {
-
-    }
-
-    /**
-     * Add a marker to indicate the current user position.
-     * @param polyline polyline we want add a marker
-     */
-    private void addUserMarker(Polyline polyline) {
-        mapView.addMarker(new MarkerOptions()
-                .title("Pseudo")
-                .position(polyline.getPoints().get(polyline.getPoints().size() - 1))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
     }
 
     /**
@@ -220,8 +239,51 @@ public class MapNavigation
      * @param latLng location waypoint
      */
     @Override
-    public void onMapLongClick(LatLng latLng) {
+    public void onMapLongClick(final LatLng latLng) {
         addWaypoint(latLng);
+    }
+
+    /**
+     * Create a new Polyline and add it to the current map view.
+     *
+     * @param color      polyline color
+     * @param coordinate first point into poline
+     * @return Polyline create by the MapView
+     */
+    private Polyline createPolyline(final String color, final Coordinate coordinate) {
+        PolylineOptions polylineOptions = new PolylineOptions();
+
+        if (coordinate != null)
+            polylineOptions.add(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
+
+        Polyline polyline = mapView.addPolyline(polylineOptions);
+        polyline.setColor(Color.parseColor(color));
+        polyline.setVisible(true);
+        polyline.setWidth(WIDTH_POLYLINE);
+        return polyline;
+    }
+
+    /**
+     * CReate a new marker and add it to the current map view.
+     *
+     * @param color      marker color
+     * @param coordinate marker position
+     * @param status     visible status. If true the marker is visible, otherwise, false.
+     * @return Marker created by the MapView
+     */
+    private Marker createMarker(final String color, final Coordinate coordinate, final boolean status) {
+        MarkerOptions markerOptions = new MarkerOptions()
+                .visible(status)
+                .icon(MapViewUtils.getMarkerIcon(color));
+        if (coordinate != null)
+            markerOptions
+                    .position(
+                            new LatLng(coordinate.getLatitude(),
+                                    coordinate.getLongitude()));
+        else
+            markerOptions.position(new LatLng(0.0, 0.0));
+
+        return mapView.addMarker(markerOptions);
     }
 
     /**
@@ -235,7 +297,12 @@ public class MapNavigation
             String jsonLocation = intent.getStringExtra(LocationService_.EXTRA_LOCATION);
             Coordinate coordinate = gson.fromJson(jsonLocation, Coordinate.class);
             Log.d(TAG, "Got location from service: " + coordinate);
-            addCoordinate(coordinate);
+
+            if (currentUser == null)
+                throw new AssertionError("current user should not be null");
+
+            if (currentUser != null)
+                addCoordinate(currentUser, coordinate);
         }
     };
 
@@ -262,6 +329,27 @@ public class MapNavigation
             String json = intent.getStringExtra(NotificationReceiverService.EXTRA_COORDINATE_SHARING_RECEIVER);
             Coordinate coordinate = gson.fromJson(json, Coordinate.class);
             Log.d(TAG, "Got location from notification: " + coordinate);
+
+            if (users == null)
+                throw new AssertionError("Users map should not be null");
+
+            if (users != null) {
+                int userId = coordinate.getUserId();
+                if (users.containsKey(userId)) {
+                    addCoordinate(users.get(userId), coordinate);
+                } else {
+                    // Add the new user to the map
+                    String color = ColorUtils.randomHex();
+                    UserNavigationSettings user = new UserNavigationSettings.Builder()
+                            .setColor(color)
+                            .setId(userId)
+                            .setPolyline(createPolyline(color, coordinate))
+                            .setMarker(createMarker(color, coordinate, true))
+                            .build();
+                    users.put(user.getId(), user);
+                    addCoordinate(user, coordinate);
+                }
+            }
         }
     };
 

@@ -2,6 +2,7 @@ package fr.univ_tln.trailscommunity.models;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
@@ -19,6 +20,10 @@ import io.realm.RealmObject;
 public class Coordinate extends RealmObject {
     private double latitude;
     private double longitude;
+
+    @SerializedName("user_id")
+    private int userId;
+
     private boolean sent = false;
 
     public Coordinate(){}
@@ -34,6 +39,10 @@ public class Coordinate extends RealmObject {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public boolean isSent() {

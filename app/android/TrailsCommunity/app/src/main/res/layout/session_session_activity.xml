@@ -60,6 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_statistics" />
+        android:background="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_statistics"
+        tools:ignore="VectorDrawableCompat" />
 
 </android.support.design.widget.CoordinatorLayout>
