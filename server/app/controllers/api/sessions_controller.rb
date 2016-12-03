@@ -43,11 +43,11 @@ class Api::SessionsController < ApplicationController
         join_sessions = current_user.join_sessions
         Session.all.each { |session|
             if session.user_id == current_user.id
-                my_sessions.push session
+                my_sessions.push session_srz(session)
             elsif join_sessions.any? {|js| js.session_id == session.id} and session.close
-                history_sessions.push session
+                history_sessions.push session_srz(session)
             else
-                active_sessions.push session
+                active_sessions.push session_srz(session)
             end
         }
 
@@ -63,7 +63,7 @@ class Api::SessionsController < ApplicationController
 
         render json: json_object,
                status: :ok,
-               include: nil
+               include: %w(session.lock)#nil
 
         #ok_request render_json#, %w(user)
     end
@@ -210,5 +210,9 @@ class Api::SessionsController < ApplicationController
 
     def coords_params
         params.permit(:latitude, :longitude)
+    end
+
+    def session_srz session
+        ActiveModelSerializers::SerializableResource.new(session, include: %w(session, session.lock))
     end
 end
