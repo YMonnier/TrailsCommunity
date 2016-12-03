@@ -3,11 +3,10 @@ package fr.univ_tln.trailscommunity.features.root;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -24,7 +23,6 @@ import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
-import org.json.JSONObject;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
@@ -72,19 +70,15 @@ public class SignupActivity extends AppCompatActivity {
     @StringArrayRes
     String[] indicatifNumbers;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //initCodeNumber();
-    }
+    private ProgressDialog progressDialog;
 
 
     @AfterViews
-    void initCodeNumber() {
-        //System.out.println(indicatifNumbers);
-        //ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, indicatifNumbers);
-        //arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //codeNumberCountrySpinner.setAdapter(arrayAdapter);
+    void init() {
+        progressDialog = new ProgressDialog(SignupActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.signup_loader));
     }
 
     /**
@@ -198,7 +192,8 @@ public class SignupActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            //showProgress(true);
+            showSignupProgress(true);
             signupTask(email, nickname, password, codeNumberCountry, number);
         }
     }
@@ -320,6 +315,20 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
+     * Shows the progress UI and hides the login form.
+     * @param show
+     */
+    @UiThread
+    void showSignupProgress(final boolean show){
+        if(show){
+            progressDialog.show();
+        }
+        else{
+            progressDialog.dismiss();
+        }
+    }
+
+    /**
      * Background task which allows
      * to send credential data to the server.
      * If the connexion is succeed, we go to the sessions list.
@@ -353,6 +362,7 @@ public class SignupActivity extends AppCompatActivity {
         // Success request
 
         updateLockUi(false);
-        showProgress(false);
+        //showProgress(false);
+        showSignupProgress(false);
     }
 }

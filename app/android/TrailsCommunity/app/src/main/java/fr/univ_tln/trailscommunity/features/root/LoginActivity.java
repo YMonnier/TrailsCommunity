@@ -354,7 +354,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Shows the progress UI and hides the signup form.
      * @param show
      */
     @UiThread
@@ -363,10 +363,8 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.show();
         }
         else{
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
-
-
     }
 
     /**
