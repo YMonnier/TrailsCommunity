@@ -16,4 +16,5 @@
     <string name="session_save_button">Save</string>
     <string name="modify_session">Modify session</string>
     <string name="cancel_action">Cancel</string>
+    <string name="authenticating">Authenticating...</string>
 </resources>

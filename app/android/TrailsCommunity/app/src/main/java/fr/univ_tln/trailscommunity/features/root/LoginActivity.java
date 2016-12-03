@@ -104,6 +104,11 @@ public class LoginActivity extends AppCompatActivity {
         emailView.setText("test@test.com");
         passwordView.setText("abcd1234");
 
+        progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage(getString(R.string.authenticating));
+
         //
         // Init global realm settings
         Realm.init(this);
@@ -192,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
-            showDialogProgress();
+            showDialogProgress(true);
             userLoginTask(email, password);
         }
     }
@@ -294,7 +299,8 @@ public class LoginActivity extends AppCompatActivity {
                         saveUser(responseUser.getBody().getAsJsonObject());
 
                         updateLockUi(false);
-                        showProgress(false);
+                        //showProgress(false);
+                        showDialogProgress(false);
 
                         startActivity(new Intent(this, SessionsActivity_.class));
                     }
@@ -305,12 +311,14 @@ public class LoginActivity extends AppCompatActivity {
                 Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             }
             updateLockUi(false);
-            showProgress(false);
+            //showProgress(false);
+            showDialogProgress(false);
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
             Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
-            showProgress(false);
+            //showProgress(false);
+            showDialogProgress(false);
         }
     }
 
@@ -345,12 +353,19 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void showDialogProgress(){
-        progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
+    /**
+     * Shows the progress UI and hides the login form.
+     * @param show
+     */
+    @UiThread
+    void showDialogProgress(final boolean show){
+        if(show){
+            progressDialog.show();
+        }
+        else{
+            progressDialog.hide();
+        }
+
 
     }
 
