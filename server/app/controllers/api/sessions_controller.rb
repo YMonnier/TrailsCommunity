@@ -43,11 +43,11 @@ class Api::SessionsController < ApplicationController
         join_sessions = current_user.join_sessions
         Session.all.each { |session|
             if session.user_id == current_user.id
-                my_sessions.push session
+                my_sessions.push session_srz(session)
             elsif join_sessions.any? {|js| js.session_id == session.id} and session.close
-                history_sessions.push session
+                history_sessions.push session_srz(session)
             else
-                active_sessions.push session
+                active_sessions.push session_srz(session)
             end
         }
 
@@ -63,7 +63,7 @@ class Api::SessionsController < ApplicationController
 
         render json: json_object,
                status: :ok,
-               include: nil
+               include: %w(session.lock)#nil
 
         #ok_request render_json#, %w(user)
     end
@@ -150,7 +150,7 @@ class Api::SessionsController < ApplicationController
             @waypoint = Waypoint.new(coords_params)
             @waypoint.session_id = id
             if @waypoint.save
-                NotificationManager::push_waypoint current_user @waypoint
+                NotificationManager::push_waypoint current_user, @waypoint
                 return ok_request ''
             else
                 return bad_request @waypoint.errors
@@ -180,8 +180,8 @@ class Api::SessionsController < ApplicationController
             @coordinate = Coordinate.new(coords_params)
             @coordinate.session_id = id
             @coordinate.user_id = current_user.id
-            if @waypoint.save
-                NotificationManager::push_waypoint current_user @coordinate
+            if @coordinate.save
+                NotificationManager::push_coordinate current_user, @coordinate
                 return ok_request ''
             else
                 return bad_request @coordinate.errors
@@ -210,5 +210,9 @@ class Api::SessionsController < ApplicationController
 
     def coords_params
         params.permit(:latitude, :longitude)
+    end
+
+    def session_srz session
+        ActiveModelSerializers::SerializableResource.new(session, include: %w(session, session.lock))
     end
 end

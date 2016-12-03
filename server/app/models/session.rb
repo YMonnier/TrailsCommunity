@@ -2,6 +2,9 @@ class Session < ApplicationRecord
     belongs_to :user
     has_many :coordinates
     has_many :waypoints
+
+    #attr_accessor :lock
+
     validates :activity,
               presence: true,
               allow_blank: false,
