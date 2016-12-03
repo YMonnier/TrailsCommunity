@@ -22,7 +22,7 @@ public class User extends RealmObject {
     private String email;
     @SerializedName("phone_number")
     private String phoneNumber;
-    private RealmList<Session> sessions;
+    //private RealmList<Session> sessions;
     private boolean active = false;
 
     public User(){}
@@ -32,7 +32,7 @@ public class User extends RealmObject {
         this.nickname = builder.nickname;
         this.email = builder.email;
         this.phoneNumber = builder.phoneNumber;
-        this.sessions = new RealmList<>();
+        //this.sessions = new RealmList<>();
         this.active = true;
     }
 
@@ -52,9 +52,10 @@ public class User extends RealmObject {
         return phoneNumber;
     }
 
-    public RealmList<Session> getSessions() {
+/*    public RealmList<Session> getSessions() {
         return sessions;
     }
+    */
 
     public boolean isActive() {
         return active;
@@ -70,7 +71,7 @@ public class User extends RealmObject {
         private String email;
         private String phoneNumber;
         private boolean active = false;
-        private RealmList<Session> sessions;
+      //  private RealmList<Session> sessions;
 
 
         public User build(){
@@ -101,11 +102,11 @@ public class User extends RealmObject {
             this.phoneNumber = phoneNumber;
             return this;
         }
-
+/*
         public Builder setSessions(RealmList<Session> sessions) {
             this.sessions = sessions;
             return this;
-        }
+        }*/
     }
 
     @Override
@@ -115,7 +116,6 @@ public class User extends RealmObject {
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", sessions=" + sessions +
                 ", active=" + active +
                 '}';
     }

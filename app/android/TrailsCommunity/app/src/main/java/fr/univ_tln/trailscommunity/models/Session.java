@@ -18,8 +18,8 @@ import io.realm.annotations.PrimaryKey;
  * https://github.com/YMonnier
  */
 
-public class Session extends RealmObject {
-    @PrimaryKey
+public class Session {
+    //@PrimaryKey
     private int id;
     private int activity;
     private boolean lock;
@@ -95,6 +95,7 @@ public class Session extends RealmObject {
         this.id = builder.id;
         this.activity = builder.activity;
         this.lock = builder.lock;
+        this.password = builder.password;
         this.close = builder.close;
         this.departurePlace = builder.departurePlace;
         this.arrivalPlace = builder.arrivalPlace;
@@ -230,5 +231,23 @@ public class Session extends RealmObject {
             this.startDate = startDate;
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "activity=" + activity +
+                ", id=" + id +
+                ", lock=" + lock +
+                ", close=" + close +
+                ", departurePlace='" + departurePlace + '\'' +
+                ", arrivalPlace='" + arrivalPlace + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", password='" + password + '\'' +
+                ", coordinates=" + coordinates +
+                ", waypoints=" + waypoints +
+                ", created_at=" + created_at +
+                ", updated_at=" + updated_at +
+                '}';
     }
 }

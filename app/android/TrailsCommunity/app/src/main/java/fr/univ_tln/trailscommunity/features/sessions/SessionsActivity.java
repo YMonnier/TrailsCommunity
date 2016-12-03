@@ -1,10 +1,13 @@
 package fr.univ_tln.trailscommunity.features.sessions;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
@@ -208,6 +211,42 @@ public class SessionsActivity extends AppCompatActivity {
      */
     @ItemClick
     void sessionListItemClicked(Session session) {
+        Log.e(TAG, session.toString());
+        if(session.isLock()){
+            showPasswordDialog();
+        }
+
         Toast.makeText(this, session.getActivityName(), LENGTH_SHORT).show();
+    }
+
+    /**
+     * Show password dialog
+     */
+    private void showPasswordDialog(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_signin, null))
+                // Add action buttons
+                .setPositiveButton(R.string.action_sign_in, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // sign in the user ...
+                    }
+                })
+                .setNegativeButton(R.string.cancel_action, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

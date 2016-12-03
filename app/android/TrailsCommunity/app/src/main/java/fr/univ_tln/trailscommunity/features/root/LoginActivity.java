@@ -3,10 +3,9 @@ package fr.univ_tln.trailscommunity.features.root;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -65,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
      * Minimum password length
      */
     public static final int MIN_PASSWORD_LENGTH = 8;
+
+    private ProgressDialog progressDialog;
 
     /**
      * Input email used to authenticate the user.
@@ -190,7 +191,8 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            //showProgress(true);
+            showDialogProgress();
             userLoginTask(email, password);
         }
     }
@@ -341,6 +343,15 @@ public class LoginActivity extends AppCompatActivity {
             // and hide the relevant UI components.
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void showDialogProgress(){
+        progressDialog = new ProgressDialog(LoginActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
+
     }
 
     /**

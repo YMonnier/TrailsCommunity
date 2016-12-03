@@ -397,9 +397,13 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
 
         try {
             tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
-            ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(sessionBuilder.build());
+            Session session = sessionBuilder.build();
+            Log.d(TAG, session.toString());
+            ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(session);
             //ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(params);
             Log.d(TAG, responseSession.toString());
+            showProgress(false);
+            finish();
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
             //Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
