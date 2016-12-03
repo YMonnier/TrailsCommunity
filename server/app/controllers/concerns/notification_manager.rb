@@ -25,7 +25,7 @@ class NotificationManager
     def self.push_coordinate current_user, object
         registration_users_ids = self.session_users current_user.current_session_id, current_user.id
 
-        options = {data: self.coordinate_data(object), collapse_key: "waypoint"}
+        options = {data: self.coordinate_data(object), collapse_key: "coordinate"}
         @fcm.send(registration_users_ids, options)
     end
 

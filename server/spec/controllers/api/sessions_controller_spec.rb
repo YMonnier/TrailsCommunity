@@ -360,7 +360,7 @@ RSpec.describe Api::SessionsController, :type => :controller do
                 # Add Authorization
                 token = generate_token @user
                 api_authorization_header token
-
+                #BCrypt::Password.create(FFaker::Internet.password)
                 parameters = {
                     id: @session.id
                 }

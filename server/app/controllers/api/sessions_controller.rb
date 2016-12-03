@@ -150,7 +150,7 @@ class Api::SessionsController < ApplicationController
             @waypoint = Waypoint.new(coords_params)
             @waypoint.session_id = id
             if @waypoint.save
-                NotificationManager::push_waypoint current_user @waypoint
+                NotificationManager::push_waypoint current_user, @waypoint
                 return ok_request ''
             else
                 return bad_request @waypoint.errors
@@ -180,8 +180,8 @@ class Api::SessionsController < ApplicationController
             @coordinate = Coordinate.new(coords_params)
             @coordinate.session_id = id
             @coordinate.user_id = current_user.id
-            if @waypoint.save
-                NotificationManager::push_waypoint current_user @coordinate
+            if @coordinate.save
+                NotificationManager::push_coordinate current_user, @coordinate
                 return ok_request ''
             else
                 return bad_request @coordinate.errors
