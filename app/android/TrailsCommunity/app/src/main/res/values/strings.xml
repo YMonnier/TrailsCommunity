@@ -18,4 +18,5 @@
     <string name="cancel_action">Cancel</string>
     <string name="authenticating">Authenticating...</string>
     <string name="signup_loader">Please wait...</string>
+    <string name="trailsCommunity">TrailsCommunity</string>
 </resources>
