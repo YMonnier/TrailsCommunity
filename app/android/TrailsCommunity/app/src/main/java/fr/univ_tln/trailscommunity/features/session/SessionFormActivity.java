@@ -1,20 +1,12 @@
 package fr.univ_tln.trailscommunity.features.session;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -26,18 +18,16 @@ import com.google.gson.JsonObject;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EditorAction;
-import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
-import org.androidannotations.annotations.OptionsMenuItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,12 +37,10 @@ import java.util.Map;
 
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
-import fr.univ_tln.trailscommunity.features.root.LoginActivity;
-import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
-import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.geocoder.GMGeocoder;
+import fr.univ_tln.trailscommunity.utilities.loader.Loader;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.DateValidator;
 import fr.univ_tln.trailscommunity.utilities.view.ViewUtils;
@@ -88,6 +76,9 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
 
     @RestService
     TCRestApi tcRestApi;
+
+    @Bean
+    Loader loader;
 
     /**
      * Activity Initialization after loading views.
@@ -247,7 +238,8 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            loader.showProgress(mProgressView, true);
+                    //showProgress(true);
             createSessionTask(departurePlace, arrivalPlace, departureCoords, arrivalCoords, typeActivity.ordinal(), startDate, password);
         }
     }
@@ -315,35 +307,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
         passwordField.setEnabled(!status);
     }
 
-    /**
-     * Shows the progress UI.
-     *
-     * @param show progress status, true to set visible progress,
-     *             false to set unvisible progress
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    @UiThread
-    void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-    }
 
     /**
      * Background task which allows
@@ -404,7 +368,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
             Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
             //Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
-            showProgress(false);
+            loader.showProgress(mProgressView, false);
         }
     }
 }

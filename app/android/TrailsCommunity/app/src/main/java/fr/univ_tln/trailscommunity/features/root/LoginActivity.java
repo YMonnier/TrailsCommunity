@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EditorAction;
@@ -44,6 +45,7 @@ import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
 import fr.univ_tln.trailscommunity.models.User;
 import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.loader.Loader;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 import io.realm.Realm;
@@ -94,8 +96,19 @@ public class LoginActivity extends AppCompatActivity {
     @ViewById
     CoordinatorLayout coordinatorLayout;
 
+    /**
+     * Rest service to get
+     * information from server.
+     */
     @RestService
     TCRestApi tcRestApi;
+
+    /**
+     * Loader utility.
+     */
+    @Bean
+    Loader loader;
+
 
     @AfterViews
     void init() {
@@ -190,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            loader.showProgress(progressView, true);
             userLoginTask(email, password);
         }
     }
@@ -292,7 +305,7 @@ public class LoginActivity extends AppCompatActivity {
                         saveUser(responseUser.getBody().getAsJsonObject());
 
                         updateLockUi(false);
-                        showProgress(false);
+                        loader.showProgress(progressView, false);
 
                         startActivity(new Intent(this, SessionsActivity_.class));
                     }
@@ -303,43 +316,12 @@ public class LoginActivity extends AppCompatActivity {
                 Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             }
             updateLockUi(false);
-            showProgress(false);
+            loader.showProgress(progressView, false);
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
             Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
-            showProgress(false);
-        }
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     *
-     * @param show progress status, true to set visible progress,
-     *             false to set invisible progress
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    @UiThread
-    void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            loader.showProgress(progressView, false);
         }
     }
 
