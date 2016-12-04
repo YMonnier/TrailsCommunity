@@ -3,7 +3,7 @@
     <string name="app_name">TrailsCommunity</string>
 
     <!-- root package -->
-    <string name="root_create_an_account"><u>Create an account</u></string>
+    <string name="root_create_an_account"><u>No account yet? Create one</u></string>
     <string name="root_signup_button">Register</string>
     <string name="root_create_session_button">Create</string>
     <string name="your_message">Your message...</string>
@@ -15,4 +15,10 @@
     <string name="logout">Logout</string>
     <string name="session_save_button">Save</string>
     <string name="modify_session">Modify session</string>
+    <string name="cancel_action">Cancel</string>
+    <string name="authenticating">Authenticating...</string>
+    <string name="fetching_session">Session fetching...</string>
+    <string name="signup_loader">Please wait...</string>
+    <string name="trailsCommunity">TrailsCommunity</string>
+    <string name="creating">Creating...</string>
 </resources>

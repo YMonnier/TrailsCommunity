@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:id="@+id/coordinatorLayout">
@@ -17,7 +17,18 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".features.root.LoginActivity">
+        tools:context=".features.root.LoginActivity"
+        android:fitsSystemWindows="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="30dp"
+            android:text="@string/trailsCommunity"
+            />
 
         <ScrollView
             android:id="@+id/login_form"
@@ -67,6 +78,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
                     android:text="@string/action_sign_in"
                     android:textStyle="bold" />
 
@@ -74,19 +87,12 @@
                     android:id="@+id/createAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="24dp"
                     android:clickable="true"
+                    android:textSize="16dip"
+                    android:textColor="@color/colorWhite"
                     android:text="@string/root_create_an_account" />
-
-                <!-- progress -->
-                <ProgressBar
-                    android:id="@+id/login_progress"
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="8dp"
-                    android:visibility="gone" />
 
             </LinearLayout>
 

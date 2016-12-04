@@ -12,4 +12,5 @@
     <string name="error_invalid_code_number_country">Empty code number</string>
     <string name="error_not_matching_password">Password not the same</string>
     <string name="error_place_does_not_exist">Place does not exist</string>
+    <string name="error_request_4xx_5xx_status">"Error during the request, please check your internet connection and try again."</string>
 </resources>

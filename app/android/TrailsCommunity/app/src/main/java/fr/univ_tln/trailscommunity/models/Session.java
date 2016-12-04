@@ -37,8 +37,12 @@ public class Session extends RealmObject {
     private String password;
     private RealmList<Coordinate> coordinates;
     private RealmList<Waypoint> waypoints;
-    private Date created_at;
-    private Date updated_at;
+
+    @SerializedName("createdAt")
+    private Date createdAt;
+
+    @SerializedName("updatedAt")
+    private Date updatedAt;
 
     /**
      * Enumeration of activities type.
@@ -60,19 +64,20 @@ public class Session extends RealmObject {
         /**
          * Return the enum index
          * depending on his name.
+         *
          * @param name name activity
          * @return enum value index
          * @throws TypeActivityEnumException throw a new exception
-         * if the enum value is not found
+         *                                   if the enum value is not found
          */
         public static int getIndex(String name) throws TypeActivityEnumException {
             int res = -1;
-            if(name == null)
+            if (name == null)
                 throw new AssertionError("Name should not be null");
-            if(!name.isEmpty()){
+            if (!name.isEmpty()) {
                 try {
                     TypeActivity ta = valueOf(name.toUpperCase());
-                    if(ta == null)
+                    if (ta == null)
                         throw new AssertionError("Name should not be null");
                     if (ta != null)
                         res = ta.ordinal();
@@ -89,12 +94,14 @@ public class Session extends RealmObject {
     }
 
 
-    public Session() {}
+    public Session() {
+    }
 
     public Session(Builder builder) {
         this.id = builder.id;
         this.activity = builder.activity;
         this.lock = builder.lock;
+        this.password = builder.password;
         this.close = builder.close;
         this.departurePlace = builder.departurePlace;
         this.arrivalPlace = builder.arrivalPlace;
@@ -161,20 +168,20 @@ public class Session extends RealmObject {
         return password;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreated_at(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setUpdated_at(Date updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdated_at(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Date getCreated_at() {
-        return created_at;
+        return createdAt;
     }
 
     public Date getUpdated_at() {
-        return updated_at;
+        return updatedAt;
     }
 
     public static class Builder {
@@ -230,5 +237,23 @@ public class Session extends RealmObject {
             this.startDate = startDate;
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "activity=" + activity +
+                ", id=" + id +
+                ", lock=" + lock +
+                ", close=" + close +
+                ", departurePlace='" + departurePlace + '\'' +
+                ", arrivalPlace='" + arrivalPlace + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", password='" + password + '\'' +
+                ", coordinates=" + coordinates +
+                ", waypoints=" + waypoints +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

@@ -1,6 +1,7 @@
 package fr.univ_tln.trailscommunity.features.session;
 
 import android.app.DatePickerDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,7 +19,6 @@ import com.google.gson.JsonObject;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EditorAction;
@@ -39,8 +39,9 @@ import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.geocoder.GMGeocoder;
-import fr.univ_tln.trailscommunity.utilities.loader.Loader;
+import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.DateValidator;
 import fr.univ_tln.trailscommunity.utilities.view.ViewUtils;
@@ -77,8 +78,10 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
     @RestService
     TCRestApi tcRestApi;
 
-    @Bean
-    Loader loader;
+    /**
+     * Progress Dialog
+     */
+    private LoaderDialog progressView;
 
     /**
      * Activity Initialization after loading views.
@@ -86,6 +89,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
      */
     @AfterViews
     void init() {
+        progressView = new LoaderDialog(this, getString(R.string.creating));
         setupActivitiesSpinner();
     }
 
@@ -238,8 +242,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            loader.showProgress(mProgressView, true);
-                    //showProgress(true);
+            progressView.show();
             createSessionTask(departurePlace, arrivalPlace, departureCoords, arrivalCoords, typeActivity.ordinal(), startDate, password);
         }
     }
@@ -361,14 +364,18 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
 
         try {
             tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
-            ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(sessionBuilder.build());
+            Session session = sessionBuilder.build();
+            Log.d(TAG, session.toString());
+            ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(session);
             //ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(params);
             Log.d(TAG, responseSession.toString());
+            progressView.dismiss();
+            finish();
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
-            //Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
-            loader.showProgress(mProgressView, false);
+            progressView.dismiss();
+            //Snack.showSuccessfulMessage(getApplication()., "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
         }
     }
 }

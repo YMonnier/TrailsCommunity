@@ -1,10 +1,13 @@
 package fr.univ_tln.trailscommunity.features.sessions;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
@@ -37,6 +40,7 @@ import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -78,12 +82,19 @@ public class SessionsActivity extends AppCompatActivity {
     @RestService
     TCRestApi tcRestApi;
 
+    /**
+     * Progress Dialog
+     */
+    private LoaderDialog progressView;
+
     AlphaAnimation inAnimation;
     AlphaAnimation outAnimation;
 
     @AfterViews
     void init() {
         setTitle(getString(R.string.title_sessions_activity));
+        progressView = new LoaderDialog(this, getString(R.string.fetching_session));
+        progressView.show();
         loadData();
         //sessionList.setAdapter(adapter);
     }
@@ -97,79 +108,85 @@ public class SessionsActivity extends AppCompatActivity {
     @Background
     void loadData() {
         try {
-            showProgressBar(AnimationType.FADEIN, 0f, 1f, View.VISIBLE);
-            tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
-            ResponseEntity<JsonObject> responseSessions = tcRestApi.sessions();
+            if (adapter == null)
+                throw new AssertionError("The adapter should not be null");
 
-            if (responseSessions == null)
-                throw new AssertionError("response sessions should not be null");
+            if (adapter != null) {
 
-            if (responseSessions != null) {
-                if (responseSessions.getStatusCode().is2xxSuccessful()) {
-                    JsonObject data = responseSessions.getBody().get("data").getAsJsonObject();
-                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+                tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
+                ResponseEntity<JsonObject> responseSessions = tcRestApi.sessions();
 
+                if (responseSessions == null)
+                    throw new AssertionError("response sessions should not be null");
 
-                    adapter.addHeader("Active sessions");
-                    JsonArray activeSessionArray = data.getAsJsonArray("active_sessions");
-                    Log.d(TAG, activeSessionArray.toString());
-                    if (activeSessionArray == null)
-                        throw new AssertionError("activeSessionArray cannot be null");
-                    if (activeSessionArray != null) {
+                if (responseSessions != null) {
+                    if (responseSessions.getStatusCode().is2xxSuccessful()) {
+                        JsonObject data = responseSessions.getBody().get("data").getAsJsonObject();
+                        Gson gson = new Gson();
+                        String sessionKey = "session";
 
-                        for (JsonElement sessionJson : activeSessionArray) {
-                            Log.d(TAG, sessionJson.toString());
-                            adapter.addItem(gson.fromJson(sessionJson, Session.class));
+                        adapter.addHeader("Active sessions");
+                        JsonArray activeSessionArray = data.getAsJsonArray("active_sessions");
+                        Log.d(TAG, activeSessionArray.toString());
+                        if (activeSessionArray == null)
+                            throw new AssertionError("activeSessionArray cannot be null");
+                        if (activeSessionArray != null) {
+                            parseSessionItemJsonObject(activeSessionArray);
                         }
-                    }
 
-                    adapter.addHeader("My sessions");
-                    JsonArray mySessionArray = data.getAsJsonArray("my_sessions");
-                    Log.d(TAG, mySessionArray.toString());
-                    if (mySessionArray == null)
-                        throw new AssertionError("mySessionArray cannot be null");
-                    if (mySessionArray != null) {
-                        for (JsonElement sessionJson : mySessionArray) {
-                            adapter.addItem(gson.fromJson(sessionJson, Session.class));
-                            Log.d(TAG, sessionJson.toString());
+                        adapter.addHeader("My sessions");
+                        JsonArray mySessionArray = data.getAsJsonArray("my_sessions");
+                        Log.d(TAG, mySessionArray.toString());
+                        if (mySessionArray == null)
+                            throw new AssertionError("mySessionArray cannot be null");
+                        if (mySessionArray != null) {
+                            parseSessionItemJsonObject(mySessionArray);
                         }
-                    }
 
-                    adapter.addHeader("History");
-                    JsonArray historySessionArray = data.getAsJsonArray("active_sessions");
-                    Log.d(TAG, historySessionArray.toString());
-                    if (historySessionArray == null)
-                        throw new AssertionError("historySessionArray cannot be null");
-                    if (historySessionArray != null) {
-                        for (JsonElement sessionJson : historySessionArray) {
-                            adapter.addItem(gson.fromJson(sessionJson, Session.class));
-                            Log.d(TAG, sessionJson.toString());
+                        adapter.addHeader("History");
+                        JsonArray historySessionArray = data.getAsJsonArray("active_sessions");
+                        Log.d(TAG, historySessionArray.toString());
+                        if (historySessionArray == null)
+                            throw new AssertionError("historySessionArray cannot be null");
+                        if (historySessionArray != null) {
+                            parseSessionItemJsonObject(historySessionArray);
                         }
-                    }
-                    showProgressBar(AnimationType.FADEOUT, 1f, 0f, View.GONE);
-                    setAdapter();
+                        setAdapter();
+                    } else
+                        Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
                 } else
-                    Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
-            } else
-                Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+                    Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+                progressView.dismiss();
+            }
         } catch (RestClientException e) {
-            showProgressBar(AnimationType.FADEOUT, 1f, 0f, View.GONE);
             Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
-            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+            progressView.dismiss();
+            Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
         }
     }
 
-    @UiThread
-    void showProgressBar(AnimationType type, float from, float to, int status) {
-        if (type == AnimationType.FADEIN) {
-            inAnimation = new AlphaAnimation(from, to);
-            inAnimation.setDuration(200);
-        } else {
-            outAnimation = new AlphaAnimation(from, to);
-            outAnimation.setDuration(200);
+    /**
+     * Parse an array of json object from the list of session.
+     */
+    private void parseSessionItemJsonObject(final JsonArray jsonArray) {
+        if (jsonArray == null)
+            throw new AssertionError("The jsonArray should not be null");
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .create();
+
+        if (jsonArray != null && gson != null) {
+            String sessionKey = "session";
+            for (JsonElement sessionJson : jsonArray) {
+                JsonObject jsonObject = sessionJson.getAsJsonObject();
+                if (jsonObject != null) {
+                    JsonObject sessionJsonObject = jsonObject.getAsJsonObject(sessionKey);
+                    if (sessionJsonObject != null)
+                        adapter.addItem(gson.fromJson(sessionJsonObject, Session.class));
+                }
+            }
         }
-        progressBarHolder.setAnimation(inAnimation);
-        progressBarHolder.setVisibility(status);
     }
 
     @UiThread
@@ -208,6 +225,42 @@ public class SessionsActivity extends AppCompatActivity {
      */
     @ItemClick
     void sessionListItemClicked(Session session) {
+        Log.e(TAG, session.toString());
+        if (session.isLock()) {
+            showPasswordDialog();
+        }
+
         Toast.makeText(this, session.getActivityName(), LENGTH_SHORT).show();
+    }
+
+    /**
+     * Show password dialog
+     */
+    private void showPasswordDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_signin, null))
+                // Add action buttons
+                .setPositiveButton(R.string.action_sign_in, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // sign in the user ...
+                    }
+                })
+                .setNegativeButton(R.string.cancel_action, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

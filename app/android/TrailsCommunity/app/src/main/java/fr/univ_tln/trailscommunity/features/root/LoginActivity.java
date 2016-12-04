@@ -1,12 +1,6 @@
 package fr.univ_tln.trailscommunity.features.root;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +21,6 @@ import com.google.gson.JsonObject;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.EditorAction;
@@ -45,7 +38,7 @@ import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
 import fr.univ_tln.trailscommunity.models.User;
 import fr.univ_tln.trailscommunity.utilities.Snack;
-import fr.univ_tln.trailscommunity.utilities.loader.Loader;
+import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 import io.realm.Realm;
@@ -81,13 +74,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwordView;
 
     /**
-     * Progress loader which allows the user
-     * to see the network activity(request activity).
-     */
-    @ViewById(R.id.login_progress)
-    View progressView;
-
-    /**
      * Button action to login to the API.
      */
     @ViewById(R.id.email_sign_in_button)
@@ -104,10 +90,9 @@ public class LoginActivity extends AppCompatActivity {
     TCRestApi tcRestApi;
 
     /**
-     * Loader utility.
+     * Progress Dialog
      */
-    @Bean
-    Loader loader;
+    private LoaderDialog progressView;
 
 
     @AfterViews
@@ -115,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
         setTitle(R.string.title_login_activity);
         emailView.setText("test@test.com");
         passwordView.setText("abcd1234");
+
+        progressView = new LoaderDialog(this, getString(R.string.authenticating));
 
         //
         // Init global realm settings
@@ -203,7 +190,9 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            loader.showProgress(progressView, true);
+
+            progressView.show();
+
             userLoginTask(email, password);
         }
     }
@@ -305,8 +294,7 @@ public class LoginActivity extends AppCompatActivity {
                         saveUser(responseUser.getBody().getAsJsonObject());
 
                         updateLockUi(false);
-                        loader.showProgress(progressView, false);
-
+                        progressView.dismiss();
                         startActivity(new Intent(this, SessionsActivity_.class));
                     }
                 } else {
@@ -316,12 +304,12 @@ public class LoginActivity extends AppCompatActivity {
                 Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             }
             updateLockUi(false);
-            loader.showProgress(progressView, false);
+            progressView.dismiss();
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
             Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
             updateLockUi(false);
-            loader.showProgress(progressView, false);
+            progressView.dismiss();
         }
     }
 
