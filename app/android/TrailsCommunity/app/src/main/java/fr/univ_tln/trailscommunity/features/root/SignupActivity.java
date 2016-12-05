@@ -6,8 +6,11 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -15,6 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.gson.JsonObject;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -24,8 +29,17 @@ import org.androidannotations.annotations.EditorAction;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringArrayRes;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
+import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
 
 @EActivity(R.layout.root_signup_activity)
@@ -40,6 +54,32 @@ public class SignupActivity extends AppCompatActivity {
      * Minimum password length
      */
     public static final int MIN_PASSWORD_LENGTH = 8;
+
+
+    /**
+     * Constant which correspond to POST nickname regisration parameter.
+     */
+    private static final String PARAMS_REGISTRATION_NICKNAME = "nickname";
+
+    /**
+     * Constant which correspond to POST email regisration parameter.
+     */
+    private static final String PARAMS_REGISTRATION_EMAIL = "email";
+
+    /**
+     * Constant which correspond to POST phone number regisration parameter.
+     */
+    private static final String PARAMS_REGISTRATION_PHONE_NUMBER = "phone_number";
+
+    /**
+     * Constant which correspond to POST password regisration parameter.
+     */
+    private static final String PARAMS_REGISTRATION_PASSWORD = "password";
+
+    /**
+     * Constant which correspond to POST password confirmation regisration parameter.
+     */
+    private static final String PARAMS_REGISTRATION_PASSWORD_CONFIRMATION = "password_confirmation";
 
     @ViewById(R.id.emailField)
     EditText emailField;
@@ -74,18 +114,26 @@ public class SignupActivity extends AppCompatActivity {
     @ViewById(R.id.login)
     TextView login;
 
-    private ProgressDialog progressDialog;
+    @ViewById
+    CoordinatorLayout coordinatorLayout;
+
+    /**
+     * Rest service to get or create
+     * information from server.
+     */
+    @RestService
+    TCRestApi tcRestApi;
+
+    /**
+     * Progress Dialog
+     */
+    private LoaderDialog progressView;
 
 
     @AfterViews
     void init() {
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/brush.ttf");
-        title.setTypeface(face);
-
-        progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage(getString(R.string.signup_loader));
+        title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/brush.ttf"));
+        progressView = new LoaderDialog(this, getString(R.string.request_loader));
     }
 
     /**
@@ -172,14 +220,14 @@ public class SignupActivity extends AppCompatActivity {
                 focusView = passwordField;
             cancel = true;
         } else if (!isPasswordValid(password)) {
-            updateErrorUi(passwordField, getString(R.string.error_not_matching_password));
+            updateErrorUi(confirmPasswordField, getString(R.string.error_not_matching_password));
             if (focusView == null)
-                focusView = passwordField;
+                focusView = confirmPasswordField;
             cancel = true;
         } else if (!isPasswordValid(password, confirmPassword)) {
             updateErrorUi(confirmPasswordField, getString(R.string.error_not_matching_password));
             if (focusView == null)
-                focusView = passwordField;
+                focusView = confirmPasswordField;
             cancel = true;
         }
 
@@ -201,7 +249,7 @@ public class SignupActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
-            showSignupProgress(true);
+            progressView.show();
             signupTask(email, nickname, password, codeNumberCountry, number);
         }
     }
@@ -238,7 +286,7 @@ public class SignupActivity extends AppCompatActivity {
      * @param error error message
      */
     @UiThread
-    void updateErrorUi(TextView view, String error) {
+    void updateErrorUi(final TextView view, final String error) {
         view.setError(error);
     }
 
@@ -265,7 +313,7 @@ public class SignupActivity extends AppCompatActivity {
      * @param email string email
      * @return true if valid, otherwise, false
      */
-    private boolean isEmailValid(String email) {
+    private boolean isEmailValid(final String email) {
         return EmailValidator.validate(email);
     }
 
@@ -275,7 +323,7 @@ public class SignupActivity extends AppCompatActivity {
      * @param password password for validation
      * @return true if password length >= 8, otherwise, false
      */
-    private boolean isPasswordValid(String password) {
+    private boolean isPasswordValid(final String password) {
         return password.length() >= MIN_PASSWORD_LENGTH;
     }
 
@@ -286,7 +334,7 @@ public class SignupActivity extends AppCompatActivity {
      * @param confirmPassword confirmation password for validation
      * @return true if password equals confirmPassword >= 8, otherwise, false
      */
-    private boolean isPasswordValid(String password, String confirmPassword) {
+    private boolean isPasswordValid(final String password, final String confirmPassword) {
         return password.length() >= MIN_PASSWORD_LENGTH && password.equals(confirmPassword);
     }
 
@@ -321,20 +369,6 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * Shows the progress UI and hides the login form.
-     * @param show
-     */
-    @UiThread
-    void showSignupProgress(final boolean show){
-        if(show){
-            progressDialog.show();
-        }
-        else{
-            progressDialog.dismiss();
-        }
-    }
-
-    /**
      * Background task which allows
      * to send credential data to the server.
      * If the connexion is succeed, we go to the sessions list.
@@ -342,6 +376,16 @@ public class SignupActivity extends AppCompatActivity {
      *
      * @param email    user email
      * @param password password email
+     */
+    /**
+     * Background task which allows
+     * to send registration data to the server.
+
+     * @param email user email
+     * @param nickname user nickname
+     * @param password user password
+     * @param codeNumberCountry indicatif phone number
+     * @param number phone number
      */
     @Background
     void signupTask(final String email,
@@ -351,24 +395,28 @@ public class SignupActivity extends AppCompatActivity {
                     final String number) {
         updateLockUi(true);
 
-        //Request...
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        /*
+        String phoneNumber = codeNumberCountry + number;
         Map<String, String> parameters = new HashMap<>();
+        parameters.put(PARAMS_REGISTRATION_NICKNAME, nickname);
+        parameters.put(PARAMS_REGISTRATION_EMAIL, email);
+        parameters.put(PARAMS_REGISTRATION_PASSWORD, password);
+        parameters.put(PARAMS_REGISTRATION_PHONE_NUMBER, phoneNumber);
 
-        queue = Volley.newRequestQueue(SignupActivity.this);
-        request = new CustomRequest(Request.Method.POST, url, parameters, this, this);
-        queue.add(request);
-        */
-        // Success request
+        // Is already verified, see the private method `attemptSignup`
+        parameters.put(PARAMS_REGISTRATION_PASSWORD_CONFIRMATION, password);
 
-        updateLockUi(false);
-        //showProgress(false);
-        showSignupProgress(false);
+
+        try {
+            ResponseEntity<JsonObject> userResponse = tcRestApi.registration(parameters);
+            Log.d(TAG, userResponse.toString());
+            updateLockUi(false);
+            progressView.dismiss();
+            finish();
+        } catch (RestClientException e) {
+            updateLockUi(false);
+            progressView.dismiss();
+            Log.e(TAG, e.getLocalizedMessage());
+            Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+        }
     }
 }

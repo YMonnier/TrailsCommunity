@@ -186,7 +186,7 @@ public class ModifySessionActivity extends AppCompatActivity implements DatePick
      * Put date in EditText.
      */
     @UiThread
-    void updateInputStartDate(String date) {
+    void updateInputStartDate(final String date) {
         startDateField.setText(date);
     }
 
@@ -199,7 +199,7 @@ public class ModifySessionActivity extends AppCompatActivity implements DatePick
      * @param error error message
      */
     @UiThread
-    void updateErrorUi(EditText view, String error) {
+    void updateErrorUi(final EditText view, final String error) {
         view.setError(error);
     }
 
@@ -221,7 +221,7 @@ public class ModifySessionActivity extends AppCompatActivity implements DatePick
      *               disable all clickable buttons/inputs, otherwise, false
      */
     @UiThread
-    void updateLockUi(boolean status) {
+    void updateLockUi(final boolean status) {
         departurePlaceField.setEnabled(!status);
         arrivalPlaceField.setEnabled(!status);
         typeActivitySpinner.setEnabled(!status);

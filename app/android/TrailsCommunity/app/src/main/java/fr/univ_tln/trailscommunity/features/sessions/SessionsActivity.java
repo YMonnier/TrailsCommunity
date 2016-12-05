@@ -39,6 +39,7 @@ import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
 import fr.univ_tln.trailscommunity.features.session.SessionActivity_;
 import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
+import fr.univ_tln.trailscommunity.features.sessions.listview.SessionHeaderView;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.Snack;
@@ -139,7 +140,7 @@ public class SessionsActivity extends AppCompatActivity {
                     if (responseSessions.getStatusCode().is2xxSuccessful()) {
                         JsonObject data = responseSessions.getBody().get("data").getAsJsonObject();
 
-                        adapter.addHeader("Active sessions");
+                        adapter.addHeader(SessionHeaderView.ACTIVE_SESSION_HEADER);
                         JsonArray activeSessionArray = data.getAsJsonArray(ACTIVE_SESSION_KEY);
                         Log.d(TAG, activeSessionArray.toString());
                         if (activeSessionArray == null)
@@ -148,7 +149,7 @@ public class SessionsActivity extends AppCompatActivity {
                             parseSessionItemJsonObject(activeSessionArray);
                         }
 
-                        adapter.addHeader("My sessions");
+                        adapter.addHeader(SessionHeaderView.MY_SESSION_HEADER);
                         JsonArray mySessionArray = data.getAsJsonArray(MY_SESSION_KEY);
                         Log.d(TAG, mySessionArray.toString());
                         if (mySessionArray == null)
@@ -157,7 +158,7 @@ public class SessionsActivity extends AppCompatActivity {
                             parseSessionItemJsonObject(mySessionArray);
                         }
 
-                        adapter.addHeader("History");
+                        adapter.addHeader(SessionHeaderView.HISTORY_HEADER);
                         JsonArray historySessionArray = data.getAsJsonArray(HISTORY_KEY);
                         Log.d(TAG, historySessionArray.toString());
                         if (historySessionArray == null)
@@ -167,15 +168,15 @@ public class SessionsActivity extends AppCompatActivity {
                         }
                         setAdapter();
                     } else
-                        Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+                        Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
                 } else
-                    Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+                    Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
                 progressView.dismiss();
             }
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
             progressView.dismiss();
-            Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+            Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
         }
     }
 
@@ -237,14 +238,15 @@ public class SessionsActivity extends AppCompatActivity {
      * @param session row clicked (session)
      */
     @ItemClick
-    void sessionListItemClicked(Session session) {
-
+    void sessionListItemClicked(final Session session) {
         Log.d(TAG, session.toString());
         Log.d(TAG, "session id locked? : " + session.isLock());
 
-        if (session.isLock()) {
-            showPasswordDialog(session.getId());
-        }
+        int sessionId = session.getId();
+        if (session.isLock())
+            showPasswordDialog(sessionId);
+        else
+            goToSessionActivity(sessionId);
     }
 
     /**
@@ -296,16 +298,22 @@ public class SessionsActivity extends AppCompatActivity {
             tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
             ResponseEntity<String> joinResponse = tcRestApi.joinSession(sessionId, password);
             Log.d(TAG, joinResponse.toString());
-
-
-            Intent intent = SessionActivity_.intent(this)
-                    .sessionId(sessionId)
-                    .get();
-            startActivity(intent);
+            goToSessionActivity(sessionId);
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request: " + e);
             Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
         }
+    }
+
+    /**
+     * Start a new activity with an extra data sessionId.
+     * @param sessionId session id
+     */
+    private void goToSessionActivity(int sessionId) {
+        Intent intent = SessionActivity_.intent(this)
+                .sessionId(sessionId)
+                .get();
+        startActivity(intent);
     }
 
     @Override

@@ -20,6 +20,21 @@ import fr.univ_tln.trailscommunity.R;
 @EViewGroup(R.layout.sessions_sessions_list_header)
 public class SessionHeaderView extends LinearLayout {
 
+    /**
+     * Constant header name for active session.
+     */
+    public static final String ACTIVE_SESSION_HEADER = "Active sessions";
+
+    /**
+     * Constant header name for session created by current user.
+     */
+    public static final String MY_SESSION_HEADER = "My sessions";
+
+    /**
+     * Constant header name for history session.
+     */
+    public static final String HISTORY_HEADER = "History";
+
     @ViewById
     TextView titleTextView;
 

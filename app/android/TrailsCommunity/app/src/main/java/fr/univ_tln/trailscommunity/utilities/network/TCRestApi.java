@@ -84,6 +84,25 @@ public interface TCRestApi {
 
 
     /**
+     * Action which allows to create a new user.
+     * <p>
+     * ex:
+     * {
+     * "nickname": "Arthur83",
+     * "email": "apaul@custom.com",
+     * "phone_number": "+33651678908",
+     * "password": "myPassword33",
+     * "password_confirmation": "myPassword33"
+     * }
+     *
+     * @param formData map containing user registration information
+     * @return response from server
+     */
+    @Post("/users")
+    @Header(name = "Content-Type", value = "application/json")
+    ResponseEntity<JsonObject> registration(@Body Map<String, String> formData);
+
+    /**
      * Get all sessions from the TrailsCommunity API.
      * These sessions are already sort in 3 categories.
      * 1. Active session (Actives session, not close by the creator)
@@ -99,16 +118,15 @@ public interface TCRestApi {
     ResponseEntity<JsonObject> sessions();
 
     /**
-     *
      * Create a new session to the TrailsCommunity API.
      * Body Parameters:
-     *  * the password can be optional
+     * * the password can be optional
      * {
-     *    "password": "sessionLocked",
-     *    "activity": 10,
-     *    "departure_place": "43.179363;5.717782",
-     *    "arrival_place": "43.191168;5.730819",
-     *    "start_date": "2016-11-20"
+     * "password": "sessionLocked",
+     * "activity": 10,
+     * "departure_place": "43.179363;5.717782",
+     * "arrival_place": "43.191168;5.730819",
+     * "start_date": "2016-11-20"
      * }
      *
      * @param session session object parameters

@@ -120,13 +120,13 @@ public class LoginActivity extends AppCompatActivity {
         emailView.setText("test@test.com");
         passwordView.setText("abcd1234");
 
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/brush.ttf");
-        title.setTypeface(face);
+        title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/brush.ttf"));
 
         progressView = new LoaderDialog(this, getString(R.string.authenticating));
 
         //
         // Init global realm settings
+        //
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(realmConfiguration);
@@ -320,16 +320,16 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(new Intent(this, SessionsActivity_.class));
                     }
                 } else {
-                    Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+                    Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
                 }
             } else {
-                Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+                Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
             }
             updateLockUi(false);
             progressView.dismiss();
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request from userLoginTask: " + e.getLocalizedMessage());
-            Snack.showSuccessfulMessage(coordinatorLayout, "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+            Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
             updateLockUi(false);
             progressView.dismiss();
         }

@@ -141,7 +141,7 @@ public class SessionActivity extends AppCompatActivity {
      * @param view
      */
     @Click(R.id.fab)
-    void clickOnFloatingButton(View view) {
+    void clickOnFloatingButton(final View view) {
         double speed = 14.5;
         double distance = 14340;
         double time = 140;

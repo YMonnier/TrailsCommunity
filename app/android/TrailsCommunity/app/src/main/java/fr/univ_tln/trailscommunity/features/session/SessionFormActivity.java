@@ -1,6 +1,7 @@
 package fr.univ_tln.trailscommunity.features.session;
 
 import android.app.DatePickerDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -74,6 +75,9 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
 
     @ViewById(R.id.progress)
     View mProgressView;
+
+    @ViewById
+    CoordinatorLayout coordinatorLayout;
 
     @RestService
     TCRestApi tcRestApi;
@@ -264,7 +268,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
      * Put date in EditText.
      */
     @UiThread
-    void updateInputStartDate(String date) {
+    void updateInputStartDate(final String date) {
         startDateField.setText(date);
     }
 
@@ -309,7 +313,6 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
         startDateField.setEnabled(!status);
         passwordField.setEnabled(!status);
     }
-
 
 
     /**
@@ -375,7 +378,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
             Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
             updateLockUi(false);
             progressView.dismiss();
-            //Snack.showSuccessfulMessage(getApplication()., "Error during the request, please check your internet connection and try again.", Snackbar.LENGTH_LONG);
+            Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
         }
     }
 }

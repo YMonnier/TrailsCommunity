@@ -128,7 +128,7 @@ public class ProfileActivity extends AppCompatActivity {
      *               disable all clickable buttons/inputs, otherwise, false
      */
     @UiThread
-    void updateLockUi(boolean status) {
+    void updateLockUi(final boolean status) {
         nicknameField.setEnabled(!status);
         phoneNumberField.setEnabled(!status);
         saveButton.setEnabled(!status);
