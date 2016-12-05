@@ -7,7 +7,7 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "fr.univ_tln.trailscommunity"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -103,6 +103,8 @@ dependencies {
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }
 
 // Stay at the bottom

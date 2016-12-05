@@ -4,6 +4,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -11,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -58,6 +61,12 @@ public class SessionActivity extends AppCompatActivity {
     @ViewById(R.id.fab)
     FloatingActionButton floatingActionButton;
 
+    @ViewById(R.id.chatField)
+    EditText chatField;
+
+    @ViewById(R.id.sendMessage)
+    Button sendMessage;
+
     /**
      * Creating facade for
      * the map navigation manipulation.
@@ -86,6 +95,22 @@ public class SessionActivity extends AppCompatActivity {
         // Set the adapter for the list view
         chatListView.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, chatMessageList));
+    }
+
+    @Click(R.id.sendMessage)
+    void sendMessage(){
+        String message = chatField.getText().toString();
+        String nickname = "Nickname";
+
+        if(!TextUtils.isEmpty(message)){
+            chatMessageList.add(nickname + " : " + message);
+            chatListView.setAdapter(new ArrayAdapter<String>(this,
+                    R.layout.drawer_list_item, chatMessageList));
+            chatField.setText(null);
+        }
+        else{
+            chatField.setError(getString(R.string.error_field_required));
+        }
     }
 
     @Override

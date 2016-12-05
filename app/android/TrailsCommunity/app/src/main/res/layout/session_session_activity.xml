@@ -37,6 +37,7 @@
                 android:layout_weight="1"/>
 
             <EditText
+                android:id="@+id/chatField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
@@ -44,6 +45,7 @@
                 android:textColorHint="@color/colorWhite"/>
 
             <Button
+                android:id="@+id/sendMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/send"/>
