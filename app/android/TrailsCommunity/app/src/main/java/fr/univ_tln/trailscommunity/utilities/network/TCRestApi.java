@@ -98,9 +98,34 @@ public interface TCRestApi {
     @RequiresHeader("Authorization")
     ResponseEntity<JsonObject> sessions();
 
+    /**
+     *
+     * Create a new session to the TrailsCommunity API.
+     * Body Parameters:
+     *  * the password can be optional
+     * {
+     *    "password": "sessionLocked",
+     *    "activity": 10,
+     *    "departure_place": "43.179363;5.717782",
+     *    "arrival_place": "43.191168;5.730819",
+     *    "start_date": "2016-11-20"
+     * }
+     *
+     * @param session session object parameters
+     * @return status code 201 if OK, otherwise, 4xx, 5xx status code.
+     */
     @Post("/sessions")
     @Header(name = "Content-Type", value = "application/json")
     @RequiresHeader("Authorization")
     //ResponseEntity<JsonObject> createSession(@Body Map<String, Object> formData);
     ResponseEntity<JsonObject> createSession(@Body Session session);
+
+
+    @Get("/sessions/{id}/join")
+    @RequiresHeader("Authorization")
+    ResponseEntity<JsonObject> joinSession(@Path int id);
+
+    @Get("/sessions/{id}/join?password={password}")
+    @RequiresHeader("Authorization")
+    ResponseEntity<String> joinSession(@Path int id, @Path String password);
 }

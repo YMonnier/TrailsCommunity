@@ -6,10 +6,13 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -63,9 +66,10 @@ public class SessionsActivity extends AppCompatActivity {
      */
     private static final String TAG = SessionsActivity.class.getSimpleName();
 
-    enum AnimationType {
-        FADEIN, FADEOUT
-    }
+    /**
+     * Key inside array response.
+     */
+    private static final String ARRAY_SESSION_KEY = "session";
 
     @ViewById
     ListView sessionList;
@@ -113,7 +117,7 @@ public class SessionsActivity extends AppCompatActivity {
 
             if (adapter != null) {
 
-                tcRestApi.setHeader("Authorization", Settings.TOKEN_AUTHORIZATION);
+                tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
                 ResponseEntity<JsonObject> responseSessions = tcRestApi.sessions();
 
                 if (responseSessions == null)
@@ -122,8 +126,6 @@ public class SessionsActivity extends AppCompatActivity {
                 if (responseSessions != null) {
                     if (responseSessions.getStatusCode().is2xxSuccessful()) {
                         JsonObject data = responseSessions.getBody().get("data").getAsJsonObject();
-                        Gson gson = new Gson();
-                        String sessionKey = "session";
 
                         adapter.addHeader("Active sessions");
                         JsonArray activeSessionArray = data.getAsJsonArray("active_sessions");
@@ -177,11 +179,10 @@ public class SessionsActivity extends AppCompatActivity {
                 .create();
 
         if (jsonArray != null && gson != null) {
-            String sessionKey = "session";
             for (JsonElement sessionJson : jsonArray) {
                 JsonObject jsonObject = sessionJson.getAsJsonObject();
                 if (jsonObject != null) {
-                    JsonObject sessionJsonObject = jsonObject.getAsJsonObject(sessionKey);
+                    JsonObject sessionJsonObject = jsonObject.getAsJsonObject(ARRAY_SESSION_KEY);
                     if (sessionJsonObject != null)
                         adapter.addItem(gson.fromJson(sessionJsonObject, Session.class));
                 }
@@ -225,38 +226,61 @@ public class SessionsActivity extends AppCompatActivity {
      */
     @ItemClick
     void sessionListItemClicked(Session session) {
-        Log.e(TAG, session.toString());
-        if (session.isLock()) {
-            showPasswordDialog();
-        }
 
-        Toast.makeText(this, session.getActivityName(), LENGTH_SHORT).show();
+        Log.d(TAG, session.toString());
+        Log.d(TAG, "session id locked? : " + session.isLock());
+
+        if (session.isLock()) {
+            showPasswordDialog(session.getId());
+        }
     }
 
     /**
-     * Show password dialog
+     * Show a dialog to put the session password.
+     *
+     * @param sessionId session id
      */
-    private void showPasswordDialog() {
+    private void showPasswordDialog(final int sessionId) {
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
-        LayoutInflater inflater = this.getLayoutInflater();
-
+        final LayoutInflater inflater = this.getLayoutInflater();
+        View customView = inflater.inflate(R.layout.dialog_signin, null);
+        final EditText passwordField = (EditText) customView.findViewById(R.id.passwordField);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_signin, null))
+        builder.setView(customView)
                 // Add action buttons
                 .setPositiveButton(R.string.action_sign_in, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
+                        String password = passwordField.getText().toString();
+                        Log.d(TAG, "Sign in button action....... " + password);
+                        //LoaderDialog progress = new LoaderDialog(builder.getContext(), getString(R.string.authenticating));
+                        //progress.show();
+                        if (!TextUtils.isEmpty(password)) {
+                            try {
+                                tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
+                                ResponseEntity<String> joinResponse = tcRestApi.joinSession(sessionId, password);
+                                Log.d(TAG, joinResponse.toString());
+                            } catch (RestClientException e) {
+                                //progress.dismiss();
+                                Log.d(TAG, "error HTTP request: " + e);
+                                //progress.dismiss();
+                                Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+                            }
+                            //progress.dismiss();
+                        }
+
                     }
                 })
                 .setNegativeButton(R.string.cancel_action, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        dialog.dismiss();
                     }
                 });
-        builder.create();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override

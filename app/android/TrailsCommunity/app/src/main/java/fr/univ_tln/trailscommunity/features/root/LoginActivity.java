@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -282,7 +283,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "token: " + token);
 
                     // Get current user information
-                    tcRestApi.setHeader("Authorization", token);
+                    tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, token);
                     String deviceToken = FirebaseInstanceId.getInstance().getToken();
                     Log.d(TAG, "FCM TEST Token: " + token);
                     ResponseEntity<JsonObject> responseUser = tcRestApi.user(deviceToken);

@@ -18,6 +18,11 @@ public class Settings {
     public static String TOKEN_AUTHORIZATION = "";
 
     /**
+     * Authorization header name
+     */
+    public static String AUTHORIZATION_HEADER_NAME = "Authorization";
+
+    /**
      * Current user id from the TrailsCommunity API.
      */
     public static int userId = -1;
