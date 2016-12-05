@@ -21,4 +21,5 @@
     <string name="signup_loader">Please wait...</string>
     <string name="trailsCommunity">TrailsCommunity</string>
     <string name="creating">Creating...</string>
+    <string name="root_login">Already a member? Login</string>
 </resources>

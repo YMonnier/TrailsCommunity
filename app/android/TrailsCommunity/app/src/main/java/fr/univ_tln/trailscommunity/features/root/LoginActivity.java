@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         emailView.setText("test@test.com");
         passwordView.setText("abcd1234");
 
-        Typeface face= Typeface.createFromAsset(getAssets(), "fonts/brush.ttf");
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/brush.ttf");
         title.setTypeface(face);
 
         progressView = new LoaderDialog(this, getString(R.string.authenticating));
