@@ -74,7 +74,7 @@ public class SessionActivityTest {
                  .perform(typeText(EMPTY_FIELD));
          onView(withId(R.id.sendMessage))
                  .perform(click());
-         onView(withId(R.id.passwordField)).check(matches(EspressoUtils.withError(
+         onView(withId(R.id.chatField)).check(matches(EspressoUtils.withError(
                  mActivityRule.getActivity().getString(R.string.error_field_required))));
      }
 
@@ -83,7 +83,4 @@ public class SessionActivityTest {
         onView(withId(R.id.session_chat_menu))
                 .perform(click());
     }
-
-
-
 }
