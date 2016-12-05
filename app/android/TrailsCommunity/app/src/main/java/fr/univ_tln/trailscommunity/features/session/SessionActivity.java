@@ -135,7 +135,7 @@ public class SessionActivity extends AppCompatActivity {
         textViewTop.setText("Statistics\n\n" +
                 "Average speed: " + speed + " km/h\n" +
                 "Distance: " + distance + " meters\n" +
-                "Time: " + time + " minutes");
+                "Time: " + time + " minutes\n");
         textViewTop.setTextColor(Color.WHITE);
 
         layout.addView(snackView, 0);

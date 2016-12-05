@@ -38,10 +38,10 @@ public class Session extends RealmObject {
     private RealmList<Coordinate> coordinates;
     private RealmList<Waypoint> waypoints;
 
-    @SerializedName("createdAt")
+    @SerializedName("created_at")
     private Date createdAt;
 
-    @SerializedName("updatedAt")
+    @SerializedName("updated_at")
     private Date updatedAt;
 
     /**
@@ -176,11 +176,11 @@ public class Session extends RealmObject {
         this.updatedAt = updatedAt;
     }
 
-    public Date getCreated_at() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public Date getUpdated_at() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
