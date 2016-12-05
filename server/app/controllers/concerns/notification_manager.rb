@@ -60,6 +60,6 @@ class NotificationManager
     def self.session_users session_id, exclude_user
         User.where(:current_session_id => session_id)
             .where.not(id: exclude_user)
-            .pluck('id')
+            .pluck('device')
     end
 end
