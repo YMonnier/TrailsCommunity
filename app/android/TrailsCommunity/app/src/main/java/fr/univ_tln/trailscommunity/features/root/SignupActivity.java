@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -58,9 +59,6 @@ public class SignupActivity extends AppCompatActivity {
     @ViewById(R.id.codeNumberCountrySpinner)
     Spinner codeNumberCountrySpinner;
 
-    @ViewById(R.id.numberCodeCountryError)
-    TextView codeNumberCountryError;
-
     @ViewById(R.id.progress)
     View mProgressView;
 
@@ -70,11 +68,20 @@ public class SignupActivity extends AppCompatActivity {
     @StringArrayRes
     String[] indicatifNumbers;
 
+    @ViewById(R.id.title)
+    TextView title;
+
+    @ViewById(R.id.login)
+    TextView login;
+
     private ProgressDialog progressDialog;
 
 
     @AfterViews
     void init() {
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/brush.ttf");
+        title.setTypeface(face);
+
         progressDialog = new ProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -106,6 +113,14 @@ public class SignupActivity extends AppCompatActivity {
     @Click(R.id.registerButton)
     void onClickOnRegisterButton() {
         attemptSignup();
+    }
+
+    /**
+     * Login textView action
+     */
+    @Click(R.id.login)
+    void onClickOnLoginTextView(){
+        finish();
     }
 
 
@@ -168,13 +183,6 @@ public class SignupActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        if (codeNumberCountry != null) {
-            if (TextUtils.isEmpty(codeNumberCountry)) {
-                updateErrorUi(codeNumberCountryError, getString(R.string.error_invalid_code_number_country));
-                cancel = true;
-            }
-        }
-
         if (TextUtils.isEmpty(number)) {
             updateErrorUi(numberField, getString(R.string.error_field_required));
             if (focusView == null)
@@ -208,7 +216,6 @@ public class SignupActivity extends AppCompatActivity {
         nicknameField.setError(null);
         passwordField.setError(null);
         numberField.setError(null);
-        codeNumberCountryError.setError(null);
     }
 
     /**
@@ -247,7 +254,6 @@ public class SignupActivity extends AppCompatActivity {
         nicknameField.setEnabled(!status);
         passwordField.setEnabled(!status);
         confirmPasswordField.setEnabled(!status);
-        codeNumberCountryError.setEnabled(!status);
         codeNumberCountrySpinner.setEnabled(!status);
         numberField.setEnabled(!status);
     }

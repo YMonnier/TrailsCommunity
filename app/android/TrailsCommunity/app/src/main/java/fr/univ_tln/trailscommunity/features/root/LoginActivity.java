@@ -1,6 +1,7 @@
 package fr.univ_tln.trailscommunity.features.root;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -95,12 +95,18 @@ public class LoginActivity extends AppCompatActivity {
      */
     private LoaderDialog progressView;
 
+    @ViewById(R.id.title)
+    TextView title;
+
 
     @AfterViews
     void init() {
         setTitle(R.string.title_login_activity);
         emailView.setText("test@test.com");
         passwordView.setText("abcd1234");
+
+        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/brush.ttf");
+        title.setTypeface(face);
 
         progressView = new LoaderDialog(this, getString(R.string.authenticating));
 
