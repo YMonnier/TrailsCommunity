@@ -98,6 +98,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //UI test Google maps
+    androidTestCompile('com.android.support.test:runner:0.3') {
+        // Necessary if your app targets Marshmallow (since the test runner
+        // hasn't moved to Marshmallow yet)
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 }
 
 // Stay at the bottom
