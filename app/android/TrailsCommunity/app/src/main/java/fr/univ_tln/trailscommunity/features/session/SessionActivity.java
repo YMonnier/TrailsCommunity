@@ -84,6 +84,7 @@ public class SessionActivity extends AppCompatActivity {
         Log.d(TAG, "init AfterViews....");
         session = new Session.Builder()
                 .setActivity(Session.TypeActivity.HIKING.ordinal())
+                .setId(sessionId)
                 .build();
         mapNavigation.init(session);
 

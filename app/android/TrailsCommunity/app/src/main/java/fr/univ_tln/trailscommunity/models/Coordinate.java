@@ -31,6 +31,7 @@ public class Coordinate extends RealmObject {
     public Coordinate(Builder builder) {
         this.latitude = builder.latitude;
         this.longitude = builder.longitude;
+        this.userId = builder.userId;
     }
 
     public double getLatitude() {
@@ -57,6 +58,7 @@ public class Coordinate extends RealmObject {
         private double latitude;
         private double longitude;
         private boolean sent = false;
+        private int userId;
 
         public Coordinate build() {
             return new Coordinate(this);
@@ -74,6 +76,11 @@ public class Coordinate extends RealmObject {
 
         public Builder setSent(boolean sent) {
             this.sent = sent;
+            return this;
+        }
+
+        public Builder setUserId(int userId) {
+            this.userId = userId;
             return this;
         }
     }

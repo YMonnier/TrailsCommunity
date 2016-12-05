@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
+import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
 
 /**
@@ -146,4 +147,27 @@ public interface TCRestApi {
     @Get("/sessions/{id}/join?password={password}")
     @RequiresHeader("Authorization")
     ResponseEntity<String> joinSession(@Path("id") int id, @Path("password") String password);
+
+    /**
+     * Create a new waypoint and broadcast it via Push Notification.
+     *
+     * @param id         session id
+     * @param coordinate waypoint location
+     * @return status code 200 if OK, otherwise, 4xx, 5xx status code.
+     */
+    @Post("/sessions/{id}/waypoint")
+    @RequiresHeader("Authorization")
+    ResponseEntity<String> shareWaypoint(@Path("id") int id, @Body Coordinate coordinate);
+
+
+    /**
+     * Create a new user location and broadcast it via Push Notification.
+     *
+     * @param id         session id
+     * @param coordinate user location
+     * @return status code 200 if OK, otherwise, 4xx, 5xx status code.
+     */
+    @Post("/sessions/{id}/coordinate")
+    @RequiresHeader("Authorization")
+    ResponseEntity<String> shareCoordinate(@Path("id") int id, @Body Coordinate coordinate);
 }

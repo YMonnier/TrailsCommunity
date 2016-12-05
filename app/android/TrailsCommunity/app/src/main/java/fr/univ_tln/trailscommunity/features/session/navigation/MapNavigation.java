@@ -26,6 +26,9 @@ import com.google.gson.Gson;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +46,7 @@ import fr.univ_tln.trailscommunity.models.UserNavigationSettings;
 import fr.univ_tln.trailscommunity.models.Waypoint;
 import fr.univ_tln.trailscommunity.utilities.color.ColorUtils;
 import fr.univ_tln.trailscommunity.utilities.mapview.MapViewUtils;
+import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.notification.NotificationReceiverService;
 
 /**
@@ -76,11 +80,17 @@ public class MapNavigation
      * Constant used to define
      * the current user color marker.
      */
-    //private static final String CURRENT_USER_COLOR = "#3498db";
     private static final String CURRENT_USER_COLOR = "#1D4A64";
 
     @RootContext
     SessionActivity context;
+
+    /**
+     * Rest service to get
+     * information from server.
+     */
+    @RestService
+    TCRestApi tcRestApi;
 
     /**
      * Map view
@@ -89,7 +99,10 @@ public class MapNavigation
 
 
     /**
-     *
+     * Used to manage users connected to the current session.
+     * We can easily add user location, move the
+     * user maker or change some settings.
+     * See `UserNavigationSettings.java`
      */
     private Map<Integer, UserNavigationSettings> users;
 
@@ -107,14 +120,20 @@ public class MapNavigation
     private Gson gson;
 
     /**
+     * Current session
+     */
+    private Session session;
+
+    /**
      * Initialize the Map Navigation and the Location Service.
      * Add all broadcast observe to receive location
      * from LocationService et some information from Push Notification.
      */
     public void init(Session session) {
         Log.d(TAG, "init");
-        users = new HashMap<>();
-        gson = new Gson();
+        this.session = session;
+        this.users = new HashMap<>();
+        this.gson = new Gson();
 
         // Get Google Map and initialize it
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
@@ -194,7 +213,6 @@ public class MapNavigation
         currentUser = new UserNavigationSettings.Builder()
                 .setColor(CURRENT_USER_COLOR)
                 .setId(fr.univ_tln.trailscommunity.Settings.userId)
-                //.setMarker()
                 .setMarker(createMarker(CURRENT_USER_COLOR, null, false))
                 .setPolyline(createPolyline(CURRENT_USER_COLOR, null))
                 .build();
@@ -203,10 +221,23 @@ public class MapNavigation
     /**
      * Add a new waypoint to the current map.
      *
-     * @param coordinate waypoint coordinate.
+     * @param latLng waypoint coordinate.
      */
-    public void addWaypoint(final LatLng coordinate) {
-        mapView.addMarker(new MarkerOptions().position(coordinate).title("Pseudo | Waypoint"));
+    private void addWaypoint(final LatLng latLng) {
+        Coordinate coordinate = new Coordinate.Builder()
+                .setLatitude(latLng.latitude)
+                .setLongitude(latLng.longitude)
+                .build();
+
+        mapView.addMarker(new MarkerOptions().position(latLng).title("Pseudo | Waypoint"));
+
+        try {
+            tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
+            ResponseEntity<String> response = tcRestApi.shareWaypoint(session.getId(), coordinate);
+            Log.d(TAG, response.toString());
+        } catch (RestClientException e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -214,7 +245,7 @@ public class MapNavigation
      *
      * @param coordinate coordinate we want to add.
      */
-    public void addCoordinate(final UserNavigationSettings user, final Coordinate coordinate) {
+    private void addCoordinate(final UserNavigationSettings user, final Coordinate coordinate) {
         if (coordinate == null || user == null)
             throw new AssertionError("coordinate or user should not be null");
 
@@ -301,8 +332,17 @@ public class MapNavigation
             if (currentUser == null)
                 throw new AssertionError("current user should not be null");
 
-            if (currentUser != null)
+            if (currentUser != null) {
                 addCoordinate(currentUser, coordinate);
+
+                try {
+                    tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
+                    ResponseEntity<String> response = tcRestApi.shareCoordinate(session.getId(), coordinate);
+                    Log.d(TAG, response.toString());
+                } catch (RestClientException e) {
+                    Log.e(TAG, e.getLocalizedMessage());
+                }
+            }
         }
     };
 
