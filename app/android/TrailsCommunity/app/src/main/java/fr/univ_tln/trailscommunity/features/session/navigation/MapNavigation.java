@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.rest.spring.annotations.RestService;
@@ -231,10 +232,16 @@ public class MapNavigation
 
         mapView.addMarker(new MarkerOptions().position(latLng).title("Pseudo | Waypoint"));
 
+
+    }
+
+    @Background
+    void shareWaypoint(Coordinate coordinate) {
         try {
             tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
-            ResponseEntity<String> response = tcRestApi.shareWaypoint(session.getId(), coordinate);
-            Log.d(TAG, response.toString());
+            tcRestApi.shareWaypoint(session.getId(), coordinate);
+            //Log.d(TAG, response.toString());
+            Log.d(TAG, "addWaypoint OK");
         } catch (RestClientException e) {
             Log.e(TAG, e.getLocalizedMessage());
         }
@@ -260,6 +267,18 @@ public class MapNavigation
                 user.getMarker().setVisible(true);
                 //mapView.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
             }
+        }
+    }
+
+    @Background
+    void shareCoordinate(Coordinate coordinate) {
+        try {
+            tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
+            tcRestApi.shareCoordinate(session.getId(), coordinate);
+            //Log.d(TAG, response.toString());
+            Log.d(TAG, "locationReceiver OK");
+        } catch (RestClientException e) {
+            Log.e(TAG, e.getLocalizedMessage());
         }
     }
 
@@ -335,13 +354,7 @@ public class MapNavigation
             if (currentUser != null) {
                 addCoordinate(currentUser, coordinate);
 
-                try {
-                    tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
-                    ResponseEntity<String> response = tcRestApi.shareCoordinate(session.getId(), coordinate);
-                    Log.d(TAG, response.toString());
-                } catch (RestClientException e) {
-                    Log.e(TAG, e.getLocalizedMessage());
-                }
+                shareCoordinate(coordinate);
             }
         }
     };

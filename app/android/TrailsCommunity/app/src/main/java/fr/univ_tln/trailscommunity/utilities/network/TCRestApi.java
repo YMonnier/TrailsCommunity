@@ -136,7 +136,6 @@ public interface TCRestApi {
     @Post("/sessions")
     @Header(name = "Content-Type", value = "application/json")
     @RequiresHeader("Authorization")
-    //ResponseEntity<JsonObject> createSession(@Body Map<String, Object> formData);
     ResponseEntity<JsonObject> createSession(@Body Session session);
 
 
@@ -156,8 +155,9 @@ public interface TCRestApi {
      * @return status code 200 if OK, otherwise, 4xx, 5xx status code.
      */
     @Post("/sessions/{id}/waypoint")
+    @Header(name = "Content-Type", value = "application/json")
     @RequiresHeader("Authorization")
-    ResponseEntity<String> shareWaypoint(@Path("id") int id, @Body Coordinate coordinate);
+    void shareWaypoint(@Path("id") int id, @Body Coordinate coordinate);
 
 
     /**
@@ -168,6 +168,7 @@ public interface TCRestApi {
      * @return status code 200 if OK, otherwise, 4xx, 5xx status code.
      */
     @Post("/sessions/{id}/coordinate")
+    @Header(name = "Content-Type", value = "application/json")
     @RequiresHeader("Authorization")
-    ResponseEntity<String> shareCoordinate(@Path("id") int id, @Body Coordinate coordinate);
+    void shareCoordinate(@Path("id") int id, @Body Coordinate coordinate);
 }
