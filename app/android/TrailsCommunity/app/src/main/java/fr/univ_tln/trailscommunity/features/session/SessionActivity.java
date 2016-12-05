@@ -1,5 +1,6 @@
 package fr.univ_tln.trailscommunity.features.session;
 
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
@@ -13,10 +14,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
-import com.google.firebase.iid.FirebaseInstanceId;
+import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -119,8 +117,29 @@ public class SessionActivity extends AppCompatActivity {
      */
     @Click(R.id.fab)
     void clickOnFloatingButton(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        double speed = 14.5;
+        double distance = 14340;
+        double time = 140;
+
+
+        Snackbar snackbar = Snackbar.make(view, "", Snackbar.LENGTH_LONG);
+
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+
+        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setVisibility(View.INVISIBLE);
+
+        View snackView = this.getLayoutInflater().inflate(R.layout.session_session_statistics_snackbar, null);
+
+        TextView textViewTop = (TextView) snackView.findViewById(R.id.statistics_content);
+        textViewTop.setText("Statistics\n\n" +
+                "Average speed: " + speed + " km/h\n" +
+                "Distance: " + distance + " meters\n" +
+                "Time: " + time + " minutes");
+        textViewTop.setTextColor(Color.WHITE);
+
+        layout.addView(snackView, 0);
+        snackbar.show();
     }
 
     @Override
