@@ -10,12 +10,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,14 +37,13 @@ import org.springframework.web.client.RestClientException;
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
+import fr.univ_tln.trailscommunity.features.session.SessionActivity_;
 import fr.univ_tln.trailscommunity.features.session.SessionFormActivity_;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Project TrailsCommunity.
@@ -222,7 +219,7 @@ public class SessionsActivity extends AppCompatActivity {
     /**
      * Action click on item list view.
      *
-     * @param session
+     * @param session row clicked (session)
      */
     @ItemClick
     void sessionListItemClicked(Session session) {
@@ -256,13 +253,12 @@ public class SessionsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         String password = passwordField.getText().toString();
                         Log.d(TAG, "Sign in button action....... " + password);
-                        //LoaderDialog progress = new LoaderDialog(builder.getContext(), getString(R.string.authenticating));
-                        //progress.show();
+                        LoaderDialog progress = new LoaderDialog(builder.getContext(), getString(R.string.authenticating));
+                        progress.show();
                         if (!TextUtils.isEmpty(password)) {
-                            test(sessionId, password);
-                            //progress.dismiss();
+                            joinSession(sessionId, password);
                         }
-
+                        progress.dismiss();
                     }
                 })
                 .setNegativeButton(R.string.cancel_action, new DialogInterface.OnClickListener() {
@@ -274,16 +270,25 @@ public class SessionsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    /**
+     * Join session request.
+     * @param sessionId session id
+     * @param password session password
+     */
     @Background
-    void test(int sessionId, String password){
+    void joinSession(final int sessionId, final String password) {
         try {
             tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
             ResponseEntity<String> joinResponse = tcRestApi.joinSession(sessionId, password);
             Log.d(TAG, joinResponse.toString());
+
+
+            Intent intent = SessionActivity_.intent(this)
+                    .sessionId(sessionId)
+                    .get();
+            startActivity(intent);
         } catch (RestClientException e) {
-            //progress.dismiss();
             Log.d(TAG, "error HTTP request: " + e);
-            //progress.dismiss();
             Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
         }
     }

@@ -22,6 +22,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -34,7 +35,16 @@ import fr.univ_tln.trailscommunity.models.Session;
 @EActivity(R.layout.session_session_activity)
 public class SessionActivity extends AppCompatActivity {
 
+    /**
+     * Tag used for Logger.
+     */
     private static final String TAG = SessionActivity.class.getName();
+
+    /**
+     * Extra identifier used to send
+     * session id value through `SessionsActivity`.
+     */
+    public static final String SESSION_ID_EXTRA = "SESSION_ID_EXTRA";
 
     @ViewById(R.id.drawer_layout)
     DrawerLayout drawerLayout;
@@ -54,6 +64,9 @@ public class SessionActivity extends AppCompatActivity {
      */
     @Bean(MapNavigation.class)
     MapNavigation mapNavigation;
+
+    @Extra(SESSION_ID_EXTRA)
+    int sessionId;
 
     protected Session session;
 
