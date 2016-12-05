@@ -259,16 +259,7 @@ public class SessionsActivity extends AppCompatActivity {
                         //LoaderDialog progress = new LoaderDialog(builder.getContext(), getString(R.string.authenticating));
                         //progress.show();
                         if (!TextUtils.isEmpty(password)) {
-                            try {
-                                tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
-                                ResponseEntity<String> joinResponse = tcRestApi.joinSession(sessionId, password);
-                                Log.d(TAG, joinResponse.toString());
-                            } catch (RestClientException e) {
-                                //progress.dismiss();
-                                Log.d(TAG, "error HTTP request: " + e);
-                                //progress.dismiss();
-                                Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
-                            }
+                            test(sessionId, password);
                             //progress.dismiss();
                         }
 
@@ -281,6 +272,20 @@ public class SessionsActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @Background
+    void test(int sessionId, String password){
+        try {
+            tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
+            ResponseEntity<String> joinResponse = tcRestApi.joinSession(sessionId, password);
+            Log.d(TAG, joinResponse.toString());
+        } catch (RestClientException e) {
+            //progress.dismiss();
+            Log.d(TAG, "error HTTP request: " + e);
+            //progress.dismiss();
+            Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+        }
     }
 
     @Override

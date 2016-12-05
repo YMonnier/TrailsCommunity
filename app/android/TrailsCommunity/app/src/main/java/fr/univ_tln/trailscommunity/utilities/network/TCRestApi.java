@@ -127,5 +127,5 @@ public interface TCRestApi {
 
     @Get("/sessions/{id}/join?password={password}")
     @RequiresHeader("Authorization")
-    ResponseEntity<String> joinSession(@Path int id, @Path String password);
+    ResponseEntity<String> joinSession(@Path("id") int id, @Path("password") String password);
 }
