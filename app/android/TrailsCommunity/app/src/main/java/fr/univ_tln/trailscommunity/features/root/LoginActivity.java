@@ -63,6 +63,21 @@ public class LoginActivity extends AppCompatActivity {
     public static final int MIN_PASSWORD_LENGTH = 8;
 
     /**
+     * Constant which correspond to POST email Auth parameter.
+     */
+    private static final String PARAMS_AUTH_EMAIL = "email";
+
+    /**
+     * Constant which correspond to POST password Auth parameter.
+     */
+    private static final String PARAMS_AUTH_PASSWORD = "password";
+
+    /**
+     * Constant which correspond to POST Auth parameter.
+     */
+    private static final String PARAMS_AUTH_AUTH = "auth";
+
+    /**
      * Input email used to authenticate the user.
      */
     @ViewById(R.id.emailField)
@@ -267,9 +282,9 @@ public class LoginActivity extends AppCompatActivity {
         Map<String, Object> auth = new HashMap<>();
         Map<String, String> sub = new HashMap<>();
 
-        sub.put("email", email);
-        sub.put("password", password);
-        auth.put("auth", sub);
+        sub.put(PARAMS_AUTH_EMAIL, email);
+        sub.put(PARAMS_AUTH_PASSWORD, password);
+        auth.put(PARAMS_AUTH_AUTH, sub);
 
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
