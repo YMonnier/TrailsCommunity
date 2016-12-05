@@ -68,6 +68,21 @@ public class SessionsActivity extends AppCompatActivity {
      */
     private static final String ARRAY_SESSION_KEY = "session";
 
+    /**
+     * Key to get active session from json response
+     */
+    private static final String ACTIVE_SESSION_KEY = "active_sessions";
+
+    /**
+     * Key to get active session from json response
+     */
+    private static final String MY_SESSION_KEY = "my_sessions";
+
+    /**
+     * Key to get active session from json response
+     */
+    private static final String HISTORY_KEY = "history_sessions";
+
     @ViewById
     ListView sessionList;
 
@@ -125,7 +140,7 @@ public class SessionsActivity extends AppCompatActivity {
                         JsonObject data = responseSessions.getBody().get("data").getAsJsonObject();
 
                         adapter.addHeader("Active sessions");
-                        JsonArray activeSessionArray = data.getAsJsonArray("active_sessions");
+                        JsonArray activeSessionArray = data.getAsJsonArray(ACTIVE_SESSION_KEY);
                         Log.d(TAG, activeSessionArray.toString());
                         if (activeSessionArray == null)
                             throw new AssertionError("activeSessionArray cannot be null");
@@ -134,7 +149,7 @@ public class SessionsActivity extends AppCompatActivity {
                         }
 
                         adapter.addHeader("My sessions");
-                        JsonArray mySessionArray = data.getAsJsonArray("my_sessions");
+                        JsonArray mySessionArray = data.getAsJsonArray(MY_SESSION_KEY);
                         Log.d(TAG, mySessionArray.toString());
                         if (mySessionArray == null)
                             throw new AssertionError("mySessionArray cannot be null");
@@ -143,7 +158,7 @@ public class SessionsActivity extends AppCompatActivity {
                         }
 
                         adapter.addHeader("History");
-                        JsonArray historySessionArray = data.getAsJsonArray("active_sessions");
+                        JsonArray historySessionArray = data.getAsJsonArray(HISTORY_KEY);
                         Log.d(TAG, historySessionArray.toString());
                         if (historySessionArray == null)
                             throw new AssertionError("historySessionArray cannot be null");
