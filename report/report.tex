@@ -11,6 +11,7 @@
 \usepackage{makecell} % can create newline in a table cell easily
 \usepackage{scrextend}
 \usepackage{enumitem}
+\usepackage{tabularx}
 
 %\hypersetup{colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black}
 
@@ -823,11 +824,11 @@ Les cas d'utilisation de modification d'une session qui comprend la clôture d'u
 
 \section{Test}
 
-\paragraph{}L'ensemble des fonctionnalités de l'application seront tester avec un panel de test important. Du côté du client, des test unitaire ainsi que des tests graphiques seront réalisé pour tester la robusté de l'application et son bon comportement
+\paragraph{}L'ensemble des fonctionnalités de l'application seront tester avec un panel de test important. Du côté du client, des test unitaire ainsi que des tests graphiques seront réalisé pour tester la robusté de l'application et son bon comportement.
 
 \subsection{Test unitaire}
 
-\begin{tabular}{|c|c|c|}
+\begin{tabularx}{\textwidth}{|X|X|X|}
 	\hline
 	Identifiant & Titre & Description \\
 	\hline
@@ -841,12 +842,13 @@ Les cas d'utilisation de modification d'une session qui comprend la clôture d'u
 	\hline
 	5 & Teste la non validité d'un email & Teste un tableau d'emails non valide \\
 	\hline \hline
-\end{tabular}
+\end{tabularx}
 
+\newpage
 
 \subsection{Test UI}
 
-\begin{tabular}{|c|c|c|}
+\begin{tabularx}{\textwidth}{|X|X|X|}
 	\hline
 	Identifiant & Titre & Description \\
 	\hline
@@ -894,9 +896,9 @@ Les cas d'utilisation de modification d'une session qui comprend la clôture d'u
 	\hline
 	22 & Teste l'affichage d'erreur du champs date de départ de la vue SessionFormActivity & Teste pour le champs date de départ si l'affichage du cas d'erreur fonctionne si le champs est vide \\
 	\hline
-	23 & Teste l'affichage d'erreur du champs mot de passe de la vue SessionFormActivity & Teste pour le champs mot de passe si l'affichage du cas d'erreur fonctionne si le champs est vide \\
+	23 & Teste l'affichage d'erreur du champs mot de passe de la vue SessionFormActivity & Teste pour le champs  si l'affichage du cas d'erreur fonctionne si le champs est vide \\
 	\hline \hline
-\end{tabular}
+\end{tabularx}
 
 \part{Serveur TrailsCommunity}
 
