@@ -42,10 +42,14 @@ import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.geocoder.GMGeocoder;
+import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
 import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.DateValidator;
 import fr.univ_tln.trailscommunity.utilities.view.ViewUtils;
+import io.realm.Realm;
+
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 @EActivity(R.layout.session_form_session)
 @OptionsMenu(R.menu.basic_menu)
@@ -359,7 +363,7 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
         params.put("activity", typeActivity);
         params.put("start_date", startDate);
 
-
+        // Add password field if the password is available
         if (!TextUtils.isEmpty(password)) {
             sessionBuilder.setPassword(password);
             params.put("password", password);
@@ -370,15 +374,53 @@ public class SessionFormActivity extends AppCompatActivity implements DatePicker
             Session session = sessionBuilder.build();
             Log.d(TAG, session.toString());
             ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(session);
-            //ResponseEntity<JsonObject> responseSession = tcRestApi.createSession(params);
-            Log.d(TAG, responseSession.toString());
-            progressView.dismiss();
-            finish();
+            if (responseSession != null) {
+                if (responseSession.getStatusCode().is2xxSuccessful()) {
+                    Log.d(TAG, responseSession.toString());
+                    Session s = getSessionJson(responseSession.getBody());
+                    saveSession(s);
+                    progressView.dismiss();
+                    finish();
+                } else
+                    Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+            }
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
             updateLockUi(false);
             progressView.dismiss();
             Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+        }
+    }
+
+    /**
+     * Parse the response body to get session object.
+     *
+     * @param json json object received from server.
+     * @return a session;
+     */
+    private Session getSessionJson(final JsonObject json) {
+        Session session = null;
+        if (json != null) {
+            JsonObject data = json.getAsJsonObject("data");
+            if (data != null)
+                session = GsonSingleton.getInstance().fromJson(data, Session.class);
+
+        }
+        return session;
+    }
+
+    /**
+     * Save the session created by user into realm database.
+     *
+     * @param session session to store.
+     */
+    private void saveSession(final Session session) {
+        Realm realm = Realm.getDefaultInstance();
+        if (realm != null && session != null) {
+            realm.beginTransaction();
+            realm.copyToRealm(session);
+            realm.commitTransaction();
+            Log.d(TAG, "Save the session into realm database.");
         }
     }
 }

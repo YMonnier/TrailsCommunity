@@ -1,11 +1,16 @@
 package fr.univ_tln.trailscommunity.utilities.network;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 
 import java.util.Arrays;
 import java.util.List;
+
+import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
 
 /**
  * Project TrailsCommunity.
@@ -26,6 +31,12 @@ public class MyGsonHttpMessageConverter extends GsonHttpMessageConverter {
                 new MediaType("application", "json", DEFAULT_CHARSET),
                 new MediaType("application", "*+json", DEFAULT_CHARSET)
         );
+
+        Gson customGson = new GsonBuilder()
+                .setDateFormat(GsonSingleton.DATE_FORMAT)
+                .create();
+
+        super.setGson(customGson);
         super.setSupportedMediaTypes(types);
     }
 }

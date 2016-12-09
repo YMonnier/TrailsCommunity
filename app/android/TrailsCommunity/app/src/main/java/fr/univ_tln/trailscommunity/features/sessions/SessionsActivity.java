@@ -43,8 +43,11 @@ import fr.univ_tln.trailscommunity.features.sessions.listview.SessionHeaderView;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
 import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Project TrailsCommunity.
@@ -125,6 +128,13 @@ public class SessionsActivity extends AppCompatActivity {
     @Background
     void loadData() {
         try {
+            Realm realm = Realm.getDefaultInstance();
+            final RealmResults<Session> sessionRealmResults = realm.where(Session.class).findAll();
+            Log.d(TAG, "realm --> Getch all session....");
+            for (Session s : sessionRealmResults)
+                Log.d(TAG, "realm session... " + s.toString());
+
+
             if (adapter == null)
                 throw new AssertionError("The adapter should not be null");
 
@@ -187,9 +197,7 @@ public class SessionsActivity extends AppCompatActivity {
         if (jsonArray == null)
             throw new AssertionError("The jsonArray should not be null");
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-                .create();
+        Gson gson = GsonSingleton.getInstance();
 
         if (jsonArray != null && gson != null) {
             for (JsonElement sessionJson : jsonArray) {
@@ -289,8 +297,9 @@ public class SessionsActivity extends AppCompatActivity {
 
     /**
      * Join session request.
+     *
      * @param sessionId session id
-     * @param password session password
+     * @param password  session password
      */
     @Background
     void joinSession(final int sessionId, final String password) {
@@ -307,6 +316,7 @@ public class SessionsActivity extends AppCompatActivity {
 
     /**
      * Start a new activity with an extra data sessionId.
+     *
      * @param sessionId session id
      */
     private void goToSessionActivity(int sessionId) {
