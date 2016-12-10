@@ -240,6 +240,22 @@ public class Session extends RealmObject {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Session session = (Session) o;
+
+        return id == session.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
     public String toString() {
         return "Session{" +
                 "activity=" + activity +
