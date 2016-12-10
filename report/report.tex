@@ -676,12 +676,14 @@ NIVEAU : Haute.
 
 \paragraph{}Nous distinguons quatres types d'acteurs : un visiteur, un utilisateur, un participant et un organisateur. Chaque acteurs auront des utilisations de l'application mobile complètement distincts. 
 
-\begin{figure}[!h]
+\begin{figure}
 	\caption{Diagramme de contexte statique}
 	\label{statique_diagram}
 	\centering
 	\includegraphics[scale=0.2]{Images/diagram/static_diagram.png}
 \end{figure}
+
+\clearpage
 
 \paragraph{}L'accès aux données nécessaires au fonctionnement de l'application se fera par le biais d'un serveur codé en Ruby dont le fonctionnement est détaillé en annexe. C'est ce serveur qui communiquera avec la base de données qui stocke l'ensemble des informations des sessions.
 
@@ -1770,10 +1772,24 @@ Authorization
 \paragraph{}Il est nécessaire de s'authentifier vie un compte utilisateur précédemment créer pour pouvoir utiliser l'ensemble des fonctionnalités de l'application TrailsCommunity.
 
 %Capture d'ecran de la page pour s'authentifier%
+\begin{figure}[!h]
+	\caption{Diagramme de séquence de l'affichage d'une session}
+	\label{screenshots_login}
+	\centering
+	\includegraphics[scale=0.2]{Images/screenshots/login.png}
+\end{figure}
 
 \paragraph{}Si l'utilisateur ne possède pas un compte, il est possible d'en créer sur l'application. Différentes informations lui seront demandées.
 
 %Capture d'écran de la page pour créer un compte%
+\begin{figure}[!h]
+	\caption{Diagramme de séquence de l'affichage d'une session}
+	\label{screenshots_register}
+	\centering
+	\includegraphics[scale=0.2]{Images/screenshots/register.png}
+\end{figure}
+
+\clearpage
 
 \paragraph{}Une fois connecté, plusieurs choix s'offre à lui. Il peut alors sélectionner une session active pour la rejoindre ou visualiser son historique. De plus le bouton plus sur la barre de menu lui permet de créer une nouvelle session. D'autres fonctionnalités sont possible en cliquant sur le petit menu en haut à gauche.
 
