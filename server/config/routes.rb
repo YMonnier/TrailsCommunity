@@ -12,5 +12,10 @@ Rails.application.routes.draw do
           post :coordinate, on: :member
           get :test, on: :member
       end
+
+      resources :chats, :only => [] do
+        get :index, on: :member
+        post :create, on: :member
+      end
     end
 end
