@@ -29,6 +29,19 @@ class NotificationManager
         @fcm.send(registration_users_ids, options)
     end
 
+    ##
+    #
+    # Create a new push notification to share chat message
+    # to other current session user.
+    #
+    ##
+    def self.push_chat_message current_user, object
+        registration_users_ids = self.session_users current_user.current_session_id, current_user.id
+
+        options = {data: self.chat_message_data(object), collapse_key: "chat_message"}
+        @fcm.send(registration_users_ids, options)
+    end
+
     def self.push_test current_user, object
         registration_users_ids = User.where(:current_session_id => current_user.current_session_id)
                                     .pluck('id')
@@ -52,6 +65,15 @@ class NotificationManager
         {
             data: {
                 type: 'coordinate',
+                content: object
+            }
+        }
+    end
+
+    def self.chat_message_data(object)
+        {
+            data: {
+                type: 'chat_message',
                 content: object
             }
         }
