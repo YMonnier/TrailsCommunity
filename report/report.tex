@@ -10,6 +10,8 @@
 \usepackage{hyperref} % makes table of contents and list of figures clickable 
 \usepackage{makecell} % can create newline in a table cell easily
 \usepackage{scrextend}
+\usepackage{enumitem}
+\usepackage{tabularx}
 
 %\hypersetup{colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=black}
 
@@ -674,14 +676,14 @@ NIVEAU : Haute.
 	\caption{Diagramme de contexte statique}
 	\label{statique_diagram}
 	\centering
-	\includegraphics[scale=0.7]{Images/diagram/static_diagram.png}
+	\includegraphics[scale=0.2]{Images/diagram/static_diagram.png}
 \end{figure}
 
 \paragraph{}L'accès aux données nécessaires au fonctionnement de l'application se fera par le biais d'un serveur codé en Ruby dont le fonctionnement est détaillé en annexe. C'est ce serveur qui communiquera avec la base de données qui stocke l'ensemble des informations des sessions.
 
 \subsection{Diagramme des cas d'utilisation}
 
-\paragraph{}L'ensemble des cas d'usages excepté la création d'un compte utilisateur requiere une authentification. Le statut de l'acteur diffère en fonction des actions qu'il réalise sur l'application. 
+\paragraph{}L'ensemble des cas d'usages excepté la création d'un compte utilisateur requière une authentification. Le statut de l'acteur diffère en fonction des actions qu'il réalise sur l'application. 
 
 \begin{figure}[!h]
 	\caption{Diagramme des cas d'utilisation}
@@ -746,12 +748,12 @@ Avant sa première connexion, l'utilisateur devra créer un compte pour obtenir 
 	\caption{Diagramme de séquence créer un compte utilisateur}
 	\label{register_sequence_diagram}
 	\centering
-	\includegraphics[scale=0.5]{Images/diagram/registration_sequence_diagram.png}
+	\includegraphics[scale=0.1]{Images/diagram/registration_sequence_diagram.png}
 \end{figure}
 
 \subsection{Traitement d'un cas d'utilisation - Créer une session}
 
-\paragraph{}Le cas d'utilisation que nous avons choisi de détailler ici est la création d'une session. C'est un des cas d'utilisation essentiel au fonctionnement de notre application mobile. Sans cette étape, il est impossible de réaliser n'importe quelles actions concretes sur l'application.
+\paragraph{}Le cas d'utilisation que nous avons choisi de détailler ici est la création d'une session. C'est un des cas d'utilisation essentiel au fonctionnement de notre application mobile. Sans cette étape, il est impossible de réaliser n'importe quelles actions concrètes sur l'application.
 \paragraph{}Le diagramme de séquence s'articule principalement autour de trois étapes : l'authentification, la saisie des données du sondage puis l'envoi des données au serveur.
 
 %Diagramme de séquence créer une session%
@@ -815,34 +817,88 @@ Les cas d'utilisation de modification d'une session qui comprend la clôture d'u
 	\caption{Diagramme d'activité de l'affichage d'une session}
 	\label{view_session_activity_diagram}
 	\centering
-	\includegraphics[scale=0.7]{Images/diagram/view_session_activity_diagram.png}
+	\includegraphics[scale=0.2]{Images/diagram/view_session_activity_diagram.png}
 \end{figure}
 
 %Test client%
 
 \section{Test}
 
-\paragraph{}L'ensemble des fonctionnalités de l'application seront tester avec un panel de test important. Du côté du client, des test unitaire ainsi que des tests graphiques seront réalisé pour tester la robusté de l'application et son bon comportement
+\paragraph{}L'ensemble des fonctionnalités de l'application seront tester avec un panel de test important. Du côté du client, des test unitaire ainsi que des tests graphiques seront réalisé pour tester la robusté de l'application et son bon comportement.
 
 \subsection{Test unitaire}
 
-\begin{center}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Identifiant & Titre & Description \\
-		\hline \hline
-	\end{tabular}
-\end{center}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+	\hline
+	Identifiant & Titre & Description \\
+	\hline
+	1 & JSON session valide & Test la conversion d'un JSON en objet Session \\
+	\hline
+	2 & Parse date invalide & Teste la conversion d'un JSON non valide, c'est à dire qui possède ne possède pas de date en objet Session \\
+	\hline
+	3 & JSON session invalide & Teste la conversion du JSON en objet Session \\
+	\hline
+	4 & Teste la validité d'un email & Teste via une regex si une email est valide ou non \\
+	\hline
+	5 & Teste la non validité d'un email & Teste un tableau d'emails non valide \\
+	\hline \hline
+\end{tabularx}
+
+\newpage
 
 \subsection{Test UI}
 
-\begin{center}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Identifiant & Titre & Description \\
-		\hline \hline
-	\end{tabular}
-\end{center}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+	\hline
+	Identifiant & Titre & Description \\
+	\hline
+	1 & Teste tout les champs de la vue LoginActivity & Entre pour chaque champs une données valide pour tester l'authentification d'un utilisateur \\
+	\hline
+	2 & Teste si tout le champs email est valide de la vue LoginActivity & Entre un email pour teste si la validation de l'email fonctionne \\	
+	\hline
+	3 & Teste si l'affichage erreur sur le champs email de la vue LoginActivity & Entre un email invalide pour tester l'affichage de l'erreur \\
+	\hline
+	4 & Teste le champs mot de passe de la vue LoginActivity & Entre un mot de passe non valide pour tester l'affichage de l'erreur \\
+	\hline
+	5 & Teste si une erreur s'affiche si le mot de passe est vide dans la vue LoginActivity & Entre un mot de passe vide pour tester l'affichage de l'erreur \\
+	\hline
+	6 & Teste tout les champs de la vue SingupActivity & Entre pour chaque champs une données valide pour tester la création d'un compte utilisateur \\
+	\hline
+	7 & Teste l'affichage erreur pour le champs mot de passe de la vue SingupActivity & Entre un mot de passe vide pour tester l'affichage d'erreur du mot de passe vide \\
+	\hline
+	8 & Teste si la forme de l'email est valide de la vue SingupActivity & Entre un email invalide pour tester l'affichage d'erreur de l'email invalide  \\
+	\hline
+	9 & Teste si les 2 mots de passe sont valide de la vue SingupActivity & Entre 2 mots de passe différent pour tester l'affichage d'erreur lorsque les mots de passe sont différents \\
+	\hline
+	10 & Teste le cas d'erreur d'un mot de passe vide de la vue SingupActivity & Entre un mot de passe vide pour afficher le cas d'erreur  \\
+	\hline
+	11 & Teste le cas d'erreur d'un pseudonyme vide  de la vue SingupActivity & Entre un champs vide pour le pseudonyme pour tester l'affichage du cas d'erreur \\
+	\hline
+	12 & Teste le cas d'erreur d'un numéro de téléphone vide de la vue SingupActivity & Entre un champs vide pour le numéro de téléphone pour tester l'affichage du cas d'erreur  \\
+	\hline
+	13 & Teste l'ajout d'un waypoint de la vue SessionActivity & Ajoute un waypoint sur la Google maps  \\
+	\hline
+	14 & Teste l'action du bouton chat de la vue SessionActivity & Teste si le chat s'affiche bien lors du clique de l'utilisateur sur le bouton chat  \\
+	\hline
+	15 & Teste l'ajout d'un message dans le chat de la vue SessionActivity & Ajoute un message dans le chat pour tester son affichage et son ajout dans la liste du chat  \\
+	\hline
+	16 & Teste le cas d'erreur dans un message vide dans le chat de la vue SessionActivity & Ajoute un message vide dans le chat pour tester l'affichage du cas d'erreur  \\
+	\hline
+	17 & Teste la fermeture du chat de la vue SessionActivity & Teste si le chat se ferme bien lors du clique de l'utilisateur sur le bouton chat  \\
+	\hline
+	18 & Teste la conversion d'une adresse en coordonnées GPS dans la vue SessionFormActivity & Teste la conversion d'une adresse en coordonnées GPS  \\
+	\hline
+	19 & Teste la création d'une session de la vue SessionFormActivity & Ajout dans chaque champs de la vue une entrée valide pour tester la création d'une session  \\
+	\hline
+	20 & Teste l'affichage d'erreur du champs lieu de départ de la vue SessionFormActivity & Teste pour le champs lieu de départ si l'affichage du cas d'erreur fonctionne si le champs est vide \\
+	\hline
+	21 & Teste l'affichage d'erreur du champs lieu de d'arrivé de la vue SessionFormActivity & Teste pour le champs lieu de d'arrivé si l'affichage du cas d'erreur fonctionne si le champs est vide \\
+	\hline
+	22 & Teste l'affichage d'erreur du champs date de départ de la vue SessionFormActivity & Teste pour le champs date de départ si l'affichage du cas d'erreur fonctionne si le champs est vide \\
+	\hline
+	23 & Teste l'affichage d'erreur du champs mot de passe de la vue SessionFormActivity & Teste pour le champs  si l'affichage du cas d'erreur fonctionne si le champs est vide \\
+	\hline \hline
+\end{tabularx}
 
 \part{Serveur TrailsCommunity}
 
@@ -1593,13 +1649,7 @@ Authorization
 		$ 500 $ & \\
 		\hline
 	\end{tabular}
-\end{center}
-
-\end{document}  
-
-%
-% Ajout d'une coordonnée
-%
+\end{center} 
 
 \section{Ajout d'une coordonnée}
 
@@ -1693,29 +1743,200 @@ Authorization
 		\hline \hline
 	\end{tabular}
 \end{center}
- 
-%Test serveur%
 
-\section{Test}
+\part{Manuel utilisateur}
 
-\subsection{Test unitaire}
+\paragraph{}Il est nécessaire de s'authentifier vie un compte utilisateur précédemment créer pour pouvoir utiliser l'ensemble des fonctionnalités de l'application TrailsCommunity.
 
-\begin{center}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Identifiant & Titre & Description \\
-		\hline \hline
-	\end{tabular}
-\end{center}
+%Capture d'ecran de la page pour s'authentifier%
 
-\subsection{Test UI}
+\paragraph{}Si l'utilisateur ne possède pas un compte, il est possible d'en créer sur l'application. Différentes informations lui seront demandées.
 
-\begin{center}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		Identifiant & Titre & Description \\
-		\hline \hline
-	\end{tabular}
-\end{center}
+%Capture d'écran de la page pour créer un compte%
 
-\end{document}          
+\paragraph{}Une fois connecté, plusieurs choix s'offre à lui. Il peut alors sélectionner une session active pour la rejoindre ou visualiser son historique. De plus le bouton plus sur la barre de menu lui permet de créer une nouvelle session. D'autres fonctionnalités sont possible en cliquant sur le petit menu en haut à gauche.
+
+%Capture d'écran de la page de l'ensemble des sessions%
+
+\paragraph{}Pour la création d'une session, différentes informations cruciales sont demandées à l'utilisateur pour le bon déroulement de la futur session.
+De plus, la modification des données de l'utilisateur courante ainsi que la déconnexion sont disponible depuis la sélection des sessions.
+
+%Capture d'écran de la création d'une session%
+
+%Capture d'écran de la deconnexion%
+
+\paragraph{}Lors de la sélection d'une session, si la session est privé, l'application va alors demandé à l'utilisateur de donnée le mot de passe de la session.
+
+%Capture d'écran de la popup password%
+
+\paragraph{}Une fois le mot de passe correcte, une Google maps s'affiche avec l'ensemble des tracés des différents participants. Différents boutons sont disponible dans la barre de menu pour afficher le chat ou pour modifier les données de l'utilisateur courant. De plus, les statistiques sont disponibles lorsque l'utilisateur clique sur le bouton flottant en bas à gauche.
+
+%Captue d'écran de la google map%
+
+%Capture d'écran du chat%
+
+%Capture d'écran des statistiques%
+
+\part{Déroulement du projet}
+
+\section{Difficultés rencontrées}
+
+\paragraph{}La principale difficulté que nous avons eu lors de la réalisation de ce projet a été de maintenir une cohérence entre les diagrammes UML réalisés lors de la première partie du projet et le code Java réalisé par la suite. Cependant, l'expérience engrangé lors de la réalisation de notre premier projet UML. Nous avions donc un certains recul pour éviter les différents problèmes rencontrés précédemment.
+Il a donc été nécessaire de reprendre et de mettre à jour la plupart des diagrammes UML après avoir commencé à mettre en place l'application Android.
+
+\paragraph{}La seconde partie de difficultés est liée à l'utilisation de nouvelles technologies :
+\begin{itemize}
+	\item Mise en place d'un serveur afin d'obtenir un service utilisant une architecture propre à notre application mobile : utilisation de Ruby.
+	\item Utilisation du système d'annotation d'Android permettant un meilleurs lisibilité du code d'une part et donc une meilleur maintenance et d'autre part une meilleur injection.
+	\item de nombreuse dépendances et librairies on été ajoutés dans le projet Android. 
+\end{itemize}
+
+Globalement, l'avancée du projet a été assez fluide malgré ces difficultés. La mise en commun de nos connaissances et de nos expériences précédentes nous a permis d'atteindre la majorités des objectifs que nous nous étions fixés.
+
+\section{Perspectives d'évolution}
+
+L'application mobile possède seulement les fonctionnalités qui permettent de rejoindre une session et d'y participer d'une manière tout a fait normal, cependant de nombreuses améliorations peuvent lui être apportés comme :
+\begin{itemize}
+	\item ...
+	\item ...
+\end{itemize}
+
+\section{Conclusion}
+
+\paragraph{}La conduite de ce projet nous aura permis de confirmé nos compétences UML utilisé lors du projet précédent. De nombreux problèmes ont pu donc être résolu plus rapidement ou tout simplement évité.
+De plus, l'ensemble de nos compétences en Java on pu être appliqué sur un projet Android concret englobant l'ensemble des compétences vu lors du module prévu à cet effet.
+La réalisation de ce projet, en plus de nous avoir aidé à utiliser de nouveaux outils et de nouvelles connaissances, nous a également permis de conduire un projet plus ambitieux que prévu depuis la phase de conception jusqu'à l'implémentation, dans un délai relativement court. 
+
+
+\part{Annexe - Diagrammes UML}
+
+\chapter{Diagrammes généraux}
+
+\begin{figure}[!h]
+	\caption{Diagramme d'architecture de l'API}
+	\label{API_architecture}
+	\centering
+	\includegraphics[scale=0.5]{Images/diagram/API_architecture.png}
+\end{figure}
+
+\chapter{Modélisation serveur}
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence pour la vérification de la cohérence des données entre le client et le serveur}
+	\label{check_consitency_data_client_serveur_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/check_consistency_data_client_server_sequence_diagram.png}
+\end{figure} 
+
+\chapter{Diagrammes de séquences}
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence de l'ajout d'un waypoint}
+	\label{add_waypoint_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.2]{Images/diagram/add_waypoint_sequence_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence du chat}
+	\label{chat_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/chat_sequence_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence du la modification du profile}
+	\label{modify_profil_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/modify_profil_sequence_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence pour la sélection d'une session}
+	\label{select_session_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.5]{Images/diagram/selection_session_sequence_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence pour l'utilisation de la géolocalisation}
+	\label{user_geolocalisation_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.5]{Images/diagram/selection_session_sequence_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme de séquence pour l'affichage de l'ensemble des sessions}
+	\label{view_sessions_sequence_diagram}
+	\centering
+	\includegraphics[scale=0.7]{Images/diagram/view_sessions_sequence_diagram.png}
+\end{figure}
+
+\chapter{Diagrammes d'activités}
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité de l'ajout d'un waypoint}
+	\label{add_waypoint_activity_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/add_waypoint_activity_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité du chat}
+	\label{chat_activity_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/chat_activity_diagram.png}
+\end{figure}  
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité pour l'authentification}
+	\label{login_activity_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/login_activity_diagram.png}
+\end{figure} 
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité pour la modification du profile}
+	\label{modify_profil_activity_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/modify_profil_activity_diagram.png}
+\end{figure} 
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité pour la sélection d'une session}
+	\label{selection_session_activity_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/modify_profil_activity_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité pour l'utilisation de la géolocalisation}
+	\label{use_geolocalistion_activity_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/use_geolocalisation_activity_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme d'activité pour l'affichage de l'ensemble des sessions}
+	\label{view_sessions_activity_diagram}
+	\centering
+	\includegraphics[scale=0.6]{Images/diagram/view_sessions_activity_diagram.png}
+\end{figure}
+
+\chapter{Diagrammes d'états}  
+
+\begin{figure}[!h]
+	\caption{Diagramme d'état d'un acteur}
+	\label{state_actor_diagram}
+	\centering
+	\includegraphics[scale=0.8]{Images/diagram/state_actor_diagram.png}
+\end{figure}
+
+\begin{figure}[!h]
+	\caption{Diagramme d'état d'une session}
+	\label{state_session_diagram}
+	\centering
+	\includegraphics[scale=0.8]{Images/diagram/state_session_diagram.png}
+\end{figure}
+
+\end{document}       
