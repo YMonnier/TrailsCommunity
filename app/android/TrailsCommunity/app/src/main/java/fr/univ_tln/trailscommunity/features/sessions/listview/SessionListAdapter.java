@@ -43,6 +43,9 @@ public class SessionListAdapter extends BaseAdapter {
      */
     private List<Session> sessions;
 
+    /**
+     * List of header indexed by id.
+     */
     private Map<Integer, String> headers;
 
     @RootContext
@@ -89,6 +92,11 @@ public class SessionListAdapter extends BaseAdapter {
             sessions.add(new Session.Builder().build());
             headers.put(sessions.size() - 1, header);
         }
+    }
+
+    public void clear() {
+        sessions.clear();
+        headers.clear();
     }
 
     @Override

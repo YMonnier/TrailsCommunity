@@ -17,6 +17,7 @@ import org.androidannotations.rest.spring.annotations.Get;
 import org.androidannotations.rest.spring.annotations.Header;
 import org.androidannotations.rest.spring.annotations.Path;
 import org.androidannotations.rest.spring.annotations.Post;
+import org.androidannotations.rest.spring.annotations.Put;
 import org.androidannotations.rest.spring.annotations.RequiresHeader;
 import org.androidannotations.rest.spring.annotations.Rest;
 import org.androidannotations.rest.spring.api.MediaType;
@@ -138,10 +139,15 @@ public interface TCRestApi {
     @RequiresHeader("Authorization")
     ResponseEntity<JsonObject> createSession(@Body Session session);
 
+    @Put("/sessions/{id}")
+    @Header(name = "Content-Type", value = "application/json")
+    @RequiresHeader("Authorization")
+    ResponseEntity<JsonObject> updateSession(@Path int id, @Body Session session);
+
 
     @Get("/sessions/{id}/join")
     @RequiresHeader("Authorization")
-    ResponseEntity<JsonObject> joinSession(@Path int id);
+    ResponseEntity<String> joinSession(@Path int id);
 
     @Get("/sessions/{id}/join?password={password}")
     @RequiresHeader("Authorization")

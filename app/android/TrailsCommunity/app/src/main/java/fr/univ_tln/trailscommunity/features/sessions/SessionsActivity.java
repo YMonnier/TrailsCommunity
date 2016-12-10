@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,6 +33,9 @@ import org.androidannotations.rest.spring.annotations.RestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.root.ProfileActivity_;
@@ -43,8 +45,11 @@ import fr.univ_tln.trailscommunity.features.sessions.listview.SessionHeaderView;
 import fr.univ_tln.trailscommunity.features.sessions.listview.SessionListAdapter;
 import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
 import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Project TrailsCommunity.
@@ -112,24 +117,37 @@ public class SessionsActivity extends AppCompatActivity {
         setTitle(getString(R.string.title_sessions_activity));
         progressView = new LoaderDialog(this, getString(R.string.fetching_session));
         progressView.show();
-        loadData();
-        //sessionList.setAdapter(adapter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+
     /**
-     * Method which allows you to
+     * Method which allows to
      * fetch all sessions data from API.
      * Moreover, it checks if sessions create by
      * current user are present into database and use it.
+     * See also `consistencyMySessionsData` method.
      */
     @Background
     void loadData() {
         try {
+            Realm realm = Realm.getDefaultInstance();
+            final RealmResults<Session> sessionRealmResults = realm.where(Session.class).findAll();
+            Log.d(TAG, "realm --> Getch all session....");
+            for (Session s : sessionRealmResults)
+                Log.d(TAG, "realm session... " + s.toString());
+
+
             if (adapter == null)
                 throw new AssertionError("The adapter should not be null");
 
             if (adapter != null) {
-
+                adapter.clear();
                 tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
                 ResponseEntity<JsonObject> responseSessions = tcRestApi.sessions();
 
@@ -151,11 +169,13 @@ public class SessionsActivity extends AppCompatActivity {
 
                         adapter.addHeader(SessionHeaderView.MY_SESSION_HEADER);
                         JsonArray mySessionArray = data.getAsJsonArray(MY_SESSION_KEY);
+
                         Log.d(TAG, mySessionArray.toString());
                         if (mySessionArray == null)
                             throw new AssertionError("mySessionArray cannot be null");
                         if (mySessionArray != null) {
-                            parseSessionItemJsonObject(mySessionArray);
+                            consistencyMySessionsData(mySessionArray);
+                            //parseSessionItemJsonObject(mySessionArray);
                         }
 
                         adapter.addHeader(SessionHeaderView.HISTORY_HEADER);
@@ -181,26 +201,131 @@ public class SessionsActivity extends AppCompatActivity {
     }
 
     /**
-     * Parse an array of json object from the list of session.
+     * Method allowing to check data from server
+     * and local session data if there are consistency.
+     * That is to say, if data from server are
+     * more recent than local data so we update if needed.
+     *
+     * @param jsonArray session json array
+     * @return list of session created by current user
      */
-    private void parseSessionItemJsonObject(final JsonArray jsonArray) {
-        if (jsonArray == null)
-            throw new AssertionError("The jsonArray should not be null");
+    private void consistencyMySessionsData(final JsonArray jsonArray) {
+        Log.d(TAG, "Check consistencyMySessionsData");
+        List<Session> res = new ArrayList<>();
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults<Session> localSessions = realm.where(Session.class).findAll();
+        List<Session> serverSessions = getSessionsFromArrayJson(jsonArray);
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-                .create();
+        if (localSessions.isLoaded()) { //get local session #asynchronously
+            // data ready
+            for (Session serverSession : serverSessions) {
+                if (localSessions.contains(serverSession)) {
+                    Session tmpSession = findSessionById(localSessions, serverSession.getId());
 
-        if (jsonArray != null && gson != null) {
+                    // Update session from server if is more recent than local session data.
+                    if (serverSession.getUpdatedAt().after(tmpSession.getUpdatedAt())) {
+                        realm.copyToRealmOrUpdate(serverSession);
+                        res.add(serverSession);
+                    } else {
+                        // Update sessions server depending on updating status of local data
+                        if (tmpSession.getUpdatedAt().after(serverSession.getUpdatedAt())) {
+                            try {
+                                tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
+                                ResponseEntity<JsonObject> responseSession = tcRestApi.updateSession(tmpSession.getId(), tmpSession);
+                                if (responseSession != null) {
+                                    Log.d(TAG, responseSession.toString());
+                                    Gson gson = GsonSingleton.getInstance();
+                                    JsonObject jsonObject = gson.fromJson(responseSession.getBody(), JsonObject.class);
+                                    if (jsonObject != null) {
+                                        JsonObject data = jsonObject.getAsJsonObject("data");
+                                        if (data != null) {
+                                            Session session = gson.fromJson(data, Session.class);
+                                            realm.copyToRealmOrUpdate(session);
+                                            res.add(session);
+                                        }
+                                    }
+                                }
+                            } catch (RestClientException e) {
+                                Log.d(TAG, e.getLocalizedMessage());
+                            }
+                        }
+                    }
+                } else {
+                    realm.copyToRealmOrUpdate(serverSession);
+                    res.add(serverSession);
+                }
+            }
+        }
+        realm.commitTransaction();
+
+        if (adapter != null) {
+            for (Session s : res)
+                adapter.addItem(s);
+        }
+    }
+
+    /**
+     * Map session json array to a session list.
+     *
+     * @param jsonArray session json array
+     * @return list of session
+     */
+    private List<Session> getSessionsFromArrayJson(final JsonArray jsonArray) {
+        List<Session> res = new ArrayList<>();
+        if (jsonArray != null) {
+            Gson gson = GsonSingleton.getInstance();
             for (JsonElement sessionJson : jsonArray) {
                 JsonObject jsonObject = sessionJson.getAsJsonObject();
                 if (jsonObject != null) {
                     JsonObject sessionJsonObject = jsonObject.getAsJsonObject(ARRAY_SESSION_KEY);
                     if (sessionJsonObject != null)
-                        adapter.addItem(gson.fromJson(sessionJsonObject, Session.class));
+                        res.add(gson.fromJson(sessionJsonObject, Session.class));
                 }
             }
         }
+        return res;
+    }
+
+    /**
+     * Parse an array of json object from the list
+     * of session and add it to the list view..
+     */
+    private void parseSessionItemJsonObject(final JsonArray jsonArray) {
+        if (jsonArray == null)
+            throw new AssertionError("The jsonArray should not be null");
+
+        List<Session> sessions = getSessionsFromArrayJson(jsonArray);
+        if (sessions != null) {
+            for (Session s : sessions)
+                adapter.addItem(s);
+        }
+    }
+
+    /**
+     * Find a session by his id.
+     *
+     * @param sessions source searching
+     * @param id       element id we want to find
+     * @return return null if not found, otherwise, the session.
+     */
+    private Session findSessionById(List<Session> sessions, int id) {
+        Session res = null;
+
+        if (sessions == null)
+            throw new AssertionError("Session should not be null");
+
+        if (sessions != null) {
+            int i = 0;
+            while (i < sessions.size() - 1 && res == null) {
+                if (sessions.get(i).getId() == id) {
+                    res = sessions.get(i);
+                }
+                i += 1;
+            }
+        }
+
+        return res;
     }
 
     @UiThread
@@ -245,8 +370,9 @@ public class SessionsActivity extends AppCompatActivity {
         int sessionId = session.getId();
         if (session.isLock())
             showPasswordDialog(sessionId);
-        else
-            goToSessionActivity(sessionId);
+        else {
+            joinSession(sessionId, "");
+        }
     }
 
     /**
@@ -289,16 +415,29 @@ public class SessionsActivity extends AppCompatActivity {
 
     /**
      * Join session request.
+     *
      * @param sessionId session id
-     * @param password session password
+     * @param password  session password
      */
     @Background
     void joinSession(final int sessionId, final String password) {
         try {
             tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
-            ResponseEntity<String> joinResponse = tcRestApi.joinSession(sessionId, password);
-            Log.d(TAG, joinResponse.toString());
-            goToSessionActivity(sessionId);
+            if (password != null) {
+                ResponseEntity<String> joinResponse = null;
+                if (!password.equals(""))
+                    joinResponse = tcRestApi.joinSession(sessionId, password);
+                else
+                    joinResponse = tcRestApi.joinSession(sessionId);
+
+                if (joinResponse == null)
+                    throw new AssertionError("The join response should not be null");
+
+                if (joinResponse != null) {
+                    Log.d(TAG, joinResponse.toString());
+                    goToSessionActivity(sessionId);
+                }
+            }
         } catch (RestClientException e) {
             Log.d(TAG, "error HTTP request: " + e);
             Snack.showSuccessfulMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
@@ -307,6 +446,7 @@ public class SessionsActivity extends AppCompatActivity {
 
     /**
      * Start a new activity with an extra data sessionId.
+     *
      * @param sessionId session id
      */
     private void goToSessionActivity(int sessionId) {
@@ -314,10 +454,5 @@ public class SessionsActivity extends AppCompatActivity {
                 .sessionId(sessionId)
                 .get();
         startActivity(intent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 }
