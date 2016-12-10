@@ -109,9 +109,6 @@ public class SessionsActivity extends AppCompatActivity {
      */
     private LoaderDialog progressView;
 
-    AlphaAnimation inAnimation;
-    AlphaAnimation outAnimation;
-
     @AfterViews
     void init() {
         setTitle(getString(R.string.title_sessions_activity));

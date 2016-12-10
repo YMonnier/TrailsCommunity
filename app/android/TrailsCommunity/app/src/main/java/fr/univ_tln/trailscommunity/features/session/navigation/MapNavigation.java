@@ -231,12 +231,11 @@ public class MapNavigation
                 .build();
 
         mapView.addMarker(new MarkerOptions().position(latLng).title("Pseudo | Waypoint"));
-
-
+        shareWaypoint(coordinate);
     }
 
     @Background
-    void shareWaypoint(Coordinate coordinate) {
+    void shareWaypoint(final Coordinate coordinate) {
         try {
             tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
             tcRestApi.shareWaypoint(session.getId(), coordinate);
@@ -275,7 +274,6 @@ public class MapNavigation
         try {
             tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
             tcRestApi.shareCoordinate(session.getId(), coordinate);
-            //Log.d(TAG, response.toString());
             Log.d(TAG, "locationReceiver OK");
         } catch (RestClientException e) {
             Log.e(TAG, e.getLocalizedMessage());
