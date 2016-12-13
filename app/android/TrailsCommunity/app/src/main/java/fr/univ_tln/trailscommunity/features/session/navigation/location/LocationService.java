@@ -120,8 +120,6 @@ public class LocationService extends Service implements LocationListener {
             return;
         }
         locationManager.removeUpdates(this);
-        locationManager.removeTestProvider(LocationManager.NETWORK_PROVIDER);
-        locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
     }
 
     /**
