@@ -3,6 +3,7 @@ package fr.univ_tln.trailscommunity.features;
 import android.view.View;
 import android.widget.EditText;
 
+import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.internal.matchers.TypeSafeMatcher;
@@ -32,6 +33,20 @@ public class EspressoUtils {
                 }
                 EditText editText = (EditText) view;
                 return editText.getError().toString().equals(expected);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+
+            }
+        };
+    }
+
+    public static <T> Matcher<T> withMyValue(final String name) {
+        return new BaseMatcher<T>() {
+            @Override
+            public boolean matches(Object item) {
+                return item.toString().equals(name);
             }
 
             @Override

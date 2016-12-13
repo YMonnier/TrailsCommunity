@@ -117,11 +117,7 @@ public class LoginActivity extends AppCompatActivity {
     @AfterViews
     void init() {
         setTitle(R.string.title_login_activity);
-        emailView.setText("ysee@mail.com");
-        passwordView.setText("abcd1234");
-
         title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/brush.ttf"));
-
         progressView = new LoaderDialog(this, getString(R.string.authenticating));
 
         //

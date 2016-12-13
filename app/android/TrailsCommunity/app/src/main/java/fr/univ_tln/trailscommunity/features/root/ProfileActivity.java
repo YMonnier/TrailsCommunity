@@ -44,8 +44,8 @@ public class ProfileActivity extends AppCompatActivity {
     @AfterViews
     void init() {
         setTitle("User information");
-        nicknameField.setText("GreatNickname");
-        phoneNumberField.setText("6 00 00 00 00");
+        //nicknameField.setText("GreatNickname");
+        //phoneNumberField.setText("6 00 00 00 00");
     }
 
     /**
