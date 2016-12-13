@@ -7,6 +7,7 @@ class Api::ChatsController < ApplicationController
                 @chat.user_id = current_user.id
                 @chat.session_id = params[:id]
                 if @chat.save
+                    NotificationManager::push_chat_message current_user, @chat
                     created_request ''
                 else
                     bad_request @chat.errors
