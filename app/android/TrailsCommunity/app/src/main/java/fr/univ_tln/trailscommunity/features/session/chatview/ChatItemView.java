@@ -30,6 +30,6 @@ public class ChatItemView extends LinearLayout {
 
     public void bind(Chat chat) {
         if (titleTextView != null)
-            titleTextView.setText(String.format("%s: %s", "John", chat.getMessage()));
+            titleTextView.setText(String.format("%s: %s", chat.getUser().getNickname(), chat.getMessage()));
     }
 }

@@ -24,6 +24,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -44,6 +48,7 @@ import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.models.User;
 import fr.univ_tln.trailscommunity.utilities.Snack;
 import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
+import fr.univ_tln.trailscommunity.utilities.network.RestApiKey;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.notification.NotificationReceiverService;
 import io.realm.Realm;
@@ -241,9 +246,16 @@ public class SessionActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String json = intent.getStringExtra(NotificationReceiverService.EXTRA_CHAT_SHARING_RECEIVER);
-            Chat chat = GsonSingleton.getInstance().fromJson(json, Chat.class);
-            Log.d(TAG, "Got chat message from notification: " + chat);
-            updateUi(chat);
+            Log.d(TAG, "Got chat message from notification: " + json);
+            Gson gson = GsonSingleton.getInstance();
+            JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+            if (jsonObject != null) {
+                JsonElement chatElement = jsonObject.get(RestApiKey.CHAT);
+                if (chatElement != null) {
+                    Chat chat = GsonSingleton.getInstance().fromJson(chatElement, Chat.class);
+                    updateUi(chat);
+                }
+            }
         }
     };
 

@@ -302,7 +302,7 @@ public class LoginActivity extends AppCompatActivity {
                     // Get current user information
                     tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, token);
                     String deviceToken = FirebaseInstanceId.getInstance().getToken();
-                    Log.d(TAG, "FCM TEST Token: " + token);
+                    Log.d(TAG, "FCM TEST Token: " + deviceToken);
                     ResponseEntity<JsonObject> responseUser = tcRestApi.user(deviceToken);
                     if (responseUser == null)
                         throw new AssertionError("response user should not be null");

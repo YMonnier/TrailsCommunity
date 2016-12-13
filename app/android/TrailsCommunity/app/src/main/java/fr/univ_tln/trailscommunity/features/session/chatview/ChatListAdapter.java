@@ -1,13 +1,11 @@
 package fr.univ_tln.trailscommunity.features.session.chatview;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -23,19 +21,12 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.univ_tln.trailscommunity.R;
 import fr.univ_tln.trailscommunity.Settings;
-import fr.univ_tln.trailscommunity.features.sessions.listview.SessionHeaderView;
-import fr.univ_tln.trailscommunity.features.sessions.listview.SessionHeaderView_;
-import fr.univ_tln.trailscommunity.features.sessions.listview.SessionItemView;
-import fr.univ_tln.trailscommunity.features.sessions.listview.SessionItemView_;
 import fr.univ_tln.trailscommunity.models.Chat;
-import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
 import fr.univ_tln.trailscommunity.utilities.network.NetworkUtils;
-import fr.univ_tln.trailscommunity.utilities.network.ResApiKey;
+import fr.univ_tln.trailscommunity.utilities.network.RestApiKey;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
-import io.realm.Realm;
 
 /**
  * Project TrailsCommunity.
@@ -107,7 +98,7 @@ public class ChatListAdapter extends BaseAdapter {
             if (response != null) {
                 if (response.getStatusCode().is2xxSuccessful()) {
                     JsonObject jsonObject = response.getBody();
-                    JsonArray data = jsonObject.getAsJsonArray(ResApiKey.DATA);
+                    JsonArray data = jsonObject.getAsJsonArray(RestApiKey.DATA);
                     if (data != null) {
                         for (JsonElement jsonElement : data) {
                             Chat c = GsonSingleton.getInstance().fromJson(jsonElement, Chat.class);
