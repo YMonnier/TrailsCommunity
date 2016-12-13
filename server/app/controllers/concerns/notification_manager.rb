@@ -56,7 +56,7 @@ class NotificationManager
         {
             data: {
                 type: 'waypoint',
-                content: object
+                content: ActiveModelSerializers::SerializableResource.new(object, include: %w(user))
             }
         }
     end
