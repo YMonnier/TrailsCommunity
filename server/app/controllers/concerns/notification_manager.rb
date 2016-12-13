@@ -46,8 +46,8 @@ class NotificationManager
         registration_users_ids = User.where(:current_session_id => current_user.current_session_id)
                                     .pluck('id')
                                     #.where.not(id: current_user.id)
-        registration_users_ids = ['da-5V6tu638:APA91bEhK6Yue-hElQ1j8sHCLaf2bTWmgqUzyF-AqWOp034AFyoYd7TH6imCcAR8d0ftzqkNjNQRQJye5-QgyMEwCWkQ3UQKZ7Mu1Li7aWde6zrPh27YuROhcD5z1kA-r6LoVaZxTGOl']
-        options = {data: self.coordinate_data(object), collapse_key: "test"}
+        registration_users_ids = ['ddcIiS8yIFY:APA91bGc4pFN2oMrMEtyYkCo5IulpXhO8KWpvh8t47uk3R6rKAhKntD6ILCI2kaGgc5Nh7lnUEEFxPpVwksbZ74NQdwzV-6MiE4f8IvtjG0rMqrpxke9esdJ64aJdAgVVdkE0hIWi9z2']
+        options = {data: self.chat_message_data(object), collapse_key: "test"}
         @fcm.send(registration_users_ids, options)
     end
 
@@ -56,7 +56,7 @@ class NotificationManager
         {
             data: {
                 type: 'waypoint',
-                content: ActiveModelSerializers::SerializableResource.new(object, include: %w(user))
+                content: object
             }
         }
     end
@@ -74,7 +74,7 @@ class NotificationManager
         {
             data: {
                 type: 'chat_message',
-                content: object
+                content: ActiveModelSerializers::SerializableResource.new(object, include: %w(user))
             }
         }
     end

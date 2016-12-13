@@ -193,10 +193,10 @@ class Api::SessionsController < ApplicationController
     end
 
     def test
-        point = Coordinate.new
-        point.latitude = 123
-        point.longitude = 1234
-        ok_request NotificationManager::push_test current_user, point
+        chat = Chat.new
+        chat.message = 'Test my...'
+        chat.user_id = current_user.id
+        ok_request NotificationManager::push_test current_user, chat
     end
 
     private
