@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -58,18 +60,33 @@ public class ModifySessionActivity extends AppCompatActivity implements DatePick
     @ViewById(R.id.progress)
     View mProgressView;
 
-    @ViewById(R.id.save)
+    @ViewById(R.id.saveSessionButton)
     Button saveButton;
 
     @AfterViews
     void init() {
         setTitle("Modify session");
+        setupActivitiesSpinner();
+    }
+
+    /**
+     * Populate spinner with type of activities.
+     */
+    private void setupActivitiesSpinner() {
+        Session.TypeActivity[] typeActivities = Session.TypeActivity.values();
+        if (typeActivities == null)
+            throw new AssertionError("typeActivities should not be null");
+        if (typeActivities != null) {
+            SpinnerAdapter listAdapter =
+                    new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, typeActivities);
+            typeActivitySpinner.setAdapter(listAdapter);
+        }
     }
 
     /**
      * Save button action.
      */
-    @Click(R.id.save)
+    @Click(R.id.saveSessionButton)
     void onClickOnSaveButton() {
         saveSessionModification();
     }
