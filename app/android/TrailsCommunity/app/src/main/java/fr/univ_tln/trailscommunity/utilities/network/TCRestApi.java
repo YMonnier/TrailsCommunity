@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
+import fr.univ_tln.trailscommunity.models.Chat;
 import fr.univ_tln.trailscommunity.models.Coordinate;
 import fr.univ_tln.trailscommunity.models.Session;
 
@@ -139,6 +140,13 @@ public interface TCRestApi {
     @RequiresHeader("Authorization")
     ResponseEntity<JsonObject> createSession(@Body Session session);
 
+    /**
+     * Modify an existing session.
+     *
+     * @param id      session id
+     * @param session session parameters
+     * @return status 200 if updated, otherwise, 4xx, 5xx status code.
+     */
     @Put("/sessions/{id}")
     @Header(name = "Content-Type", value = "application/json")
     @RequiresHeader("Authorization")
@@ -177,4 +185,28 @@ public interface TCRestApi {
     @Header(name = "Content-Type", value = "application/json")
     @RequiresHeader("Authorization")
     void shareCoordinate(@Path("id") int id, @Body Coordinate coordinate);
+
+
+    /**
+     * Send a message to the current session
+     *
+     * @param id   session id
+     * @param chat chat parameters
+     * @return status code 201 if OK, otherwise, 4xx, 5xx status code.
+     */
+    @Post("/chats/{id}")
+    @Header(name = "Content-Type", value = "application/json")
+    @RequiresHeader("Authorization")
+    void sendMessage(@Path int id, @Body Chat chat);
+
+    /**
+     * Get all messages of a session
+     *
+     * @param id session id
+     * @return status code 201 if OK, otherwise, 4xx, 5xx status code.
+     */
+    @Get("/chats/{id}")
+    @Header(name = "Content-Type", value = "application/json")
+    @RequiresHeader("Authorization")
+    ResponseEntity<JsonObject> messages(@Path int id);
 }

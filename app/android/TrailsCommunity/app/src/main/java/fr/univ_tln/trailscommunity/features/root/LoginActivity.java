@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
     void init() {
         setTitle(R.string.title_login_activity);
         emailView.setText("ysee@mail.com");
-        passwordView.setText("testtest");
+        passwordView.setText("abcd1234");
 
         title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/brush.ttf"));
 

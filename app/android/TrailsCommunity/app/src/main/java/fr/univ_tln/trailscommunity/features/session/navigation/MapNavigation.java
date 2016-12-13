@@ -46,6 +46,7 @@ import fr.univ_tln.trailscommunity.models.Session;
 import fr.univ_tln.trailscommunity.models.UserNavigationSettings;
 import fr.univ_tln.trailscommunity.models.Waypoint;
 import fr.univ_tln.trailscommunity.utilities.color.ColorUtils;
+import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
 import fr.univ_tln.trailscommunity.utilities.mapview.MapViewUtils;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.notification.NotificationReceiverService;
@@ -134,7 +135,7 @@ public class MapNavigation
         Log.d(TAG, "init");
         this.session = session;
         this.users = new HashMap<>();
-        this.gson = new Gson();
+        this.gson = GsonSingleton.getInstance();
 
         // Get Google Map and initialize it
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
@@ -270,10 +271,10 @@ public class MapNavigation
     }
 
     @Background
-    void shareCoordinate(Coordinate coordinate) {
+    void shareCoordinate(final int sessionId, final Coordinate coordinate) {
         try {
             tcRestApi.setHeader(fr.univ_tln.trailscommunity.Settings.AUTHORIZATION_HEADER_NAME, fr.univ_tln.trailscommunity.Settings.TOKEN_AUTHORIZATION);
-            tcRestApi.shareCoordinate(session.getId(), coordinate);
+            tcRestApi.shareCoordinate(sessionId, coordinate);
             Log.d(TAG, "locationReceiver OK");
         } catch (RestClientException e) {
             Log.e(TAG, e.getLocalizedMessage());
@@ -352,7 +353,7 @@ public class MapNavigation
             if (currentUser != null) {
                 addCoordinate(currentUser, coordinate);
 
-                shareCoordinate(coordinate);
+                shareCoordinate(session.getId(), coordinate);
             }
         }
     };

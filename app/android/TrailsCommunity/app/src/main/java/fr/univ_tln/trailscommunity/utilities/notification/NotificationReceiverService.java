@@ -34,13 +34,19 @@ public class NotificationReceiverService extends FirebaseMessagingService {
     public static final String EXTRA_WAYPOINT_SHARING_RECEIVER = "EXTRA_WAYPOINT_SHARING_RECEIVER";
 
     /**
+     * Intent identifier for waypoint broadcast from notification.
+     */
+    public static final String CHAT_SHARING_RECEIVER = "CHAT_SHARING_RECEIVER";
+    public static final String EXTRA_CHAT_SHARING_RECEIVER = "EXTRA_CHAT_SHARING_RECEIVER";
+
+    /**
      * Different type of message thah application
      * can receive from a push notification(Firebase Cloud Messaging, previous Google Cloud Messaging).
      */
     enum MessageType {
         WAYPOINT("waypoint"),
         COORDINATE("coordinate"),
-        CHAT("chat");
+        CHAT("chat_message");
 
         String type;
 
@@ -89,7 +95,9 @@ public class NotificationReceiverService extends FirebaseMessagingService {
                             intent.putExtra(EXTRA_WAYPOINT_SHARING_RECEIVER, json);
                             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                         } else if (type.equals(MessageType.CHAT.type)) {
-                            //TODO: Intent chat...
+                            Intent intent = new Intent(CHAT_SHARING_RECEIVER);
+                            intent.putExtra(EXTRA_CHAT_SHARING_RECEIVER, json);
+                            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                         }
                     }
                 }

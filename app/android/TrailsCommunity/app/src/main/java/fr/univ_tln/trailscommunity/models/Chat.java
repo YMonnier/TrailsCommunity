@@ -23,10 +23,13 @@ public class Chat extends RealmObject {
     @SerializedName("user_id")
     private int userId;
 
+    private User user;
+
     public Chat() {}
 
     private Chat(Builder builder) {
         this.id = builder.id;
+        this.user = builder.user;
         this.message = builder.message;
         this.userId = builder.userId;
     }
@@ -43,9 +46,14 @@ public class Chat extends RealmObject {
         return userId;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public static class Builder {
         private String message;
         private int userId;
+        private User user;
         private int id;
 
         public Chat build() {
@@ -54,6 +62,11 @@ public class Chat extends RealmObject {
 
         public Builder setMessage(String message) {
             this.message = message;
+            return this;
+        }
+
+        public Builder setUser(User user) {
+            this.user = user;
             return this;
         }
 
@@ -66,5 +79,15 @@ public class Chat extends RealmObject {
             this.id = id;
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "id=" + id +
+                ", message='" + message + '\'' +
+                ", userId=" + userId +
+                ", user=" + user +
+                '}';
     }
 }

@@ -306,7 +306,7 @@ public class SessionsActivity extends AppCompatActivity {
      * @param id       element id we want to find
      * @return return null if not found, otherwise, the session.
      */
-    private Session findSessionById(List<Session> sessions, int id) {
+    private Session findSessionById(final List<Session> sessions, final int id) {
         Session res = null;
 
         if (sessions == null)
@@ -363,21 +363,19 @@ public class SessionsActivity extends AppCompatActivity {
     void sessionListItemClicked(final Session session) {
         Log.d(TAG, session.toString());
         Log.d(TAG, "session id locked? : " + session.isLock());
-
-        int sessionId = session.getId();
         if (session.isLock())
-            showPasswordDialog(sessionId);
+            showPasswordDialog(session);
         else {
-            joinSession(sessionId, "");
+            joinSession(session, "");
         }
     }
 
     /**
      * Show a dialog to put the session password.
      *
-     * @param sessionId session id
+     * @param session session selected
      */
-    private void showPasswordDialog(final int sessionId) {
+    private void showPasswordDialog(final Session session) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
@@ -396,7 +394,7 @@ public class SessionsActivity extends AppCompatActivity {
                         LoaderDialog progress = new LoaderDialog(builder.getContext(), getString(R.string.authenticating));
                         progress.show();
                         if (!TextUtils.isEmpty(password)) {
-                            joinSession(sessionId, password);
+                            joinSession(session, password);
                         }
                         progress.dismiss();
                     }
@@ -413,26 +411,28 @@ public class SessionsActivity extends AppCompatActivity {
     /**
      * Join session request.
      *
-     * @param sessionId session id
+     * @param session session selected
      * @param password  session password
      */
     @Background
-    void joinSession(final int sessionId, final String password) {
+    void joinSession(final Session session, final String password) {
         try {
             tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
             if (password != null) {
                 ResponseEntity<String> joinResponse = null;
                 if (!password.equals(""))
-                    joinResponse = tcRestApi.joinSession(sessionId, password);
+                    joinResponse = tcRestApi.joinSession(session.getId(), password);
                 else
-                    joinResponse = tcRestApi.joinSession(sessionId);
+                    joinResponse = tcRestApi.joinSession(session.getId());
 
                 if (joinResponse == null)
                     throw new AssertionError("The join response should not be null");
 
                 if (joinResponse != null) {
                     Log.d(TAG, joinResponse.toString());
-                    goToSessionActivity(sessionId);
+
+                    saveSessionJoined(session);
+                    goToSessionActivity(session.getId());
                 }
             }
         } catch (RestClientException e) {
@@ -446,10 +446,23 @@ public class SessionsActivity extends AppCompatActivity {
      *
      * @param sessionId session id
      */
-    private void goToSessionActivity(int sessionId) {
+    private void goToSessionActivity(final int sessionId) {
         Intent intent = SessionActivity_.intent(this)
                 .sessionId(sessionId)
                 .get();
         startActivity(intent);
+    }
+
+    /**
+     * Save the session joined into the local database
+     * @param session session joined
+     */
+    private void saveSessionJoined(final Session session) {
+        Realm realm = Realm.getDefaultInstance();
+        if(realm.where(Session.class).equalTo("id", session.getId()).findFirst() == null) {
+            realm.beginTransaction();
+            realm.copyToRealm(session);
+            realm.commitTransaction();
+        }
     }
 }

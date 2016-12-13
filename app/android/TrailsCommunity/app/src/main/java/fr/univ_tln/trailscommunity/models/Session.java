@@ -37,6 +37,7 @@ public class Session extends RealmObject {
     private String password;
     private RealmList<Coordinate> coordinates;
     private RealmList<Waypoint> waypoints;
+    private RealmList<Chat> chats;
 
     @SerializedName("created_at")
     private Date createdAt;
@@ -134,6 +135,10 @@ public class Session extends RealmObject {
             default:
                 return "";
         }
+    }
+
+    public RealmList<Chat> getChats() {
+        return chats;
     }
 
     public boolean isLock() {

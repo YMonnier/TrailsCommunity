@@ -1,8 +1,14 @@
 package fr.univ_tln.trailscommunity.features.session;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -12,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,18 +25,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.web.client.RestClientException;
 
 import fr.univ_tln.trailscommunity.R;
+import fr.univ_tln.trailscommunity.Settings;
+import fr.univ_tln.trailscommunity.features.session.chatview.ChatListAdapter;
 import fr.univ_tln.trailscommunity.features.session.navigation.MapNavigation;
+import fr.univ_tln.trailscommunity.models.Chat;
 import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.models.User;
+import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
+import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
+import fr.univ_tln.trailscommunity.utilities.notification.NotificationReceiverService;
+import io.realm.Realm;
 
 @EActivity(R.layout.session_session_activity)
 public class SessionActivity extends AppCompatActivity {
@@ -65,6 +80,9 @@ public class SessionActivity extends AppCompatActivity {
     @ViewById(R.id.sendMessage)
     Button sendMessage;
 
+    @ViewById(R.id.sessionActivity)
+    CoordinatorLayout coordinatorLayout;
+
     /**
      * Creating facade for
      * the map navigation manipulation.
@@ -72,44 +90,90 @@ public class SessionActivity extends AppCompatActivity {
     @Bean(MapNavigation.class)
     MapNavigation mapNavigation;
 
+    /**
+     * List view adapter used
+     * to manage the chat.
+     */
+    @Bean
+    ChatListAdapter chatListAdapter;
+
+    @RestService
+    TCRestApi tcRestApi;
+
     @Extra(SESSION_ID_EXTRA)
     int sessionId;
 
     protected Session session;
 
-    private List<String> chatMessageList;
-
     @AfterViews
     void init() {
-        Log.d(TAG, "init AfterViews....");
-        session = new Session.Builder()
-                .setActivity(Session.TypeActivity.HIKING.ordinal())
-                .setId(sessionId)
-                .build();
-        mapNavigation.init(session);
+        Log.d(TAG, "init afterViews.... sessionId: " + sessionId);
+        Realm realm = Realm.getDefaultInstance();
+        this.session = realm.where(Session.class).equalTo("id", sessionId).findFirst();
 
-        this.chatMessageList = new ArrayList<>();
-        chatMessageList.add("Robert : Test loooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnng message.");
+        if (session != null) {
+            mapNavigation.init(session);
+        }
 
-        // Set the adapter for the list view
-        chatListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, chatMessageList));
+        chatListAdapter.init(sessionId);
+        chatListView.setAdapter(chatListAdapter);
+        // Add observer broadcast messaging for chatting.
+        LocalBroadcastManager.getInstance(this).registerReceiver(chatMessageSharingReceiver,
+                new IntentFilter(NotificationReceiverService.CHAT_SHARING_RECEIVER));
     }
 
+    /**
+     * Action to send a message to the current session
+     */
     @Click(R.id.sendMessage)
-    void sendMessage(){
+    void sendMessageAction() {
+        Log.d(TAG, "Send message action...");
         String message = chatField.getText().toString();
-        String nickname = "Nickname";
-
-        if(!TextUtils.isEmpty(message)){
-            chatMessageList.add(nickname + " : " + message);
-            chatListView.setAdapter(new ArrayAdapter<String>(this,
-                    R.layout.drawer_list_item, chatMessageList));
+        if (!TextUtils.isEmpty(message)) {
+            Chat chat = new Chat.Builder()
+                    .setUserId(Settings.userId)
+                    .setMessage(message)
+                    .setUser(new User.Builder().setId(Settings.userId)
+                            .build())
+                    .build();
+            sendMessage(chat);
             chatField.setText(null);
-        }
-        else{
+        } else {
             chatField.setError(getString(R.string.error_field_required));
         }
+    }
+
+    /**
+     * Add a message to the chat list adapter
+     *
+     * @param chatMessage chat message
+     */
+    @Background
+    void sendMessage(final Chat chatMessage) {
+        Log.d(TAG, "sendMessage HTTP....");
+        try {
+            tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.TOKEN_AUTHORIZATION);
+            tcRestApi.sendMessage(sessionId, chatMessage);
+            updateUi(chatMessage);
+            /*Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            Session s = realm.where(Session.class).equalTo("id", sessionId).findFirst();
+            if(s != null){
+                s.getChats().add(chatMessage);
+                realm.copyToRealmOrUpdate(chatMessage);
+            }
+            realm.commitTransaction();
+            */
+        } catch (RestClientException e) {
+            Log.d(TAG, "error HTTP request: " + e.getLocalizedMessage());
+            Snack.showFailureMessage(coordinatorLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+        }
+    }
+
+    @UiThread
+    void updateUi(final Chat chatMessage) {
+        Log.d(TAG, "updateUi Add message to listView");
+        chatListAdapter.addMessage(chatMessage);
     }
 
     @Override
@@ -168,9 +232,24 @@ public class SessionActivity extends AppCompatActivity {
         snackbar.show();
     }
 
+    /**
+     * Handler for receive the waypoint intent from notification(NotificationReceiverService). This will be
+     * called whenever an Intent with an action named `LocationService.ASK_LOCATION_SETTINGS`
+     * is broadcasted.
+     */
+    private BroadcastReceiver chatMessageSharingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String json = intent.getStringExtra(NotificationReceiverService.EXTRA_CHAT_SHARING_RECEIVER);
+            Chat chat = GsonSingleton.getInstance().fromJson(json, Chat.class);
+            Log.d(TAG, "Got chat message from notification: " + chat);
+        }
+    };
+
     @Override
     public void finish() {
         super.finish();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(chatMessageSharingReceiver);
         if (mapNavigation != null) {
             mapNavigation.stop();
         }
@@ -178,6 +257,7 @@ public class SessionActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(chatMessageSharingReceiver);
         super.onDestroy();
         if (mapNavigation != null) {
             mapNavigation.stop();
