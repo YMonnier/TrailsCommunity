@@ -243,6 +243,7 @@ public class SessionActivity extends AppCompatActivity {
             String json = intent.getStringExtra(NotificationReceiverService.EXTRA_CHAT_SHARING_RECEIVER);
             Chat chat = GsonSingleton.getInstance().fromJson(json, Chat.class);
             Log.d(TAG, "Got chat message from notification: " + chat);
+            updateUi(chat);
         }
     };
 
