@@ -138,8 +138,7 @@ public class SessionActivity extends AppCompatActivity {
             Chat chat = new Chat.Builder()
                     .setUserId(Settings.userId)
                     .setMessage(message)
-                    .setUser(new User.Builder().setId(Settings.userId)
-                            .build())
+                    .setUser(Settings.user)
                     .build();
             sendMessage(chat);
             chatField.setText(null);
@@ -179,6 +178,7 @@ public class SessionActivity extends AppCompatActivity {
     void updateUi(final Chat chatMessage) {
         Log.d(TAG, "updateUi Add message to listView");
         chatListAdapter.addMessage(chatMessage);
+        chatListView.setSelection(chatListAdapter.getCount() - 1);
     }
 
     @Override

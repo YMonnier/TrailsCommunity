@@ -1,6 +1,6 @@
 package fr.univ_tln.trailscommunity;
 
-import fr.univ_tln.trailscommunity.models.Session;
+import fr.univ_tln.trailscommunity.models.User;
 
 /**
  * Project TrailsCommunity.
@@ -26,4 +26,6 @@ public class Settings {
      * Current user id from the TrailsCommunity API.
      */
     public static int userId = -1;
+
+    public static User user;
 }

@@ -39,6 +39,7 @@ import fr.univ_tln.trailscommunity.Settings;
 import fr.univ_tln.trailscommunity.features.sessions.SessionsActivity_;
 import fr.univ_tln.trailscommunity.models.User;
 import fr.univ_tln.trailscommunity.utilities.Snack;
+import fr.univ_tln.trailscommunity.utilities.json.GsonSingleton;
 import fr.univ_tln.trailscommunity.utilities.loader.LoaderDialog;
 import fr.univ_tln.trailscommunity.utilities.network.TCRestApi;
 import fr.univ_tln.trailscommunity.utilities.validators.EmailValidator;
@@ -341,7 +342,7 @@ public class LoginActivity extends AppCompatActivity {
         JsonObject data = userJsonObject.getAsJsonObject("data");
         Log.d(TAG, "data: " + data);
         int userId = data.get("id").getAsInt();
-        Settings.userId = userId;
+        Settings.user = GsonSingleton.getInstance().fromJson(data, User.class);
 
         // Create Realm instance
         /*
