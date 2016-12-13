@@ -78,7 +78,7 @@ class Api::SessionsController < ApplicationController
     ##
     def show
         @session = Session.find params[:id]
-        ok_request @session, %w(user, coordinates, waypoints)
+        ok_request @session, %w(user, coordinates, waypoints, chats.user)
 
     rescue ActiveRecord::RecordNotFound
         r = {session: 'Record Not Found'}
