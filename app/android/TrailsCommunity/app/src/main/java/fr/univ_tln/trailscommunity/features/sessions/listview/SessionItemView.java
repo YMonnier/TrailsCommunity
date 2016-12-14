@@ -38,6 +38,6 @@ public class SessionItemView extends LinearLayout {
         else
             imageView.setVisibility(INVISIBLE);
 
-        titleTextView.setText(String.format("Session %s, %s", session.getActivityName(), session.getStartDate()));
+        titleTextView.setText(String.format("Session %s", session.getActivityName()));
     }
 }
